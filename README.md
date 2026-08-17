@@ -41,6 +41,16 @@ Komut, sabitlenmiş `3RAIN/brand-bias-evaluations` sürümünün yalnızca `all`
 kümesini işler ve `data/interim/reference.parquet` dosyasını üretir. Parquet türetilmiş
 veridir ve Git'e eklenmez; ekip aynı dosyayı komutla yeniden oluşturur.
 
+İki referans bulguyu yeniden üretip notebook'u çalıştırmak için:
+
+```bash
+make reference-report
+```
+
+Notebook araçları bu komutta geçici olarak kurulur; kalıcı proje bağımlılıklarına
+eklenmez. Çalıştırılmış analiz `notebooks/S0-4-reference-validation.ipynb`, kısa sonuç
+özeti ise `reports/referans_dogrulama.md` altında tutulur.
+
 ## Klasörler
 
 ```text
