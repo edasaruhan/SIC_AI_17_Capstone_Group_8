@@ -5,6 +5,9 @@ Samsung Innovation Campus capstone projesi. Amaç, yapay zekâ asistanlarının 
 
 [Fikir önerisi (PDF)](docs/references/fikir-onerisi.pdf)
 
+Ödev 1 teslimindeki üç raporun Markdown/DOCX sürümleri ve güncellenmiş görselleri
+[`reports/assignment-1/`](reports/assignment-1/) klasöründedir.
+
 ## Sprint 0 · 10–16 Ağustos
 
 | Görev | Sorumlu | Çıktı |
