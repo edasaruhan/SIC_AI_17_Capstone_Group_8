@@ -5,6 +5,9 @@ Samsung Innovation Campus capstone projesi. Amaç, yapay zekâ asistanlarının 
 
 [Fikir önerisi (PDF)](docs/references/fikir-onerisi.pdf)
 
+Ödev 1 teslimindeki üç raporun Markdown/DOCX sürümleri ve güncellenmiş görselleri
+[`reports/assignment-1/`](reports/assignment-1/) klasöründedir.
+
 ## Sprint 0 · 10–16 Ağustos
 
 | Görev | Sorumlu | Çıktı |
@@ -30,6 +33,26 @@ make check
 
 Notebook'lar Colab/Kaggle üzerinde veya ekip üyesinin tercih ettiği yerel notebook
 ortamında çalıştırılabilir.
+
+Referans veri setini hazırlamak için:
+
+```bash
+make reference-data
+```
+
+Komut, sabitlenmiş `3RAIN/brand-bias-evaluations` sürümünün yalnızca `all` alt
+kümesini işler ve `data/interim/reference.parquet` dosyasını üretir. Parquet türetilmiş
+veridir ve Git'e eklenmez; ekip aynı dosyayı komutla yeniden oluşturur.
+
+İki referans bulguyu yeniden üretip notebook'u çalıştırmak için:
+
+```bash
+make reference-report
+```
+
+Notebook araçları bu komutta geçici olarak kurulur; kalıcı proje bağımlılıklarına
+eklenmez. Çalıştırılmış analiz `notebooks/S0-4-reference-validation.ipynb`, kısa sonuç
+özeti ise `reports/referans_dogrulama.md` altında tutulur.
 
 ## Klasörler
 
