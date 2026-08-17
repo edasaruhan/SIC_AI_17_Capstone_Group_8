@@ -31,6 +31,16 @@ make check
 Notebook'lar Colab/Kaggle üzerinde veya ekip üyesinin tercih ettiği yerel notebook
 ortamında çalıştırılabilir.
 
+Referans veri setini hazırlamak için:
+
+```bash
+make reference-data
+```
+
+Komut, sabitlenmiş `3RAIN/brand-bias-evaluations` sürümünün yalnızca `all` alt
+kümesini işler ve `data/interim/reference.parquet` dosyasını üretir. Parquet türetilmiş
+veridir ve Git'e eklenmez; ekip aynı dosyayı komutla yeniden oluşturur.
+
 ## Klasörler
 
 ```text

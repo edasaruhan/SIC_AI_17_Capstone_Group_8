@@ -16,6 +16,7 @@ dependencies = [
 dev = [
   "black>=24.8,<26",
   "pre-commit>=3.8,<5",
+  "pyright>=1.1.405,<2",
   "pytest>=8.3,<10",
   "ruff>=0.6,<1",
 ]
@@ -39,3 +40,4 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["tests"]
+pythonpath = ["src"]

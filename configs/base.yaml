@@ -4,3 +4,11 @@ paths:
   interim: data/interim
   processed: data/processed
   reports: reports
+
+reference_dataset:
+  dataset_id: 3RAIN/brand-bias-evaluations
+  config_name: all
+  split: train
+  revision: 400da04eced51d3afe52b6d20c0207fd613f8a4a
+  expected_rows: 9586
+  output_path: data/interim/reference.parquet
