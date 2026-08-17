@@ -1,0 +1,41 @@
+[project]
+name = "ai-brand-visibility"
+version = "0.1.0"
+description = "AI assistants' brand visibility capstone project"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "datasets>=2.20,<5",
+  "duckdb>=1,<2",
+  "pandas>=2.2,<4",
+  "pyarrow>=17,<24",
+  "pyyaml>=6,<7",
+]
+
+[dependency-groups]
+dev = [
+  "black>=24.8,<26",
+  "pre-commit>=3.8,<5",
+  "pytest>=8.3,<10",
+  "ruff>=0.6,<1",
+]
+
+[tool.uv]
+package = false
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]

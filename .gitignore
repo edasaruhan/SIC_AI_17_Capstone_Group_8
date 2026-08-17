@@ -1,0 +1,25 @@
+# Python ve yerel ortam
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+.venv/
+.uv-cache/
+.env
+.env.*
+!.env.example
+
+# Editör ve notebook
+.idea/
+.vscode/
+.DS_Store
+.ipynb_checkpoints/
+
+# Veri dosyaları yerelde kalır; klasörler .gitkeep ile izlenir.
+data/raw/**
+data/interim/**
+data/processed/**
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
