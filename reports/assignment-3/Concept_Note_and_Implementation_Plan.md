@@ -4,7 +4,7 @@
 
 **Project Title:** Modelling and Improving Brand Visibility in AI Assistant Recommendations
 
-**Team Members:** Kübra Gezici / Furkan Karlı / Murat Mert Küçük / Zeynep Sinal
+**Team Members:** Kübra Gezici / Furkan Karlı / Murat Mert Küçük / Zeynep Sude İnal
 
 **Repository:** `edasaruhan/SIC_AI_17_Capstone_Group_8`
 
