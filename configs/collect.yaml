@@ -1,0 +1,77 @@
+# Toplama boru hattının çalışma ayarları (S1-6).
+#
+# Bu dosya "nasıl çağırıyoruz" sorusunu yanıtlar: uç noktalar, hız sınırları,
+# yeniden deneme, harcama tavanı. "Ne soruyoruz" sorusu donmuş tasarım
+# dosyalarına aittir: queries_tr.yaml, brands_tr.yaml, variants.yaml,
+# protocols.yaml. Persona ve sıcaklık protocols.yaml içinde sabittir (Kural 5).
+#
+# API anahtarları .env dosyasından okunur ve asla commit edilmez.
+
+collection:
+  raw_dir: data/raw
+
+  # Aynı anda uçuşta olacak çağrı sayısı. Hız sınırı model bazında ayrıca
+  # uygulanır; bu değer toplam yükü sınırlar.
+  concurrency: 4
+
+  # Günlük harcama tavanı. Tavana ulaşılınca yeni çağrı planlanmaz, uçuşta
+  # olanlar tamamlanır ve koşu temiz biter. Aynı --run-id ile devam edilir.
+  daily_spend_cap_usd: 15.0
+
+  # Ham yanıtın tamamı satıra yazılsın mı? Kural 6 gereği ham veri
+  # değiştirilmez; bunu kapatmak yalnızca disk sorunu çıkarsa düşünülmeli.
+  store_raw_response: true
+
+  seed: 42
+
+  retry:
+    max_attempts: 5
+    initial_seconds: 1.0
+    max_seconds: 60.0
+    jitter_seconds: 1.0
+
+  # Üç farklı sağlayıcı, bütçe/orta segment modeller. Model kimlikleri pilot
+  # öncesi sağlayıcı belgelerinden doğrulanmalı; sürüm her satıra yazıldığı
+  # için (Kural 4) hangi sürümle ölçtüğümüz sonradan da izlenebilir.
+  models:
+    claude_haiku:
+      provider: anthropic
+      model: claude-haiku-4-5
+      api_key_env: ANTHROPIC_API_KEY
+      base_url: https://api.anthropic.com
+      max_output_tokens: 1024
+      requests_per_second: 2.0
+      burst: 4.0
+      supports_search: true
+      # Haiku 4.5, 4.6 öncesi olduğu için temel web arama sürümünü kullanır.
+      search_tool_type: web_search_20250305
+      max_search_uses: 5
+      input_cost_per_million: 1.0
+      output_cost_per_million: 5.0
+      search_cost_per_request: 0.01
+
+    gpt_mini:
+      provider: openai
+      model: gpt-4o-mini
+      api_key_env: OPENAI_API_KEY
+      base_url: https://api.openai.com
+      max_output_tokens: 1024
+      requests_per_second: 2.0
+      burst: 4.0
+      supports_search: true
+      input_cost_per_million: 0.15
+      output_cost_per_million: 0.60
+      search_cost_per_request: 0.01
+
+    gemini_flash_lite:
+      provider: gemini
+      model: gemini-2.0-flash-lite
+      api_key_env: GEMINI_API_KEY
+      base_url: https://generativelanguage.googleapis.com
+      max_output_tokens: 1024
+      requests_per_second: 2.0
+      burst: 4.0
+      supports_search: true
+      input_cost_per_million: 0.075
+      output_cost_per_million: 0.30
+      search_cost_per_request: 0.0
