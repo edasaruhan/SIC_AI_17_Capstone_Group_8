@@ -200,9 +200,7 @@ def build_quality_summary(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
         frame.groupby(["category", "model_id", "condition", "query_id"]).size(),
     )
     cell_counts = cast(pd.DataFrame, grouped_sizes.rename("rows").reset_index())
-    incomplete = cell_counts.loc[
-        cell_counts.loc[:, "rows"].to_numpy() < 30
-    ].reset_index(drop=True)
+    incomplete = cell_counts.loc[cell_counts.loc[:, "rows"].to_numpy() < 30].reset_index(drop=True)
     actual_incomplete = {
         (
             str(row["category"]),
