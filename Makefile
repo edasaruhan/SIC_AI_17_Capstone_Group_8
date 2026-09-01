@@ -34,7 +34,9 @@ reference-report: reference-data ## Referans doğrulama notebook'unu baştan son
 # RUN_ID zorunludur; aynı RUN_ID ile tekrar çalıştırmak kaldığı yerden sürdürür.
 # Ek argümanlar ARGS ile geçilir, örn: make collect-run RUN_ID=pilot-01 ARGS="--limit 20"
 
-COLLECT := PYTHONPATH=src uv run python -m collect
+# .env varsa API anahtarlarını ortama yükle; yoksa uv hata vermesin diye atla.
+ENV_FILE := $(if $(wildcard .env),--env-file .env,)
+COLLECT := PYTHONPATH=src uv run $(ENV_FILE) python -m collect
 
 require-run-id:
 	@test -n "$(RUN_ID)" || { echo "RUN_ID gerekli, örn: make $(MAKECMDGOALS) RUN_ID=pilot-01"; exit 2; }

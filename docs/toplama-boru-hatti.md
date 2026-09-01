@@ -145,6 +145,7 @@ alır.
 
 ```bash
 cp .env.example .env          # ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY doldurulur
+                              # .env.example şablondur ve boş kalır; anahtarlar .env'e yazılır
 make collect-plan RUN_ID=pilot-01 ARGS="--limit 20 --sample"   # önce plana bakılır
 make collect-run  RUN_ID=pilot-01 ARGS="--limit 20"            # 20 çağrılık deneme
 make collect-run  RUN_ID=katman-a-01                           # tam koşu
@@ -153,7 +154,7 @@ make collect-run  RUN_ID=katman-a-01                           # tam koşu
 `make` yoksa (Windows) doğrudan:
 
 ```powershell
-$env:PYTHONPATH="src"; uv run python -m collect plan --run-id pilot-01 --limit 20
+$env:PYTHONPATH="src"; uv run --env-file .env python -m collect plan --run-id pilot-01 --limit 20
 ```
 
 **Kesinti.** Ctrl+C ile durdurulabilir; biten her çağrı zaten diskte olduğu için
