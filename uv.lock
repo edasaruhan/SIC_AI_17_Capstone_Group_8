@@ -11,10 +11,11 @@ resolution-markers = [
 [[package]]
 name = "ai-brand-visibility"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "datasets" },
     { name = "duckdb" },
+    { name = "httpx" },
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "pyyaml" },
@@ -33,6 +34,7 @@ dev = [
 requires-dist = [
     { name = "datasets", specifier = ">=2.20,<5" },
     { name = "duckdb", specifier = ">=1,<2" },
+    { name = "httpx", specifier = ">=0.27,<1" },
     { name = "pandas", specifier = ">=2.2,<4" },
     { name = "pyarrow", specifier = ">=17,<24" },
     { name = "pyyaml", specifier = ">=6,<7" },

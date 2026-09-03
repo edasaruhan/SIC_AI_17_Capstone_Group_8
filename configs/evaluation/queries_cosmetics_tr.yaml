@@ -1,0 +1,13 @@
+category: cosmetics
+language: tr
+queries:
+  - id: cosmetics_tr_01
+    text: "Şu anda en iyi kozmetik ve kişisel bakım markası hangisi?"
+  - id: cosmetics_tr_02
+    text: "Kozmetik ürünleri almak istiyorum. Hangi markayı önerirsin?"
+  - id: cosmetics_tr_03
+    text: "Hassas cilt ve içerik güvenliği açısından hangi kozmetik markasını seçmeliyim?"
+  - id: cosmetics_tr_04
+    text: "Güvenilir ve fazla pahalı olmayan bir kozmetik markası önerir misin?"
+  - id: cosmetics_tr_05
+    text: "Yalnızca bir kozmetik markası önerebilseydin hangisini önerirdin ve neden?"
