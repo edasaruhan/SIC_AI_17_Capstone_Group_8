@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+from pathlib import Path
 
 from .config import load_suite
 
@@ -22,6 +23,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     run.add_argument("--pilot", action="store_true", help="Run the 16 production pilot cells")
     subparsers.add_parser("status", help="Summarize raw generation progress")
+    subparsers.add_parser("judge", help="Judge successful generation records with Cerebras")
+    subparsers.add_parser("judge-status", help="Summarize current and stale judgments")
+    subparsers.add_parser("export", help="Write reference-compatible Parquet files")
+    subparsers.add_parser("validate", help="Require the complete 400 + 400-row result")
+    report = subparsers.add_parser("report", help="Compare Turkish VPN with English reference")
+    report.add_argument("--reference", default="data/interim/reference.parquet")
+    report.add_argument("--output", default="reports/tr_vpn_language_comparison.md")
     return parser
 
 
@@ -74,5 +82,37 @@ def main(argv: list[str] | None = None) -> int:
                 sort_keys=True,
             )
         )
+        return 0
+    if args.command == "judge":
+        from .judge import judge_suite
+
+        result = asyncio.run(judge_suite(config))
+        print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0 if result["errors"] == 0 and result["blocked"] == 0 else 1
+    if args.command == "judge-status":
+        from .judge import judge_status
+
+        print(json.dumps(judge_status(config), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    if args.command == "export":
+        from .exporter import export_dataset
+
+        print(json.dumps(export_dataset(config), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    if args.command == "validate":
+        from .validation import validate_dataset, validation_exit_code
+
+        result = validate_dataset(config)
+        print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+        return validation_exit_code(result)
+    if args.command == "report":
+        from .report import build_report
+
+        result = build_report(
+            config.processed_dir / "vpn" / "train.parquet",
+            Path(args.reference),
+            Path(args.output),
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     return 2
