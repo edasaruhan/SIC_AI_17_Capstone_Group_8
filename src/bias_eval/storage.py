@@ -9,6 +9,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from .logging import logger
 from .records import CellSpec
 
 
@@ -25,14 +26,23 @@ def result_path(root: Path, cell: CellSpec) -> Path:
 def read_json(path: Path) -> dict[str, Any] | None:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
+    except FileNotFoundError:
+        return None
+    except (json.JSONDecodeError, OSError) as error:
+        logger.warning("json_read_failed path={} error_type={}", path, type(error).__name__)
         return None
     return value if isinstance(value, dict) else None
 
 
+def record_is_complete(value: dict[str, Any] | None) -> bool:
+    if not value or value.get("status") != "completed":
+        return False
+    response = value.get("final_response")
+    return isinstance(response, str) and bool(response.strip())
+
+
 def is_complete(path: Path) -> bool:
-    value = read_json(path)
-    return bool(value and value.get("status") == "completed")
+    return record_is_complete(read_json(path))
 
 
 def atomic_write_json(path: Path, value: dict[str, Any]) -> None:
@@ -45,8 +55,15 @@ def atomic_write_json(path: Path, value: dict[str, Any]) -> None:
             handle.flush()
             os.fsync(handle.fileno())
         Path(temporary).replace(path)
+        logger.debug(
+            "json_write_complete path={} status={} record_id={}",
+            path,
+            value.get("status"),
+            value.get("record_id"),
+        )
     except BaseException:
         Path(temporary).unlink(missing_ok=True)
+        logger.error("json_write_failed path={}", path)
         raise
 
 
@@ -61,14 +78,32 @@ def iter_results(root: Path) -> list[dict[str, Any]]:
     return values
 
 
-def status_summary(root: Path, expected: int) -> dict[str, Any]:
-    values = iter_results(root)
-    statuses = Counter(str(value.get("status", "malformed")) for value in values)
-    return {
+def status_summary(
+    root: Path,
+    expected: int,
+    planned_record_ids: set[str] | None = None,
+) -> dict[str, Any]:
+    all_values = iter_results(root)
+    values = (
+        all_values
+        if planned_record_ids is None
+        else [value for value in all_values if value.get("record_id") in planned_record_ids]
+    )
+    statuses: Counter[str] = Counter()
+    for value in values:
+        status = str(value.get("status", "malformed"))
+        if status == "completed" and not record_is_complete(value):
+            statuses["invalid"] += 1
+        else:
+            statuses[status] += 1
+    result = {
         "expected": expected,
         "files": len(values),
+        "superseded_files": len(all_values) - len(values),
         "completed": statuses.get("completed", 0),
         "errors": statuses.get("error", 0),
         "remaining": max(0, expected - statuses.get("completed", 0)),
         "by_status": dict(sorted(statuses.items())),
     }
+    logger.info("generation_status summary={}", result)
+    return result

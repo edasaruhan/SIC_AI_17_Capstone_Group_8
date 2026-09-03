@@ -1,4 +1,4 @@
-"""Fail-closed validation for the complete 400-row collection."""
+"""Fail-closed validation for the complete 300-row collection."""
 
 from __future__ import annotations
 
@@ -11,8 +11,10 @@ import pyarrow.parquet as pq
 from .config import SuiteConfig
 from .exporter import EXPORT_COLUMNS
 from .judge import judged_path, judgment_is_current
+from .logging import logger
+from .provenance import collection_fingerprint, collection_lock_issue
 from .records import plan_cells
-from .storage import iter_results
+from .storage import iter_results, record_is_complete
 
 
 def _expected_counts(config: SuiteConfig) -> dict[str, dict[str, int]]:
@@ -27,10 +29,15 @@ def _expected_counts(config: SuiteConfig) -> dict[str, dict[str, int]]:
 
 
 def validate_dataset(config: SuiteConfig) -> dict[str, Any]:
+    logger.info("validation_started expected_rows={}", config.expected_rows)
     issues: list[str] = []
-    raw_records = iter_results(config.raw_dir)
-    completed = [item for item in raw_records if item.get("status") == "completed"]
+    lock_issue = collection_lock_issue(config)
+    if lock_issue:
+        issues.append(f"provenance: {lock_issue}")
     planned_ids = {cell.record_id for cell in plan_cells(config)}
+    all_raw_records = iter_results(config.raw_dir)
+    raw_records = [item for item in all_raw_records if item.get("record_id") in planned_ids]
+    completed = [item for item in raw_records if record_is_complete(item)]
     completed_ids = [str(item.get("record_id")) for item in completed]
     if len(completed) != config.expected_rows:
         issues.append(f"generation: expected {config.expected_rows}, found {len(completed)}")
@@ -88,7 +95,19 @@ def validate_dataset(config: SuiteConfig) -> dict[str, Any]:
             if row["condition"] == "search_on" and row["search_aware"] is None:
                 issues.append(f"export: search_on search_aware is null for {row['record_id']}")
 
-    return {
+    manifest_path = config.processed_dir / "manifest.json"
+    if not manifest_path.exists():
+        issues.append("export: manifest.json is missing")
+    else:
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            issues.append("export: manifest.json is unreadable")
+        else:
+            if manifest.get("collection_fingerprint") != collection_fingerprint(config):
+                issues.append("export: manifest collection fingerprint is stale")
+
+    result = {
         "ok": not issues,
         "expected_rows": config.expected_rows,
         "completed_generation_rows": len(completed),
@@ -96,8 +115,14 @@ def validate_dataset(config: SuiteConfig) -> dict[str, Any]:
             judgment_is_current(judged_path(config, raw), raw) for raw in completed
         ),
         "export_rows": parquet_rows,
+        "superseded_raw_files": len(all_raw_records) - len(raw_records),
         "issues": issues,
     }
+    if issues:
+        logger.warning("validation_failed issue_count={} first_issues={}", len(issues), issues[:10])
+    else:
+        logger.info("validation_completed ok=true rows={}", len(completed))
+    return result
 
 
 def validation_exit_code(result: dict[str, Any]) -> int:

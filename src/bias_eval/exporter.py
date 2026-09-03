@@ -15,9 +15,11 @@ import pyarrow.parquet as pq
 
 from .config import SuiteConfig
 from .judge import judged_path, judgment_is_current
+from .logging import logger
 from .normalization import alias_candidates
+from .provenance import collection_fingerprint
 from .records import plan_cells
-from .storage import atomic_write_json, iter_results, read_json
+from .storage import atomic_write_json, iter_results, read_json, record_is_complete
 
 REFERENCE_GIT_COMMIT = "cc42677a42bbbf92f6ef4c376abda6528f0463ea"
 REFERENCE_HF_REVISION = "400da04eced51d3afe52b6d20c0207fd613f8a4a"
@@ -108,8 +110,9 @@ def _export_tool_calls(raw_calls: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def build_export_rows(config: SuiteConfig) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     rows: list[dict[str, Any]] = []
     judged_records: list[dict[str, Any]] = []
+    planned_ids = {cell.record_id for cell in plan_cells(config)}
     for raw in iter_results(config.raw_dir):
-        if raw.get("status") != "completed":
+        if not record_is_complete(raw) or raw.get("record_id") not in planned_ids:
             continue
         path = judged_path(config, raw)
         if not judgment_is_current(path, raw):
@@ -188,7 +191,14 @@ def _distribution(rows: list[dict[str, Any]], key: str) -> dict[str, int]:
 
 
 def export_dataset(config: SuiteConfig, *, require_complete: bool = True) -> dict[str, Any]:
+    logger.info(
+        "export_started expected_rows={} processed_dir={} require_complete={}",
+        config.expected_rows,
+        config.processed_dir,
+        require_complete,
+    )
     rows, judged_records = build_export_rows(config)
+    planned_ids = {cell.record_id for cell in plan_cells(config)}
     if require_complete and len(rows) != config.expected_rows:
         raise ValueError(
             f"Export requires {config.expected_rows} current judged rows; found {len(rows)}"
@@ -199,10 +209,20 @@ def export_dataset(config: SuiteConfig, *, require_complete: bool = True) -> dic
         "all": config.processed_dir / "all" / "train.parquet",
     }
     for category in ("vpn", "cosmetics"):
-        _write_parquet(output_paths[category], [row for row in rows if row["category"] == category])
+        category_rows = [row for row in rows if row["category"] == category]
+        _write_parquet(output_paths[category], category_rows)
+        logger.info(
+            "parquet_written category={} rows={} path={}",
+            category,
+            len(category_rows),
+            output_paths[category],
+        )
     _write_parquet(output_paths["all"], rows)
+    logger.info("parquet_written category=all rows={} path={}", len(rows), output_paths["all"])
 
-    raw_records = iter_results(config.raw_dir)
+    raw_records = [
+        item for item in iter_results(config.raw_dir) if item.get("record_id") in planned_ids
+    ]
     complete_raw = [item for item in raw_records if item.get("status") == "completed"]
     planned_ids = {cell.record_id for cell in plan_cells(config)}
     complete_ids = {str(item.get("record_id")) for item in complete_raw}
@@ -217,6 +237,7 @@ def export_dataset(config: SuiteConfig, *, require_complete: bool = True) -> dic
     ]
     manifest = {
         "suite_id": config.suite_id,
+        "collection_fingerprint": collection_fingerprint(config),
         "expected_generation_rows": config.expected_rows,
         "completed_generation_rows": len(complete_raw),
         "current_judged_rows": len(rows),
@@ -248,4 +269,10 @@ def export_dataset(config: SuiteConfig, *, require_complete: bool = True) -> dic
         "candidates": alias_candidates(judged_records),
     }
     atomic_write_json(config.processed_dir / "alias_candidates.json", aliases)
+    logger.info(
+        "export_completed rows={} manifest={} aliases={}",
+        len(rows),
+        config.processed_dir / "manifest.json",
+        len(aliases["candidates"]),
+    )
     return manifest

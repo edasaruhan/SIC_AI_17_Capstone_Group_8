@@ -1,6 +1,6 @@
 models:
-  gemini_3_5_flash:
-    model_id: gemini-3.5-flash
+  gemini_3_5_flash_lite:
+    model_id: gemini-3.5-flash-lite
     provider: google
     api_base: https://generativelanguage.googleapis.com/v1beta/openai
     api_key_env: GEMINI_API_KEY
@@ -16,10 +16,4 @@ models:
     provider: abliteration
     api_base: https://api.abliteration.ai/v1
     api_key_env: ABLITERATION_API_KEY
-    max_concurrent: 1
-  deepseek_v4_pro:
-    model_id: deepseek-ai/deepseek-v4-pro
-    provider: nvidia
-    api_base: https://integrate.api.nvidia.com/v1
-    api_key_env: NVIDIA_API_KEY
     max_concurrent: 1

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import load_suite
+from .logging import logger
 from .records import CellSpec, plan_cells
 
 
@@ -25,8 +26,10 @@ def summarize(cells: list[CellSpec]) -> dict[str, Any]:
 
 def render_plan(config_path: str | Path) -> str:
     config = load_suite(config_path)
+    summary = {"suite_id": config.suite_id, **summarize(plan_cells(config))}
+    logger.info("plan_rendered summary={}", summary)
     return json.dumps(
-        {"suite_id": config.suite_id, **summarize(plan_cells(config))},
+        summary,
         ensure_ascii=False,
         indent=2,
         sort_keys=True,

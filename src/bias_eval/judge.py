@@ -23,6 +23,7 @@ from .judge_schema import (
     prompt_hash,
     response_schema,
 )
+from .logging import logger
 from .normalization import normalize_judgment_brands
 from .providers import (
     RETRYABLE_STATUS_CODES,
@@ -31,7 +32,8 @@ from .providers import (
     _safe_error_text,
     api_key,
 )
-from .storage import atomic_write_json, iter_results, read_json
+from .records import plan_cells
+from .storage import atomic_write_json, iter_results, read_json, record_is_complete
 
 Sleep = Callable[[float], Awaitable[None]]
 
@@ -115,9 +117,34 @@ def validate_judgment(value: Any, category: str, condition: str) -> dict[str, An
 
 
 class CerebrasJudgeClient:
-    def __init__(self, config: JudgeConfig, http: httpx.AsyncClient):
+    def __init__(
+        self,
+        config: JudgeConfig,
+        http: httpx.AsyncClient,
+        *,
+        sleep: Sleep = asyncio.sleep,
+    ):
         self.config = config
         self.http = http
+        self.sleep = sleep
+        self._pacing_lock = asyncio.Lock()
+        self._last_request_started: float | None = None
+
+    async def _wait_for_request_slot(self, record_id: Any) -> None:
+        async with self._pacing_lock:
+            now = monotonic()
+            delay = 0.0
+            if self._last_request_started is not None:
+                elapsed = now - self._last_request_started
+                delay = max(0.0, self.config.min_request_interval_seconds - elapsed)
+            if delay > 0:
+                logger.info(
+                    "judge_rate_limit_wait record_id={} delay_seconds={:.3f}",
+                    record_id,
+                    delay,
+                )
+                await self.sleep(delay)
+            self._last_request_started = monotonic()
 
     async def judge(self, raw: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
         category = str(raw["category"])
@@ -138,6 +165,15 @@ class CerebrasJudgeClient:
                 },
             },
         }
+        started = monotonic()
+        await self._wait_for_request_slot(raw.get("record_id"))
+        logger.debug(
+            "judge_request record_id={} model={} category={} condition={}",
+            raw.get("record_id"),
+            self.config.model_id,
+            category,
+            raw.get("condition"),
+        )
         try:
             response = await self.http.post(
                 f"{self.config.api_base.rstrip('/')}/chat/completions",
@@ -145,12 +181,32 @@ class CerebrasJudgeClient:
                 json=payload,
             )
         except httpx.TransportError as error:
-            raise ProviderError("Judge transport error", retryable=True) from error
+            logger.error(
+                "judge_transport_error record_id={} duration_seconds={:.3f} error_type={}",
+                raw.get("record_id"),
+                monotonic() - started,
+                type(error).__name__,
+            )
+            raise ProviderError(
+                "Judge transport error",
+                retryable=True,
+                transport_error=True,
+                component="judge",
+            ) from error
         if response.status_code >= 400:
             message = _safe_error_text(response)
             lowered = message.casefold()
             quota = response.status_code in {402, 429} and any(
                 word in lowered for word in ("quota", "credit", "balance", "billing")
+            )
+            logger.warning(
+                "judge_http_error record_id={} status_code={} duration_seconds={:.3f} "
+                "retry_after={} message={}",
+                raw.get("record_id"),
+                response.status_code,
+                monotonic() - started,
+                _retry_after(response),
+                message,
             )
             raise ProviderError(
                 message,
@@ -158,16 +214,52 @@ class CerebrasJudgeClient:
                 retry_after=_retry_after(response),
                 retryable=response.status_code in RETRYABLE_STATUS_CODES and not quota,
                 quota_exhausted=quota,
+                component="judge",
             )
         try:
             body = response.json()
             content = body["choices"][0]["message"]["content"]
             result = json.loads(content) if isinstance(content, str) else content
+            if (
+                isinstance(result, dict)
+                and str(raw["condition"]) == "search_on"
+                and result.get("search_aware") is None
+                and not raw.get("tool_calls")
+                and not raw.get("search_results")
+            ):
+                result = dict(result)
+                result["search_aware"] = {
+                    "explicitly_references_search_results": False,
+                    "cites_specific_sources": False,
+                    "source_names_cited": [],
+                    "uses_search_to_justify_top_pick": False,
+                }
+                logger.warning(
+                    "judge_response_repaired record_id={} repair=empty_search_trace",
+                    raw.get("record_id"),
+                )
             validated = validate_judgment(result, category, str(raw["condition"]))
         except (ValueError, KeyError, IndexError, TypeError, json.JSONDecodeError) as error:
+            logger.error(
+                "judge_invalid_response record_id={} status_code={} duration_seconds={:.3f} "
+                "error_type={} validation_error={}",
+                raw.get("record_id"),
+                response.status_code,
+                monotonic() - started,
+                type(error).__name__,
+                str(error),
+            )
             raise ProviderError(
-                "Judge returned invalid structured output", retryable=True
+                f"Judge returned invalid structured output: {error}",
+                retryable=True,
+                component="judge",
             ) from error
+        logger.info(
+            "judge_response record_id={} status_code={} duration_seconds={:.3f}",
+            raw.get("record_id"),
+            response.status_code,
+            monotonic() - started,
+        )
         return validated, body
 
 
@@ -183,10 +275,27 @@ async def _judge_with_retries(
             judgment, body = await client.judge(raw)
             return judgment, body, attempt
         except ProviderError as error:
+            error.attempts = attempt
             if not error.retryable or attempt == max_attempts:
+                logger.error(
+                    "judge_operation_failed record_id={} attempts={} status_code={} message={}",
+                    raw.get("record_id"),
+                    attempt,
+                    error.status_code,
+                    error,
+                )
                 raise
             delay = (
                 error.retry_after if error.retry_after is not None else float(2 ** (attempt - 1))
+            )
+            logger.warning(
+                "judge_retry record_id={} attempt={} next_attempt={} delay_seconds={} "
+                "status_code={}",
+                raw.get("record_id"),
+                attempt,
+                attempt + 1,
+                delay,
+                error.status_code,
             )
             await sleep(delay)
     raise AssertionError("retry loop exhausted")
@@ -198,18 +307,30 @@ async def judge_suite(
     http: httpx.AsyncClient | None = None,
     sleep: Sleep = asyncio.sleep,
 ) -> dict[str, Any]:
+    planned_ids = {cell.record_id for cell in plan_cells(config)}
     raw_records = [
-        item for item in iter_results(config.raw_dir) if item.get("status") == "completed"
+        item
+        for item in iter_results(config.raw_dir)
+        if record_is_complete(item) and item.get("record_id") in planned_ids
     ]
     owns_http = http is None
     session = http or httpx.AsyncClient(timeout=httpx.Timeout(120.0))
-    client = CerebrasJudgeClient(config.judge, session)
+    client = CerebrasJudgeClient(config.judge, session, sleep=sleep)
     queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
     for record in raw_records:
         queue.put_nowait(record)
     counts: Counter[str] = Counter()
     quota_exhausted = False
     state_lock = asyncio.Lock()
+    logger.info(
+        "judge_suite_started eligible={} workers={} model={} judged_dir={} "
+        "min_request_interval_seconds={}",
+        len(raw_records),
+        config.judge.max_concurrent,
+        config.judge.model_id,
+        config.judged_dir,
+        config.judge.min_request_interval_seconds,
+    )
 
     async def worker() -> None:
         nonlocal quota_exhausted
@@ -219,13 +340,26 @@ async def judge_suite(
             try:
                 if judgment_is_current(path, raw):
                     counts["skipped"] += 1
+                    logger.debug(
+                        "judge_record_skipped record_id={} reason=current", raw.get("record_id")
+                    )
                     continue
                 async with state_lock:
                     if quota_exhausted:
                         counts["blocked"] += 1
+                        logger.debug(
+                            "judge_record_blocked record_id={} reason=quota_circuit_open",
+                            raw.get("record_id"),
+                        )
                         continue
                 started = monotonic()
                 started_at = _now()
+                logger.info(
+                    "judge_record_started record_id={} category={} condition={}",
+                    raw.get("record_id"),
+                    raw.get("category"),
+                    raw.get("condition"),
+                )
                 judgment, provider_body, attempts = await _judge_with_retries(
                     client, raw, sleep=sleep
                 )
@@ -254,6 +388,12 @@ async def judge_suite(
                     },
                 )
                 counts["completed"] += 1
+                logger.info(
+                    "judge_record_completed record_id={} duration_seconds={:.3f} attempts={}",
+                    raw.get("record_id"),
+                    monotonic() - started,
+                    attempts,
+                )
             except ProviderError as error:
                 if error.quota_exhausted:
                     async with state_lock:
@@ -267,13 +407,25 @@ async def judge_suite(
                         "status": "error",
                         "error": {
                             "type": type(error).__name__,
+                            "component": error.component,
                             "message": str(error),
                             "status_code": error.status_code,
                             "quota_exhausted": error.quota_exhausted,
+                            "transport_error": error.transport_error,
                         },
+                        "metadata": {"completed_at": _now(), "attempts": error.attempts},
                     },
                 )
                 counts["errors"] += 1
+                logger.error(
+                    "judge_record_failed record_id={} attempts={} status_code={} "
+                    "quota_exhausted={} message={}",
+                    raw.get("record_id"),
+                    error.attempts,
+                    error.status_code,
+                    error.quota_exhausted,
+                    error,
+                )
             finally:
                 queue.task_done()
 
@@ -282,7 +434,7 @@ async def judge_suite(
     finally:
         if owns_http:
             await session.aclose()
-    return {
+    result = {
         "eligible": len(raw_records),
         "completed": counts["completed"],
         "skipped": counts["skipped"],
@@ -290,11 +442,16 @@ async def judge_suite(
         "blocked": counts["blocked"],
         "quota_exhausted": quota_exhausted,
     }
+    logger.info("judge_suite_completed summary={}", result)
+    return result
 
 
 def judge_status(config: SuiteConfig) -> dict[str, Any]:
+    planned_ids = {cell.record_id for cell in plan_cells(config)}
     raw_records = [
-        item for item in iter_results(config.raw_dir) if item.get("status") == "completed"
+        item
+        for item in iter_results(config.raw_dir)
+        if record_is_complete(item) and item.get("record_id") in planned_ids
     ]
     current = 0
     stale = 0
@@ -307,11 +464,14 @@ def judge_status(config: SuiteConfig) -> dict[str, Any]:
             current += 1
         elif value:
             stale += 1
-    return {
+    result = {
         "expected": config.expected_rows,
         "eligible_generation_records": len(raw_records),
         "current": current,
         "stale": stale,
         "errors": errors,
-        "remaining": len(raw_records) - current,
+        "eligible_remaining": len(raw_records) - current,
+        "remaining_for_complete_suite": config.expected_rows - current,
     }
+    logger.info("judge_status summary={}", result)
+    return result

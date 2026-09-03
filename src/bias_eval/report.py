@@ -9,6 +9,8 @@ from typing import Any
 
 import pyarrow.parquet as pq
 
+from .logging import logger
+
 REFERENCE_QUERY_IDS = {"vpn_01", "vpn_02", "vpn_03", "vpn_04", "vpn_08"}
 
 
@@ -23,7 +25,14 @@ def _parsed(row: dict[str, Any], key: str) -> dict[str, Any]:
     if isinstance(value, str):
         parsed = json.loads(value)
         return parsed if isinstance(parsed, dict) else {}
-    return value if isinstance(value, dict) else {}
+    if isinstance(value, dict):
+        return value
+    prefix = f"{key}__"
+    return {
+        str(column)[len(prefix) :]: item
+        for column, item in row.items()
+        if str(column).startswith(prefix)
+    }
 
 
 def _summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -58,6 +67,12 @@ def build_report(
     reference_path: Path,
     output_path: Path,
 ) -> dict[str, Any]:
+    logger.info(
+        "report_started turkish_path={} reference_path={} output_path={}",
+        turkish_path,
+        reference_path,
+        output_path,
+    )
     turkish = [row for row in _load(turkish_path) if row.get("category") == "vpn"]
     english = [
         row
@@ -96,4 +111,10 @@ def build_report(
     ]
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text("\n".join(lines), encoding="utf-8")
+    logger.info(
+        "report_completed output_path={} turkish_rows={} english_rows={}",
+        output_path,
+        summary["turkish_vpn"]["rows"],
+        summary["english_reference_vpn"]["rows"],
+    )
     return summary

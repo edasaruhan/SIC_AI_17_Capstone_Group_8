@@ -31,6 +31,7 @@ class ToolCall:
     id: str
     function_name: str
     arguments: dict[str, Any]
+    raw: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)

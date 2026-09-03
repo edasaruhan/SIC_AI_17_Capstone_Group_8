@@ -8,6 +8,8 @@ from typing import Any
 
 import yaml
 
+from .logging import logger
+
 
 class ConfigError(ValueError):
     """Raised when a suite file is incomplete or inconsistent."""
@@ -21,6 +23,9 @@ class ModelConfig:
     api_base: str
     api_key_env: str
     max_concurrent: int = 1
+    reasoning_effort: str | None = None
+    request_timeout_seconds: float = 120.0
+    max_attempts: int = 3
 
 
 @dataclass(frozen=True)
@@ -46,6 +51,7 @@ class JudgeConfig:
     temperature: float
     reasoning_effort: str
     max_concurrent: int
+    min_request_interval_seconds: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -108,6 +114,7 @@ def load_suite(path: str | Path = "configs/evaluation/suite.yaml") -> SuiteConfi
     """Load the suite and its referenced model, query, and judge files."""
 
     suite_path = Path(path)
+    logger.debug("config_load_started path={}", suite_path)
     data = _read_yaml(suite_path)
     config_dir = suite_path.parent
     project_root = config_dir.parent.parent
@@ -154,6 +161,13 @@ def load_suite(path: str | Path = "configs/evaluation/suite.yaml") -> SuiteConfi
         processed_dir=_resolve(project_root, str(paths["processed_dir"])),
     )
     _validate(config)
+    logger.info(
+        "config_loaded suite={} expected_rows={} models={} experiments={}",
+        config.suite_id,
+        config.expected_rows,
+        [model.model_id for model in config.models],
+        [experiment.experiment_id for experiment in config.experiments],
+    )
     return config
 
 
@@ -162,12 +176,16 @@ def _validate(config: SuiteConfig) -> None:
         raise ConfigError("conditions must be exactly search_off, search_on")
     if config.n_runs < 1 or config.max_tool_rounds < 1:
         raise ConfigError("n_runs and max_tool_rounds must be positive")
-    if len(config.models) != 4:
-        raise ConfigError("the frozen design requires exactly four generation models")
+    if len(config.models) != 3:
+        raise ConfigError("the frozen design requires exactly three generation models")
+    if any(model.request_timeout_seconds <= 0 or model.max_attempts < 1 for model in config.models):
+        raise ConfigError("model timeouts and max_attempts must be positive")
+    if config.judge.max_concurrent < 1 or config.judge.min_request_interval_seconds < 0:
+        raise ConfigError("judge concurrency must be positive and pacing interval non-negative")
     if len(config.experiments) != 2 or any(len(exp.queries) != 5 for exp in config.experiments):
         raise ConfigError("the frozen design requires two experiments with five queries each")
     ids = [q.id for exp in config.experiments for q in exp.queries]
     if len(ids) != len(set(ids)):
         raise ConfigError("query ids must be unique across the suite")
-    if config.expected_rows != 400:
-        raise ConfigError(f"frozen design must produce 400 rows, got {config.expected_rows}")
+    if config.expected_rows != 300:
+        raise ConfigError(f"frozen design must produce 300 rows, got {config.expected_rows}")

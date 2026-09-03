@@ -1,6 +1,7 @@
 # Python ve yerel ortam
 __pycache__/
 *.py[cod]
+*.egg-info/
 .pytest_cache/
 .ruff_cache/
 .coverage
@@ -9,6 +10,8 @@ __pycache__/
 .env
 .env.*
 !.env.example
+logs/**
+!logs/.gitkeep
 
 # Editör ve notebook
 .idea/
@@ -23,9 +26,11 @@ data/search_cache/**
 data/search_overrides/**
 data/interim/**
 data/processed/**
+data/superseded/**
 !data/raw/.gitkeep
 !data/judged/.gitkeep
 !data/search_cache/.gitkeep
 !data/search_overrides/.gitkeep
 !data/interim/.gitkeep
 !data/processed/.gitkeep
+!data/superseded/.gitkeep

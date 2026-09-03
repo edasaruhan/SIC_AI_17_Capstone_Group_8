@@ -54,6 +54,21 @@ Commit mesajı kısa ve görevle ilişkili olmalıdır:
 git commit -m "feat(S0-3): prepare reference dataset"
 ```
 
+### Veri seti pipeline'ı değişiklikleri
+
+Model, sorgu, prompt, koşul, tekrar sayısı, locale veya export şeması değişiklikleri
+normal kod değişikliği değildir; veri release sözleşmesini etkiler. Böyle bir PR:
+
+- yeni `suite_id` ve sürüme özel data yolları kullanmalı;
+- eski raw/judged/cache dosyalarını yeni sürüme taşımamalı;
+- plan, manifest, validation ve ilgili testleri birlikte güncellemeli;
+- gerçek API çalıştırmadan önce `make check` ve `make dataset-plan` sonuçlarını sunmalı;
+- harcama yapacak pilot/tam koşuları PR açıklamasında açıkça belirtmeli;
+
+Mimari, veri sözleşmesi ve release kontrol listesi için
+[`docs/veri-seti-gelistirici-rehberi.md`](docs/veri-seti-gelistirici-rehberi.md)
+okunmalıdır.
+
 ## 4. Pull request
 
 Dalı gönderin ve hedef dalı `main` olan bir pull request açın:
