@@ -157,8 +157,13 @@ def run_fold(
     Both halves tokenize once up front and batch by length; scores are returned
     in the caller's row order, not the order the batches ran in.
     """
-    import torch
-    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+    # Imported here, not at module scope, so the rest of the pipeline runs without
+    # the `m3` extra installed. CI does not install it, hence the ignores.
+    import torch  # pyright: ignore[reportMissingImports]
+    from transformers import (  # pyright: ignore[reportMissingImports]
+        AutoModelForSequenceClassification,
+        AutoTokenizer,
+    )
 
     torch.manual_seed(config.seed)
     device = "cuda" if torch.cuda.is_available() else "cpu"

@@ -148,8 +148,15 @@ uv run python scripts/compare_tracks.py   # VPN yan yana tablosu
 uv run python scripts/attribution.py      # SHAP + ASoV temeli
 ```
 
-M3 bir CUDA GPU'su ister; `scripts/run_m3.py --tracks tr` yalnız Türkçe hattını
-çalıştırır ve birkaç dakika sürer. Fold atamaları `data/processed/modeling/splits_*.json`
+M3 dışındaki her aşama varsayılan kurulumla çalışır. Cross-encoder için ek paketler
+ve bir CUDA GPU'su gerekir; torch ~2,4 GB olduğu için varsayılana dahil edilmemiştir:
+
+```bash
+uv sync --extra m3
+uv pip install torch --index-url https://download.pytorch.org/whl/cu124  # CUDA wheel
+```
+
+`scripts/run_m3.py --tracks tr` yalnız Türkçe hattını çalıştırır ve birkaç dakika sürer. Fold atamaları `data/processed/modeling/splits_*.json`
 altında dondurulmuş ve sürümlenmiştir — aynı bölme olmadan hiçbir skor yeniden
 üretilemez. Beş domainin marka kayıtları ve dil sözlükleri `configs/modeling/` altında
 denetlenebilir YAML olarak durur.

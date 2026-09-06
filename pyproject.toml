@@ -17,6 +17,18 @@ dependencies = [
   "scikit-learn>=1.5,<2",
 ]
 
+[project.optional-dependencies]
+# M3 only. Kept out of the default install because torch is ~2.4 GB and CI has
+# no reason to download it: the cross-encoder is the one stage that needs a GPU,
+# and its imports live inside the function that runs it.
+# For CUDA wheels install from the PyTorch index, e.g.
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cu124
+m3 = [
+  "accelerate>=1,<2",
+  "torch>=2.4,<3",
+  "transformers>=4.44,<6",
+]
+
 [project.scripts]
 bias-eval = "bias_eval.cli:main"
 
