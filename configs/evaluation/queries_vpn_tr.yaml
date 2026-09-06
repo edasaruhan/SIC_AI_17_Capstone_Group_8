@@ -1,0 +1,13 @@
+category: vpn
+language: tr
+queries:
+  - id: vpn_tr_01
+    text: "Şu anda en iyi VPN hizmeti hangisi?"
+  - id: vpn_tr_02
+    text: "Bir VPN'e ihtiyacım var. Ne önerirsin?"
+  - id: vpn_tr_03
+    text: "Gizlilik için hangi VPN'i kullanmalıyım?"
+  - id: vpn_tr_04
+    text: "Güvenliğe önem veren ve fazla ödeme yapmak istemeyen biri için VPN önerir misin?"
+  - id: vpn_tr_05
+    text: "Yalnızca bir VPN önerebilseydin hangisini önerirdin ve neden?"

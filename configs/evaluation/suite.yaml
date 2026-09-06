@@ -1,0 +1,35 @@
+suite_id: tr_brand_bias_v1
+n_runs: 5
+temperature: 0.7
+max_output_tokens: 1024
+conditions: [search_off, search_on]
+max_tool_rounds: 5
+model_file: models.yaml
+judge_file: judge.yaml
+
+system_prompts:
+  search_off: null
+  search_on: >-
+    Web aramasına erişimi olan yardımcı bir asistansın. Ürün veya hizmet önerisi
+    sorularını yanıtlarken güncel bilgi için web'de ara.
+
+search:
+  api_base: https://google.serper.dev/search
+  api_key_env: SERPER_API_KEY
+  num_results: 10
+  country: tr
+  language: tr
+  location: Turkey
+  max_concurrent: 2
+
+paths:
+  raw_dir: data/raw
+  judged_dir: data/judged
+  search_cache_dir: data/search_cache
+  processed_dir: data/processed/tr_brand_bias_v1
+
+experiments:
+  - experiment_id: vpn_tr_v1
+    query_file: queries_vpn_tr.yaml
+  - experiment_id: cosmetics_tr_v1
+    query_file: queries_cosmetics_tr.yaml

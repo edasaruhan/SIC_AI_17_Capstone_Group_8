@@ -44,6 +44,57 @@ Komut, sabitlenmiş `3RAIN/brand-bias-evaluations` sürümünün yalnızca `all`
 kümesini işler ve `data/interim/reference.parquet` dosyasını üretir. Parquet türetilmiş
 veridir ve Git'e eklenmez; ekip aynı dosyayı komutla yeniden oluşturur.
 
+## Türkçe marka yanlılığı veri seti
+
+Referansın deney ve export yapısıyla uyumlu Türkçe toplama altyapısı iki domain,
+üç model ve aramalı/aramasız iki koşul için tam 300 hücre planlar. Kod gerçek
+API çağrısı yapmadan hazırlanmış ve mock testleriyle doğrulanmıştır; veri toplama
+ancak sizin `.env` anahtarlarını ekleyip ilgili Make hedefini çalıştırmanızla başlar.
+
+Tüm Türkçe veri setini tek komutla üretmek için:
+
+```bash
+make dataset-all
+```
+
+Bu hedef preflight, eksik generation hücreleri, judge, export ve validation
+aşamalarını sırayla çalıştırır; hata durumunda durur ve yeniden çalıştırıldığında
+tamamlanmış hücreleri tekrar çağırmaz.
+
+Generation modelleri Gemini Flash Lite, MiniMax M2.7 ve GLM-5.3/Abliteration'dır.
+NVIDIA, tekrarlanan timeout ve endpoint hataları nedeniyle deneyden çıkarılmış;
+ilgili ham ve arşiv kayıtları temizlenmiştir. Tamamlanan generation sonrasında
+judge, export ve validation aşamalarını tek komutla çalıştırmak için
+`make dataset-finish` kullanılır.
+
+Boş nihai cevapla kalan GLM hücreleri `make dataset-repair-generation` ile
+onarılır. Bu hedef yalnız eksik GLM hücrelerinde Abliteration düşünmesini kapatır;
+tamamlanmış kayıtları ve diğer generation sağlayıcılarını yeniden çağırmaz.
+
+Her CLI komutu, ekrandaki kısa durum mesajlarının yanında ayrıntılı ve dönen bir
+`logs/bias-eval.log` dosyası üretir. Son logları `make dataset-logs`, canlı akışı
+ayrı bir terminalden `make dataset-follow-logs` ile izleyebilirsiniz. Anahtarlar ve
+Authorization değerleri log yazılmadan önce maskelenir.
+
+```bash
+make dataset-plan
+make dataset-preflight
+make dataset-pilot
+make dataset-status
+make dataset-collect
+make dataset-judge
+make dataset-judge-status
+make dataset-export
+make dataset-validate
+make reference-data
+make dataset-report
+```
+
+Kurulum, kota güvenliği, resume davranışı, dosya şemaları ve hata giderme adımları
+için [Türkçe veri seti runbook'una](docs/turkce-veri-seti-runbook.md) bakın.
+Pipeline'ı değiştirecek ekip üyeleri önce
+[veri seti geliştirici rehberini](docs/veri-seti-gelistirici-rehberi.md) okumalıdır.
+
 İki referans bulguyu yeniden üretip notebook'u çalıştırmak için:
 
 ```bash

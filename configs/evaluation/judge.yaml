@@ -1,0 +1,8 @@
+model_id: gpt-oss-120b
+provider: cerebras
+api_base: https://api.cerebras.ai/v1
+api_key_env: CEREBRAS_API_KEY
+temperature: 0.0
+reasoning_effort: low
+max_concurrent: 1
+min_request_interval_seconds: 20.0

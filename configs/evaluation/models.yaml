@@ -1,0 +1,19 @@
+models:
+  gemini_3_5_flash_lite:
+    model_id: gemini-3.5-flash-lite
+    provider: google
+    api_base: https://generativelanguage.googleapis.com/v1beta/openai
+    api_key_env: GEMINI_API_KEY
+    max_concurrent: 1
+  minimax_m2_7:
+    model_id: MiniMax-M2.7
+    provider: minimax
+    api_base: https://api.minimax.io/v1
+    api_key_env: MINIMAX_API_KEY
+    max_concurrent: 1
+  glm_5_3_abliteration:
+    model_id: abliterated-model-large-v2
+    provider: abliteration
+    api_base: https://api.abliteration.ai/v1
+    api_key_env: ABLITERATION_API_KEY
+    max_concurrent: 1
