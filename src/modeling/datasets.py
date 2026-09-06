@@ -149,6 +149,13 @@ def _load_turkish() -> pd.DataFrame:
     return out
 
 
+def _name(value: Any) -> str | None:
+    """A judge field is either a brand name or nothing; NaN counts as nothing."""
+    if value is None or (isinstance(value, float) and value != value):
+        return None
+    return str(value)
+
+
 def _canonicalize(frame: pd.DataFrame) -> pd.DataFrame:
     mentioned: list[list[str]] = []
     top: list[str | None] = []
@@ -156,13 +163,13 @@ def _canonicalize(frame: pd.DataFrame) -> pd.DataFrame:
     for _, row in frame.iterrows():
         registry = load_registry(str(row["category"]))
         mentioned.append(registry.resolve_all(row["raw_mentions"]))
-        top.append(registry.resolve(row["raw_top"]))
-        first.append(registry.resolve(row["raw_first"]))
+        top.append(registry.resolve(_name(row["raw_top"])))
+        first.append(registry.resolve(_name(row["raw_first"])))
     frame = frame.copy()
     frame["brands_mentioned"] = mentioned
     frame["top_recommendation"] = top
     frame["first_mentioned_brand"] = first
-    return frame[RESPONSE_COLUMNS]
+    return pd.DataFrame({name: frame[name] for name in RESPONSE_COLUMNS})
 
 
 def load_track(name: str) -> Track:

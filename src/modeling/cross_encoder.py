@@ -28,6 +28,8 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
+from .features import select
+
 DEFAULT_MODELS = {
     "en": "bert-base-uncased",
     "tr": "dbmdz/bert-base-turkish-cased",
@@ -69,7 +71,7 @@ def build_inputs(
     """
     merged = pair_rows.merge(snippets, on=["record_id", "brand"], how="left", validate="1:1")
     unmatched = merged["query_text"].isna()
-    if unmatched.any():
+    if bool(unmatched.any()):
         # A scored pair with no snippet row means the two sides disagree about the
         # candidate universe, which would silently feed NaN text to the tokenizer.
         missing = merged.loc[unmatched, ["record_id", "brand"]].head(5).to_dict("records")
@@ -191,7 +193,9 @@ def run_fold(
     rng = np.random.default_rng(config.seed)
 
     optimiser = torch.optim.AdamW(model.parameters(), lr=config.learning_rate)
-    scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
+    # torch's stubs do not re-export the amp helpers, so the type checker calls
+    # them private even though this is the documented public entry point.
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp)  # pyright: ignore[reportPrivateImportUsage]
 
     model.train()
     for _ in range(config.epochs):
@@ -199,7 +203,7 @@ def run_fold(
             batch = as_batch([train_ids[index] for index in indices])
             batch["labels"] = torch.tensor(train_labels[indices], dtype=torch.long, device=device)
             optimiser.zero_grad(set_to_none=True)
-            with torch.amp.autocast("cuda", enabled=use_amp):
+            with torch.amp.autocast("cuda", enabled=use_amp):  # pyright: ignore[reportPrivateImportUsage]
                 loss = model(**batch).loss
             scaler.scale(loss).backward()
             scaler.step(optimiser)
@@ -212,7 +216,7 @@ def run_fold(
     with torch.no_grad():
         for indices in length_grouped_batches(test_lengths, config.eval_batch_size):
             batch = as_batch([test_ids[index] for index in indices])
-            with torch.amp.autocast("cuda", enabled=use_amp):
+            with torch.amp.autocast("cuda", enabled=use_amp):  # pyright: ignore[reportPrivateImportUsage]
                 logits = model(**batch).logits
             # Scatter back to the caller's order; the batches ran sorted by length.
             scores[indices] = torch.softmax(logits.float(), dim=-1)[:, 1].cpu().numpy()
@@ -231,11 +235,12 @@ def run_variant(
 ) -> pd.DataFrame:
     """Out-of-fold scores for one masking variant, on the M0-M2 folds."""
     frame = frame.copy()
-    frame["fold"] = frame["query_id"].map(fold_by_query)
+    folds = [fold_by_query[str(query)] for query in frame["query_id"]]
+    frame["fold"] = folds
     frame["score_M3"] = np.nan
-    for fold in sorted(frame["fold"].unique()):
-        train_rows = frame[frame["fold"] != fold]
-        test_rows = frame[frame["fold"] == fold]
+    for fold in sorted(set(folds)):
+        train_rows = select(frame, frame["fold"] != fold)
+        test_rows = select(frame, frame["fold"] == fold)
         sampled = sample_negatives(
             train_rows,
             target,

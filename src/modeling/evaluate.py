@@ -51,8 +51,8 @@ def top1_accuracy(frame: pd.DataFrame, score: str, label: str) -> float:
     single-mention responses that would otherwise be reported as a headline
     accuracy; those cases return NaN instead.
     """
-    positives = frame.groupby("record_id", sort=False)[label].sum()
-    if positives.empty or (positives == 1).mean() < 0.5:
+    positives = frame.groupby("record_id", sort=False)[label].sum().to_numpy()
+    if len(positives) == 0 or float(np.mean(positives == 1)) < 0.5:
         return float("nan")
     hits, total = _top1_counts(frame, score, label)
     return hits / total if total else float("nan")

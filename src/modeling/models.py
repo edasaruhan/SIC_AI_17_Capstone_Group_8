@@ -33,6 +33,7 @@ from .features import (
     STRUCTURAL_FEATURES,
     add_priors,
     finalise,
+    select,
 )
 
 MODEL_BLOCKS = {
@@ -75,7 +76,7 @@ def _boosted(seed: int) -> LGBMClassifier:
 
 
 def _design(frame: pd.DataFrame, columns: list[str], *, categorical: bool) -> pd.DataFrame:
-    design = frame[columns].astype(float).copy()
+    design = pd.DataFrame({name: frame[name].astype(float) for name in columns})
     if categorical:
         for name in CATEGORICAL_FEATURES:
             design[name] = frame[name].astype("category")
@@ -96,20 +97,29 @@ def run_family(
     """
     frame = pairs.copy()
     if target == "y_top":
-        frame = frame[frame["response_decided"] == 1].copy()
-    frame["fold"] = frame["query_id"].map(fold_by_query)
-    if frame["fold"].isna().any():
-        missing = sorted(frame.loc[frame["fold"].isna(), "query_id"].unique())
+        frame = select(frame, frame["response_decided"] == 1).copy()
+
+    # A sentinel beats NaN here: an unmapped query is a broken split, not a
+    # missing measurement, and it has to stop the run rather than train quietly.
+    unmapped = -1
+    folds = [fold_by_query.get(str(query), unmapped) for query in frame["query_id"]]
+    frame["fold"] = folds
+    if unmapped in folds:
+        missing = sorted({
+            str(query)
+            for query, fold in zip(frame["query_id"], folds, strict=True)
+            if fold == unmapped
+        })
         raise ValueError(f"Queries missing from the frozen split: {missing}")
 
     for name in (*BASELINES, *MODEL_BLOCKS):
         frame[f"score_{name}"] = np.nan
 
-    for fold in sorted(frame["fold"].unique()):
+    for fold in sorted(set(folds)):
         train_mask = frame["fold"] != fold
         test_mask = ~train_mask
         prepared = finalise(add_priors(frame, train_mask))
-        train, test = prepared[train_mask], prepared[test_mask]
+        train, test = select(prepared, train_mask), select(prepared, test_mask)
 
         # Baseline 1: the brand carried by the highest-ranked retrieved result.
         frame.loc[test_mask, "score_naive_position"] = (
@@ -132,7 +142,8 @@ def run_family(
                     categories = x_train[column].cat.categories
                     x_test[column] = pd.Categorical(x_test[column], categories=categories)
             estimator.fit(x_train, y_train)
-            frame.loc[test_mask, f"score_{name}"] = estimator.predict_proba(x_test)[:, 1]
+            probabilities = np.asarray(estimator.predict_proba(x_test))
+            frame.loc[test_mask, f"score_{name}"] = probabilities[:, 1]
 
     return frame
 
@@ -141,7 +152,7 @@ def fit_production(pairs: pd.DataFrame, *, target: str = "y_top", seed: int = 42
     """Refit M2 on every row, for SHAP and for the report interface."""
     frame = pairs.copy()
     if target == "y_top":
-        frame = frame[frame["response_decided"] == 1].copy()
+        frame = select(frame, frame["response_decided"] == 1).copy()
     prepared = finalise(add_priors(frame, pd.Series(True, index=frame.index)))
     columns = MODEL_BLOCKS["M2"]
     design = _design(prepared, columns, categorical=True)

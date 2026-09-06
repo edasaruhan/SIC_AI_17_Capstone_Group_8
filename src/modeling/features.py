@@ -21,6 +21,7 @@ import re
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
+from typing import cast
 
 import numpy as np
 import pandas as pd
@@ -28,6 +29,16 @@ import yaml
 
 LEXICON_DIR = Path("configs/modeling/lexicons")
 PRIOR_SMOOTHING = 10.0
+
+
+def select(frame: pd.DataFrame, mask: pd.Series) -> pd.DataFrame:
+    """Boolean row selection that keeps its DataFrame type.
+
+    Plain ``frame[mask]`` is typed as a DataFrame/Series union, which then leaks
+    through every later call. Narrowing once here keeps the rest of the pipeline
+    readable instead of casting at each use.
+    """
+    return cast(pd.DataFrame, frame[mask])
 
 # Features the model is allowed to see. Anything absent here is either a label,
 # an identifier, or derived from the answer being predicted.
@@ -131,7 +142,12 @@ def snippet_features(texts: list[str], normalised: list[str], lexicon: Lexicon) 
     }
 
 
-def _smoothed_rate(hits: pd.Series, total: pd.Series, base: float) -> pd.Series:
+def _smoothed_rate(hits: float, total: float, base: float) -> float:
+    """Additive smoothing toward the category base rate.
+
+    A brand seen twice in training should not get a prior of 1.0 because both
+    of those responses happened to pick it.
+    """
     return (hits + PRIOR_SMOOTHING * base) / (total + PRIOR_SMOOTHING)
 
 
@@ -142,29 +158,44 @@ def add_priors(pairs: pd.DataFrame, train_mask: pd.Series) -> pd.DataFrame:
     direct measure of what the model believes without being shown anything --
     the recognition signal M0 isolates. ``*_all`` priors pool both conditions.
     """
-    train = pairs[train_mask]
+    train = select(pairs, train_mask)
     out = pairs.copy()
 
-    for suffix, subset in (("off", train[train["condition"] == "search_off"]), ("all", train)):
-        decided = subset[subset["response_decided"] == 1]
+    off = select(train, train["condition"] == "search_off")
+    for suffix, subset in (("off", off), ("all", train)):
+        decided = select(subset, subset["response_decided"] == 1)
         for target, source in (("top", decided), ("mention", subset)):
             column = f"prior_{target}_{suffix}"
             label = "y_top" if target == "top" else "y_mention"
             if len(source) == 0:
                 out[column] = 0.0
                 continue
-            base_by_category = source.groupby("category")[label].mean()
-            grouped = source.groupby(["category", "brand"])[label].agg(["sum", "size"])
-            rates = {}
-            for (category, brand), row in grouped.iterrows():
-                base = float(base_by_category.get(category, 0.0))
-                rates[(category, brand)] = float(
-                    _smoothed_rate(pd.Series([row["sum"]]), pd.Series([row["size"]]), base).iloc[0]
+            base_by_category = {
+                str(category): float(value)
+                for category, value in source.groupby("category")[label].mean().items()
+            }
+            grouped = (
+                source.groupby(["category", "brand"])[label]
+                .agg(hits="sum", total="size")
+                .reset_index()
+            )
+            rates = {
+                (str(category), str(brand)): _smoothed_rate(
+                    float(hits), float(total), base_by_category.get(str(category), 0.0)
                 )
-            index = list(zip(out["category"], out["brand"], strict=True))
-            fallback = out["category"].map(base_by_category).fillna(0.0)
-            out[column] = [rates.get(key, np.nan) for key in index]
-            out[column] = out[column].fillna(fallback).astype(float)
+                for category, brand, hits, total in zip(
+                    grouped["category"],
+                    grouped["brand"],
+                    grouped["hits"],
+                    grouped["total"],
+                    strict=True,
+                )
+            }
+            values = [
+                rates.get((str(category), str(brand)), base_by_category.get(str(category), 0.0))
+                for category, brand in zip(out["category"], out["brand"], strict=True)
+            ]
+            out[column] = np.asarray(values, dtype=float)
     return out
 
 
