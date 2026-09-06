@@ -105,6 +105,55 @@ Notebook araçları bu komutta geçici olarak kurulur; kalıcı proje bağımlı
 eklenmez. Çalıştırılmış analiz `notebooks/S0-4-reference-validation.ipynb`, kısa sonuç
 özeti ise `reports/referans_dogrulama.md` altında tutulur.
 
+## Modelleme ve bulgular
+
+`src/modeling/` altındaki paket, İngilizce referans ile Türkçe veri setini **aynı
+kodla iki kez** işler; hiçbir yerde dile özel ayrı bir hat yoktur. İki korpus 282.450
+(yanıt, aday marka) çiftine açılır ve iki hedef modellenir: markanın yanıtta anılması
+(satır düzeyinde AI Share of Voice) ve markanın tek birincil öneri olması.
+
+Model ailesi kümülatiftir, çünkü anlamlı olan tek bir skor değil aralarındaki farktır:
+iki naive temel → **M0** yalnız marka prior'ı → **M1** + arama konumu ve kaynak tipi →
+**M2** + snippet dil özellikleri (LightGBM, SHAP ile öneri üretir) → **M3** cross-encoder
+(BERTurk / BERT, maskeleme ablation'ı için).
+
+**Üç bulgu.**
+
+1. **Arama, öneriyi değiştiriyor.** Web araması açıldığında mahremiyet itibarıyla
+   tanınan markalar görünürlük kaybediyor, ticari pazarlama yapanlar kazanıyor:
+   NordVPN Türkçe'de +30,7 / İngilizce'de +25,9 puan, Mullvad Türkçe'de −24,0.
+   Kozmetikte de aynı yapı (L'Oréal Paris +18,7, CeraVe −17,3). Örüntü iki dil ve
+   iki sektörde, farklı modellerle tekrarlanıyor.
+2. **Tahmin modeli temelleri aşıyor.** İngilizce VPN'de M2, "en sık kazananı söyle"
+   temelini +0,27 PR-AUC geçiyor (0,801 vs 0,535) ve top-1 doğruluğu %64,1'den
+   %72,4'e çıkıyor. Görünürlük hedefinde M2 altı domain-dil kombinasyonunun dördünde
+   kazanıyor.
+3. **Tanınırlık ve içerik ayrıştırıldı.** Snippet'lerdeki her marka adı `[BRAND]` ile
+   değiştirildiğinde İngilizce'de PR-AUC yarıya iniyor (0,714 → 0,362, üç seed'de de
+   aynı yönde). Kararın kabaca yarısı içeriğin ne dediğinden değil, hangi markanın adı
+   olduğundan geliyor. Türkçe'de aynı ölçüm 57 karara bağlanmış yanıtla yapılamıyor.
+
+Ayrıntılı yöntem, beş domainin tamamındaki sonuç tabloları, SHAP atfı, sınırlılıklar
+ve sızıntı önlemleri için [Sprint 2 raporuna](reports/sprint-2/Sprint2_Modelleme_Raporu.pdf)
+bakın. Rakamların ham hâli `reports/modeling/` altındaki CSV'lerde.
+
+Sırayla çalıştırmak için:
+
+```bash
+make reference-data
+uv run python scripts/run_family.py       # pair'ler, fold'lar, M0-M2, iki hedef
+uv run python scripts/score_tables.py     # metrik tabloları, yeniden eğitmeden
+uv run python scripts/run_m3.py           # M3 + maskeleme ablation'ı
+uv run python scripts/compare_tracks.py   # VPN yan yana tablosu
+uv run python scripts/attribution.py      # SHAP + ASoV temeli
+```
+
+M3 bir CUDA GPU'su ister; `scripts/run_m3.py --tracks tr` yalnız Türkçe hattını
+çalıştırır ve birkaç dakika sürer. Fold atamaları `data/processed/modeling/splits_*.json`
+altında dondurulmuş ve sürümlenmiştir — aynı bölme olmadan hiçbir skor yeniden
+üretilemez. Beş domainin marka kayıtları ve dil sözlükleri `configs/modeling/` altında
+denetlenebilir YAML olarak durur.
+
 ## Klasörler
 
 ```text

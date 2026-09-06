@@ -1,0 +1,24 @@
+{
+  "folds_by_category": {
+    "cosmetics": {
+      "cosmetics_tr_01": 4,
+      "cosmetics_tr_02": 1,
+      "cosmetics_tr_03": 2,
+      "cosmetics_tr_04": 0,
+      "cosmetics_tr_05": 3
+    },
+    "vpn": {
+      "vpn_tr_01": 2,
+      "vpn_tr_02": 4,
+      "vpn_tr_03": 1,
+      "vpn_tr_04": 0,
+      "vpn_tr_05": 3
+    }
+  },
+  "grouping": "query_id",
+  "n_splits": 5,
+  "queries": 10,
+  "responses": 300,
+  "seed": 42,
+  "track": "tr"
+}

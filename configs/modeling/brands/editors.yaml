@@ -1,0 +1,42 @@
+# Code editor / IDE registry. English track only.
+# "VS Code" and "Visual Studio" are different products and are kept separate;
+# the reference loader already folds "Visual Studio Code" into "VS Code".
+category: editors
+canonical:
+  VS Code: [vs code, visual studio code, vscode]
+  Neovim: [neovim, nvim]
+  PyCharm: [pycharm]
+  Sublime Text: [sublime text, sublime]
+  JetBrains: [jetbrains]
+  Vim: [vim]
+  Zed: [zed]
+  WebStorm: [webstorm]
+  IntelliJ IDEA: [intellij idea, intellij]
+  Cursor: [cursor]
+  Visual Studio: [visual studio]
+  Emacs: [emacs, gnu emacs]
+  GitHub Copilot: [github copilot, copilot]
+  Notepad++: [notepad++, notepad plus plus]
+  Xcode: [xcode]
+  Thonny: [thonny]
+  Rider: [rider]
+  CLion: [clion]
+  GoLand: [goland]
+  Android Studio: [android studio]
+  Eclipse: [eclipse]
+  Helix: [helix]
+  JupyterLab: [jupyterlab, jupyter lab]
+  Spyder: [spyder]
+  Kate: [kate]
+  Windsurf: [windsurf]
+  Nova: [nova]
+  BBEdit: [bbedit]
+  IDLE: [idle]
+  Atom: [atom]
+exclude:
+  vendors: [microsoft, google, apple, jetbrains s.r.o., anthropic, openai]
+  platforms: [github, gitlab, stack overflow, reddit, hacker news]
+  languages_and_runtimes: [python, javascript, typescript, rust, go, java, c++,
+    node.js, nodejs]
+  os_and_tools: [linux, ubuntu, windows, macos, wsl, tmux, git, docker]
+  agentic_umbrella: [agentic editors, ai editors]

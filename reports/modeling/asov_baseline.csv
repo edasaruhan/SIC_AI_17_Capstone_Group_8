@@ -1,0 +1,380 @@
+track,category,condition,brand,responses,mentions,asov,wins,win_rate
+en,editors,search_off,VS Code,1200,1169,0.9741666666666666,975,0.8125
+en,editors,search_off,JetBrains,1200,725,0.6041666666666666,0,0.0
+en,editors,search_off,IntelliJ IDEA,1200,780,0.65,0,0.0
+en,editors,search_off,PyCharm,1200,793,0.6608333333333334,19,0.015833333333333335
+en,editors,search_off,Visual Studio,1200,304,0.25333333333333335,0,0.0
+en,editors,search_off,Vim,1200,677,0.5641666666666667,0,0.0
+en,editors,search_off,Neovim,1200,980,0.8166666666666667,13,0.010833333333333334
+en,editors,search_off,Emacs,1200,390,0.325,0,0.0
+en,editors,search_off,Sublime Text,1200,749,0.6241666666666666,13,0.010833333333333334
+en,editors,search_off,Zed,1200,492,0.41,5,0.004166666666666667
+en,editors,search_off,Helix,1200,141,0.1175,0,0.0
+en,editors,search_off,Notepad++,1200,117,0.0975,0,0.0
+en,editors,search_off,Xcode,1200,199,0.16583333333333333,0,0.0
+en,editors,search_off,WebStorm,1200,436,0.36333333333333334,0,0.0
+en,editors,search_off,Atom,1200,78,0.065,0,0.0
+en,editors,search_off,Cursor,1200,245,0.20416666666666666,18,0.015
+en,editors,search_off,JupyterLab,1200,99,0.0825,0,0.0
+en,editors,search_off,Spyder,1200,66,0.055,0,0.0
+en,editors,search_off,Thonny,1200,166,0.13833333333333334,0,0.0
+en,editors,search_off,Android Studio,1200,120,0.1,0,0.0
+en,editors,search_off,GitHub Copilot,1200,167,0.13916666666666666,0,0.0
+en,editors,search_off,Rider,1200,143,0.11916666666666667,0,0.0
+en,editors,search_off,Eclipse,1200,89,0.07416666666666667,0,0.0
+en,editors,search_off,GoLand,1200,77,0.06416666666666666,0,0.0
+en,editors,search_off,Kate,1200,38,0.03166666666666667,0,0.0
+en,editors,search_off,CLion,1200,126,0.105,0,0.0
+en,editors,search_off,Nova,1200,33,0.0275,0,0.0
+en,editors,search_off,BBEdit,1200,6,0.005,0,0.0
+en,editors,search_off,Windsurf,1200,27,0.0225,0,0.0
+en,editors,search_off,IDLE,1200,1,0.0008333333333333334,0,0.0
+en,editors,search_on,VS Code,1200,1197,0.9975,970,0.8083333333333333
+en,editors,search_on,Sublime Text,1200,747,0.6225,35,0.029166666666666667
+en,editors,search_on,Vim,1200,575,0.4791666666666667,0,0.0
+en,editors,search_on,Neovim,1200,905,0.7541666666666667,5,0.004166666666666667
+en,editors,search_on,Zed,1200,625,0.5208333333333334,7,0.005833333333333334
+en,editors,search_on,Notepad++,1200,334,0.2783333333333333,0,0.0
+en,editors,search_on,Cursor,1200,382,0.31833333333333336,25,0.020833333333333332
+en,editors,search_on,GitHub Copilot,1200,402,0.335,0,0.0
+en,editors,search_on,JetBrains,1200,737,0.6141666666666666,0,0.0
+en,editors,search_on,PyCharm,1200,701,0.5841666666666666,45,0.0375
+en,editors,search_on,IntelliJ IDEA,1200,682,0.5683333333333334,0,0.0
+en,editors,search_on,WebStorm,1200,408,0.34,0,0.0
+en,editors,search_on,Emacs,1200,133,0.11083333333333334,0,0.0
+en,editors,search_on,Atom,1200,52,0.043333333333333335,0,0.0
+en,editors,search_on,Windsurf,1200,123,0.1025,0,0.0
+en,editors,search_on,JupyterLab,1200,73,0.060833333333333336,0,0.0
+en,editors,search_on,Spyder,1200,99,0.0825,0,0.0
+en,editors,search_on,Thonny,1200,122,0.10166666666666667,0,0.0
+en,editors,search_on,IDLE,1200,34,0.028333333333333332,0,0.0
+en,editors,search_on,Eclipse,1200,106,0.08833333333333333,0,0.0
+en,editors,search_on,Visual Studio,1200,276,0.23,0,0.0
+en,editors,search_on,CLion,1200,93,0.0775,0,0.0
+en,editors,search_on,GoLand,1200,101,0.08416666666666667,0,0.0
+en,editors,search_on,Rider,1200,100,0.08333333333333333,0,0.0
+en,editors,search_on,Xcode,1200,113,0.09416666666666666,0,0.0
+en,editors,search_on,Android Studio,1200,88,0.07333333333333333,0,0.0
+en,editors,search_on,Helix,1200,44,0.03666666666666667,0,0.0
+en,editors,search_on,Nova,1200,11,0.009166666666666667,0,0.0
+en,editors,search_on,Kate,1200,2,0.0016666666666666668,0,0.0
+en,editors,search_on,BBEdit,1200,8,0.006666666666666667,0,0.0
+en,hosting,search_off,Vercel,1200,787,0.6558333333333334,126,0.105
+en,hosting,search_off,Netlify,1200,585,0.4875,2,0.0016666666666666668
+en,hosting,search_off,Railway,1200,809,0.6741666666666667,37,0.030833333333333334
+en,hosting,search_off,Render,1200,843,0.7025,213,0.1775
+en,hosting,search_off,Fly.io,1200,673,0.5608333333333333,0,0.0
+en,hosting,search_off,AWS,1200,791,0.6591666666666667,21,0.0175
+en,hosting,search_off,Google Cloud,1200,705,0.5875,4,0.0033333333333333335
+en,hosting,search_off,Azure,1200,509,0.4241666666666667,0,0.0
+en,hosting,search_off,DigitalOcean,1200,719,0.5991666666666666,56,0.04666666666666667
+en,hosting,search_off,Linode,1200,366,0.305,0,0.0
+en,hosting,search_off,Hetzner,1200,410,0.3416666666666667,18,0.015
+en,hosting,search_off,Firebase,1200,80,0.06666666666666667,0,0.0
+en,hosting,search_off,Heroku,1200,346,0.28833333333333333,1,0.0008333333333333334
+en,hosting,search_off,Supabase,1200,254,0.21166666666666667,0,0.0
+en,hosting,search_off,Oracle Cloud,1200,161,0.13416666666666666,11,0.009166666666666667
+en,hosting,search_off,GitHub Pages,1200,109,0.09083333333333334,0,0.0
+en,hosting,search_off,Vultr,1200,215,0.17916666666666667,0,0.0
+en,hosting,search_off,Cloudflare Pages,1200,346,0.28833333333333333,1,0.0008333333333333334
+en,hosting,search_off,Cloudflare Workers,1200,89,0.07416666666666667,1,0.0008333333333333334
+en,hosting,search_off,Coolify,1200,44,0.03666666666666667,0,0.0
+en,hosting,search_off,Deno Deploy,1200,6,0.005,0,0.0
+en,hosting,search_off,Kinsta,1200,216,0.18,5,0.004166666666666667
+en,hosting,search_off,SiteGround,1200,216,0.18,72,0.06
+en,hosting,search_off,Squarespace,1200,161,0.13416666666666666,3,0.0025
+en,hosting,search_off,Wix,1200,126,0.105,0,0.0
+en,hosting,search_off,WP Engine,1200,169,0.14083333333333334,0,0.0
+en,hosting,search_off,Bluehost,1200,116,0.09666666666666666,0,0.0
+en,hosting,search_off,A2 Hosting,1200,81,0.0675,0,0.0
+en,hosting,search_off,Hostinger,1200,84,0.07,0,0.0
+en,hosting,search_off,Cloudways,1200,173,0.14416666666666667,3,0.0025
+en,hosting,search_off,Rocket.net,1200,17,0.014166666666666666,1,0.0008333333333333334
+en,hosting,search_off,DreamHost,1200,24,0.02,0,0.0
+en,hosting,search_off,Namecheap,1200,13,0.010833333333333334,0,0.0
+en,hosting,search_off,Replit,1200,16,0.013333333333333334,1,0.0008333333333333334
+en,hosting,search_off,GoDaddy,1200,42,0.035,0,0.0
+en,hosting,search_on,Vercel,1198,633,0.5283806343906511,166,0.13856427378964942
+en,hosting,search_on,Netlify,1198,509,0.4248747913188648,10,0.008347245409015025
+en,hosting,search_on,Railway,1198,617,0.5150250417362271,20,0.01669449081803005
+en,hosting,search_on,Render,1198,717,0.5984974958263773,225,0.18781302170283806
+en,hosting,search_on,Heroku,1198,280,0.2337228714524207,4,0.00333889816360601
+en,hosting,search_on,DigitalOcean,1198,572,0.4774624373956594,64,0.05342237061769616
+en,hosting,search_on,Hetzner,1198,298,0.24874791318864775,10,0.008347245409015025
+en,hosting,search_on,Vultr,1198,143,0.11936560934891485,0,0.0
+en,hosting,search_on,AWS,1198,637,0.5317195325542571,5,0.004173622704507512
+en,hosting,search_on,Google Cloud,1198,571,0.4766277128547579,6,0.005008347245409015
+en,hosting,search_on,Azure,1198,396,0.330550918196995,0,0.0
+en,hosting,search_on,Fly.io,1198,490,0.4090150250417362,1,0.0008347245409015025
+en,hosting,search_on,Hostinger,1198,352,0.2938230383973289,104,0.08681135225375626
+en,hosting,search_on,SiteGround,1198,318,0.2654424040066778,58,0.048414023372287146
+en,hosting,search_on,Linode,1198,110,0.09181969949916527,0,0.0
+en,hosting,search_on,Firebase,1198,106,0.08848080133555926,0,0.0
+en,hosting,search_on,Cloudways,1198,186,0.15525876460767946,1,0.0008347245409015025
+en,hosting,search_on,Cloudflare Pages,1198,359,0.2996661101836394,3,0.0025041736227045075
+en,hosting,search_on,Cloudflare Workers,1198,94,0.07846410684474124,0,0.0
+en,hosting,search_on,Oracle Cloud,1198,166,0.13856427378964942,44,0.03672787979966611
+en,hosting,search_on,GitHub Pages,1198,185,0.15442404006677796,0,0.0
+en,hosting,search_on,Bluehost,1198,191,0.15943238731218698,1,0.0008347245409015025
+en,hosting,search_on,DreamHost,1198,188,0.15692821368948248,0,0.0
+en,hosting,search_on,Supabase,1198,156,0.1302170283806344,0,0.0
+en,hosting,search_on,Namecheap,1198,40,0.0333889816360601,0,0.0
+en,hosting,search_on,Koyeb,1198,1,0.0008347245409015025,0,0.0
+en,hosting,search_on,Coolify,1198,47,0.03923205342237062,0,0.0
+en,hosting,search_on,Replit,1198,10,0.008347245409015025,0,0.0
+en,hosting,search_on,Deno Deploy,1198,1,0.0008347245409015025,0,0.0
+en,hosting,search_on,Kinsta,1198,180,0.15025041736227046,12,0.01001669449081803
+en,hosting,search_on,WP Engine,1198,122,0.1018363939899833,0,0.0
+en,hosting,search_on,Squarespace,1198,116,0.09682804674457429,1,0.0008347245409015025
+en,hosting,search_on,Wix,1198,113,0.09432387312186978,0,0.0
+en,hosting,search_on,A2 Hosting,1198,29,0.024207011686143573,0,0.0
+en,hosting,search_on,GoDaddy,1198,11,0.009181969949916527,0,0.0
+en,hosting,search_on,Rocket.net,1198,2,0.001669449081803005,0,0.0
+en,travel,search_off,Google Flights,1200,1030,0.8583333333333333,545,0.45416666666666666
+en,travel,search_off,Skyscanner,1200,1025,0.8541666666666666,4,0.0033333333333333335
+en,travel,search_off,Kayak,1200,954,0.795,26,0.021666666666666667
+en,travel,search_off,Momondo,1200,575,0.4791666666666667,0,0.0
+en,travel,search_off,Kiwi.com,1200,110,0.09166666666666666,0,0.0
+en,travel,search_off,Secret Flying,1200,246,0.205,0,0.0
+en,travel,search_off,The Flight Deal,1200,125,0.10416666666666667,0,0.0
+en,travel,search_off,Going,1200,288,0.24,0,0.0
+en,travel,search_off,Hopper,1200,545,0.45416666666666666,0,0.0
+en,travel,search_off,The Points Guy,1200,56,0.04666666666666667,0,0.0
+en,travel,search_off,Expedia,1200,373,0.31083333333333335,0,0.0
+en,travel,search_off,Travelocity,1200,7,0.005833333333333334,0,0.0
+en,travel,search_off,Priceline,1200,171,0.1425,0,0.0
+en,travel,search_off,Orbitz,1200,42,0.035,0,0.0
+en,travel,search_off,ITA Matrix,1200,119,0.09916666666666667,0,0.0
+en,travel,search_off,Skiplagged,1200,137,0.11416666666666667,0,0.0
+en,travel,search_off,Google Hotels,1200,186,0.155,88,0.07333333333333333
+en,travel,search_off,Trivago,1200,140,0.11666666666666667,9,0.0075
+en,travel,search_off,HotelsCombined,1200,67,0.05583333333333333,0,0.0
+en,travel,search_off,Booking.com,1200,328,0.2733333333333333,0,0.0
+en,travel,search_off,Hotels.com,1200,186,0.155,0,0.0
+en,travel,search_off,HotelTonight,1200,172,0.14333333333333334,0,0.0
+en,travel,search_off,Hotwire,1200,80,0.06666666666666667,0,0.0
+en,travel,search_off,Airbnb,1200,82,0.06833333333333333,0,0.0
+en,travel,search_off,Vrbo,1200,37,0.030833333333333334,0,0.0
+en,travel,search_off,Agoda,1200,99,0.0825,0,0.0
+en,travel,search_off,Rome2Rio,1200,3,0.0025,0,0.0
+en,travel,search_on,Google Flights,1200,1073,0.8941666666666667,581,0.4841666666666667
+en,travel,search_on,Skyscanner,1200,1070,0.8916666666666667,46,0.03833333333333333
+en,travel,search_on,Kayak,1200,1124,0.9366666666666666,40,0.03333333333333333
+en,travel,search_on,Hotwire,1200,171,0.1425,0,0.0
+en,travel,search_on,Momondo,1200,495,0.4125,23,0.019166666666666665
+en,travel,search_on,Secret Flying,1200,146,0.12166666666666667,0,0.0
+en,travel,search_on,Going,1200,419,0.3491666666666667,1,0.0008333333333333334
+en,travel,search_on,The Points Guy,1200,121,0.10083333333333333,0,0.0
+en,travel,search_on,Skiplagged,1200,72,0.06,0,0.0
+en,travel,search_on,Expedia,1200,441,0.3675,0,0.0
+en,travel,search_on,Travelocity,1200,164,0.13666666666666666,0,0.0
+en,travel,search_on,Orbitz,1200,86,0.07166666666666667,0,0.0
+en,travel,search_on,Booking.com,1200,365,0.30416666666666664,1,0.0008333333333333334
+en,travel,search_on,Hopper,1200,531,0.4425,0,0.0
+en,travel,search_on,Kiwi.com,1200,137,0.11416666666666667,0,0.0
+en,travel,search_on,ITA Matrix,1200,83,0.06916666666666667,0,0.0
+en,travel,search_on,Google Hotels,1200,154,0.12833333333333333,63,0.0525
+en,travel,search_on,Trivago,1200,162,0.135,10,0.008333333333333333
+en,travel,search_on,HotelTonight,1200,207,0.1725,1,0.0008333333333333334
+en,travel,search_on,Hotels.com,1200,174,0.145,0,0.0
+en,travel,search_on,Agoda,1200,20,0.016666666666666666,0,0.0
+en,travel,search_on,Priceline,1200,213,0.1775,0,0.0
+en,travel,search_on,Airbnb,1200,51,0.0425,0,0.0
+en,travel,search_on,Vrbo,1200,8,0.006666666666666667,0,0.0
+en,travel,search_on,HotelsCombined,1200,45,0.0375,3,0.0025
+en,travel,search_on,The Flight Deal,1200,55,0.04583333333333333,0,0.0
+en,travel,search_on,Rome2Rio,1200,6,0.005,0,0.0
+en,vpn,search_off,Mullvad,1200,1065,0.8875,589,0.49083333333333334
+en,vpn,search_off,Proton VPN,1200,1009,0.8408333333333333,27,0.0225
+en,vpn,search_off,NordVPN,1200,632,0.5266666666666666,63,0.0525
+en,vpn,search_off,ExpressVPN,1200,624,0.52,1,0.0008333333333333334
+en,vpn,search_off,Surfshark,1200,519,0.4325,1,0.0008333333333333334
+en,vpn,search_off,IVPN,1200,743,0.6191666666666666,0,0.0
+en,vpn,search_off,Private Internet Access,1200,122,0.10166666666666667,0,0.0
+en,vpn,search_off,AirVPN,1200,42,0.035,0,0.0
+en,vpn,search_off,Windscribe,1200,93,0.0775,0,0.0
+en,vpn,search_off,Mozilla VPN,1200,19,0.015833333333333335,0,0.0
+en,vpn,search_off,CyberGhost,1200,51,0.0425,0,0.0
+en,vpn,search_off,Tailscale,1200,47,0.03916666666666667,0,0.0
+en,vpn,search_off,Cloudflare WARP,1200,2,0.0016666666666666668,0,0.0
+en,vpn,search_off,IPVanish,1200,2,0.0016666666666666668,0,0.0
+en,vpn,search_off,Hotspot Shield,1200,2,0.0016666666666666668,0,0.0
+en,vpn,search_off,TunnelBear,1200,4,0.0033333333333333335,0,0.0
+en,vpn,search_off,Atlas VPN,1200,1,0.0008333333333333334,0,0.0
+en,vpn,search_on,NordVPN,1188,933,0.7853535353535354,397,0.3341750841750842
+en,vpn,search_on,Proton VPN,1188,1090,0.9175084175084175,81,0.06818181818181818
+en,vpn,search_on,ExpressVPN,1188,771,0.648989898989899,11,0.009259259259259259
+en,vpn,search_on,Surfshark,1188,718,0.6043771043771043,13,0.010942760942760943
+en,vpn,search_on,Mullvad,1188,995,0.8375420875420876,473,0.39814814814814814
+en,vpn,search_on,Private Internet Access,1188,111,0.09343434343434344,0,0.0
+en,vpn,search_on,Windscribe,1188,51,0.04292929292929293,0,0.0
+en,vpn,search_on,IVPN,1188,444,0.37373737373737376,0,0.0
+en,vpn,search_on,Tailscale,1188,36,0.030303030303030304,0,0.0
+en,vpn,search_on,CyberGhost,1188,28,0.02356902356902357,0,0.0
+en,vpn,search_on,NetBird,1188,31,0.026094276094276093,0,0.0
+en,vpn,search_on,Mozilla VPN,1188,14,0.011784511784511785,0,0.0
+en,vpn,search_on,IPVanish,1188,16,0.013468013468013467,0,0.0
+en,vpn,search_on,Atlas VPN,1188,1,0.0008417508417508417,0,0.0
+en,vpn,search_on,TunnelBear,1188,6,0.005050505050505051,0,0.0
+en,vpn,search_on,PrivadoVPN,1188,1,0.0008417508417508417,0,0.0
+tr,cosmetics,search_off,CeraVe,75,49,0.6533333333333333,4,0.05333333333333334
+tr,cosmetics,search_off,The Ordinary,75,37,0.49333333333333335,1,0.013333333333333334
+tr,cosmetics,search_off,La Mer,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_off,Chanel,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_off,Dior,75,12,0.16,0,0.0
+tr,cosmetics,search_off,Paula's Choice,75,10,0.13333333333333333,0,0.0
+tr,cosmetics,search_off,La Roche-Posay,75,45,0.6,7,0.09333333333333334
+tr,cosmetics,search_off,Maybelline,75,31,0.41333333333333333,0,0.0
+tr,cosmetics,search_off,NYX Professional Makeup,75,12,0.16,0,0.0
+tr,cosmetics,search_off,Garnier,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Neutrogena,75,7,0.09333333333333334,0,0.0
+tr,cosmetics,search_off,Drunk Elephant,75,13,0.17333333333333334,0,0.0
+tr,cosmetics,search_off,Cetaphil,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Avène,75,17,0.22666666666666666,0,0.0
+tr,cosmetics,search_off,Charlotte Tilbury,75,14,0.18666666666666668,0,0.0
+tr,cosmetics,search_off,The INKEY List,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_off,L'Oréal Paris,75,20,0.26666666666666666,1,0.013333333333333334
+tr,cosmetics,search_off,Nivea,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Kiehl's,75,10,0.13333333333333333,0,0.0
+tr,cosmetics,search_off,Estée Lauder,75,10,0.13333333333333333,0,0.0
+tr,cosmetics,search_off,Lancôme,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Clinique,75,12,0.16,1,0.013333333333333334
+tr,cosmetics,search_off,MAC,75,23,0.30666666666666664,3,0.04
+tr,cosmetics,search_off,The Body Shop,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_off,Burt's Bees,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Yves Saint Laurent,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_off,NARS,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_off,COSRX,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_off,Innisfree,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Etude House,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_off,Vichy,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_off,Bioderma,75,25,0.3333333333333333,0,0.0
+tr,cosmetics,search_off,Eucerin,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_off,Laneige,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_off,Aveeno,75,3,0.04,0,0.0
+tr,cosmetics,search_off,e.l.f. Cosmetics,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_off,Golden Rose,75,14,0.18666666666666668,0,0.0
+tr,cosmetics,search_off,Dermokil,75,7,0.09333333333333334,0,0.0
+tr,cosmetics,search_off,Flormar,75,22,0.29333333333333333,0,0.0
+tr,cosmetics,search_off,Catrice,75,16,0.21333333333333335,0,0.0
+tr,cosmetics,search_off,Revolution Beauty,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_off,Essence,75,16,0.21333333333333335,0,0.0
+tr,cosmetics,search_off,SkinCeuticals,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Rare Beauty,75,6,0.08,0,0.0
+tr,cosmetics,search_off,Kérastase,75,7,0.09333333333333334,0,0.0
+tr,cosmetics,search_off,Olaplex,75,7,0.09333333333333334,0,0.0
+tr,cosmetics,search_off,Farmasi,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_off,Pastel,75,11,0.14666666666666667,0,0.0
+tr,cosmetics,search_off,Dove,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_off,Weleda,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_off,Fenty Beauty,75,12,0.16,1,0.013333333333333334
+tr,cosmetics,search_off,Bepanthol,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Yves Rocher,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_off,Note Cosmetics,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_off,Beauty of Joseon,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_off,Missha,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_off,The Purest Solutions,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_off,Purito,75,3,0.04,0,0.0
+tr,cosmetics,search_off,Benton,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_off,Isana,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_off,Rival de Loop,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,La Mer,75,13,0.17333333333333334,0,0.0
+tr,cosmetics,search_on,Chanel,75,16,0.21333333333333335,0,0.0
+tr,cosmetics,search_on,Estée Lauder,75,21,0.28,0,0.0
+tr,cosmetics,search_on,Yves Saint Laurent,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_on,MAC,75,20,0.26666666666666666,0,0.0
+tr,cosmetics,search_on,L'Oréal Paris,75,34,0.4533333333333333,1,0.013333333333333334
+tr,cosmetics,search_on,Maybelline,75,30,0.4,1,0.013333333333333334
+tr,cosmetics,search_on,NARS,75,11,0.14666666666666667,0,0.0
+tr,cosmetics,search_on,Clinique,75,18,0.24,1,0.013333333333333334
+tr,cosmetics,search_on,Fenty Beauty,75,19,0.25333333333333335,0,0.0
+tr,cosmetics,search_on,Beauty of Joseon,75,15,0.2,0,0.0
+tr,cosmetics,search_on,Anua,75,11,0.14666666666666667,0,0.0
+tr,cosmetics,search_on,Missha,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_on,Abib,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,COSRX,75,14,0.18666666666666668,0,0.0
+tr,cosmetics,search_on,Flormar,75,27,0.36,0,0.0
+tr,cosmetics,search_on,The Ceel,75,3,0.04,0,0.0
+tr,cosmetics,search_on,Sinoz,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_on,Shiseido,75,9,0.12,0,0.0
+tr,cosmetics,search_on,CeraVe,75,36,0.48,3,0.04
+tr,cosmetics,search_on,The Ordinary,75,27,0.36,5,0.06666666666666667
+tr,cosmetics,search_on,Kiehl's,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_on,Huda Beauty,75,6,0.08,0,0.0
+tr,cosmetics,search_on,Innisfree,75,16,0.21333333333333335,0,0.0
+tr,cosmetics,search_on,Laneige,75,19,0.25333333333333335,0,0.0
+tr,cosmetics,search_on,Sulwhasoo,75,9,0.12,0,0.0
+tr,cosmetics,search_on,Dermokil,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,KIKO Milano,75,11,0.14666666666666667,0,0.0
+tr,cosmetics,search_on,Dior,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_on,Etude House,75,8,0.10666666666666667,0,0.0
+tr,cosmetics,search_on,SkinCeuticals,75,12,0.16,0,0.0
+tr,cosmetics,search_on,La Roche-Posay,75,48,0.64,11,0.14666666666666667
+tr,cosmetics,search_on,Paula's Choice,75,18,0.24,0,0.0
+tr,cosmetics,search_on,Bioderma,75,34,0.4533333333333333,0,0.0
+tr,cosmetics,search_on,Vichy,75,9,0.12,0,0.0
+tr,cosmetics,search_on,Eucerin,75,6,0.08,0,0.0
+tr,cosmetics,search_on,Avène,75,13,0.17333333333333334,1,0.013333333333333334
+tr,cosmetics,search_on,Dr.Jart+,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,NYX Professional Makeup,75,7,0.09333333333333334,0,0.0
+tr,cosmetics,search_on,e.l.f. Cosmetics,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_on,Catrice,75,10,0.13333333333333333,0,0.0
+tr,cosmetics,search_on,The Purest Solutions,75,14,0.18666666666666668,0,0.0
+tr,cosmetics,search_on,Golden Rose,75,16,0.21333333333333335,1,0.013333333333333334
+tr,cosmetics,search_on,Revolution Beauty,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_on,Neutrogena,75,3,0.04,0,0.0
+tr,cosmetics,search_on,Cetaphil,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,Essence,75,14,0.18666666666666668,0,0.0
+tr,cosmetics,search_on,Charlotte Tilbury,75,3,0.04,0,0.0
+tr,cosmetics,search_on,Rare Beauty,75,12,0.16,0,0.0
+tr,cosmetics,search_on,Kylie Cosmetics,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,Pastel,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,Medik8,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,Note Cosmetics,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,theBalm,75,3,0.04,0,0.0
+tr,cosmetics,search_on,W7,75,3,0.04,0,0.0
+tr,cosmetics,search_on,Rival de Loop,75,5,0.06666666666666667,0,0.0
+tr,cosmetics,search_on,Garnier,75,3,0.04,0,0.0
+tr,cosmetics,search_on,Lancôme,75,3,0.04,0,0.0
+tr,cosmetics,search_on,Weleda,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_on,Dove,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,Kérastase,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,Drunk Elephant,75,4,0.05333333333333334,0,0.0
+tr,cosmetics,search_on,The INKEY List,75,6,0.08,0,0.0
+tr,cosmetics,search_on,The Body Shop,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_on,Purito,75,2,0.02666666666666667,0,0.0
+tr,cosmetics,search_on,Burt's Bees,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,Benton,75,1,0.013333333333333334,0,0.0
+tr,cosmetics,search_on,Isana,75,2,0.02666666666666667,0,0.0
+tr,vpn,search_off,ExpressVPN,75,33,0.44,5,0.06666666666666667
+tr,vpn,search_off,NordVPN,75,42,0.56,8,0.10666666666666667
+tr,vpn,search_off,CyberGhost,75,7,0.09333333333333334,0,0.0
+tr,vpn,search_off,Surfshark,75,35,0.4666666666666667,2,0.02666666666666667
+tr,vpn,search_off,Proton VPN,75,59,0.7866666666666666,8,0.10666666666666667
+tr,vpn,search_off,Mullvad,75,43,0.5733333333333334,14,0.18666666666666668
+tr,vpn,search_off,Private Internet Access,75,3,0.04,0,0.0
+tr,vpn,search_off,Cloudflare WARP,75,2,0.02666666666666667,0,0.0
+tr,vpn,search_off,Windscribe,75,15,0.2,0,0.0
+tr,vpn,search_off,TunnelBear,75,4,0.05333333333333334,0,0.0
+tr,vpn,search_off,IVPN,75,15,0.2,0,0.0
+tr,vpn,search_off,AirVPN,75,1,0.013333333333333334,0,0.0
+tr,vpn,search_off,hide.me,75,2,0.02666666666666667,0,0.0
+tr,vpn,search_off,Hotspot Shield,75,1,0.013333333333333334,0,0.0
+tr,vpn,search_off,Atlas VPN,75,1,0.013333333333333334,0,0.0
+tr,vpn,search_on,NordVPN,75,65,0.8666666666666667,21,0.28
+tr,vpn,search_on,ExpressVPN,75,55,0.7333333333333333,14,0.18666666666666668
+tr,vpn,search_on,Proton VPN,75,68,0.9066666666666666,11,0.14666666666666667
+tr,vpn,search_on,Surfshark,75,52,0.6933333333333334,4,0.05333333333333334
+tr,vpn,search_on,TunnelBear,75,6,0.08,0,0.0
+tr,vpn,search_on,Planet VPN,75,3,0.04,0,0.0
+tr,vpn,search_on,CyberGhost,75,12,0.16,0,0.0
+tr,vpn,search_on,Mullvad,75,25,0.3333333333333333,7,0.09333333333333334
+tr,vpn,search_on,Windscribe,75,21,0.28,0,0.0
+tr,vpn,search_on,Atlas VPN,75,1,0.013333333333333334,0,0.0
+tr,vpn,search_on,hide.me,75,5,0.06666666666666667,0,0.0
+tr,vpn,search_on,Hotspot Shield,75,1,0.013333333333333334,0,0.0
+tr,vpn,search_on,IVPN,75,8,0.10666666666666667,0,0.0
+tr,vpn,search_on,Private Internet Access,75,8,0.10666666666666667,0,0.0
+tr,vpn,search_on,AdGuard VPN,75,2,0.02666666666666667,0,0.0
+tr,vpn,search_on,IPVanish,75,1,0.013333333333333334,0,0.0
+tr,vpn,search_on,Opera VPN,75,1,0.013333333333333334,0,0.0
