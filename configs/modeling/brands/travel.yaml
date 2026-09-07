@@ -1,0 +1,41 @@
+# Travel booking-tool registry. English track only.
+# Airlines are excluded: the queries ask for booking/search tools, no airline ever
+# appears as top_recommendation, and adding them would pad the candidate universe
+# with guaranteed negatives that flatter PR-AUC without adding signal.
+category: travel
+canonical:
+  Google Flights: [google flights, google flights explore]
+  Skyscanner: [skyscanner]
+  Kayak: [kayak, kayak hotels]
+  Hopper: [hopper]
+  Momondo: [momondo]
+  Expedia: [expedia]
+  Booking.com: [booking.com, booking com, booking]
+  Going: [going, going.com, scott's cheap flights, scotts cheap flights]
+  Priceline: [priceline]
+  Hotels.com: [hotels.com, hotels com]
+  Secret Flying: [secret flying]
+  HotelTonight: [hoteltonight, hotel tonight]
+  Google Hotels: [google hotels, google travel hotels]
+  Trivago: [trivago]
+  Hotwire: [hotwire]
+  Kiwi.com: [kiwi.com, kiwi com]
+  Skiplagged: [skiplagged]
+  ITA Matrix: [ita matrix, matrix itasoftware]
+  Travelocity: [travelocity]
+  The Points Guy: [the points guy, tpg]
+  The Flight Deal: [the flight deal]
+  Agoda: [agoda]
+  Orbitz: [orbitz]
+  Airbnb: [airbnb]
+  Vrbo: [vrbo]
+  Rome2Rio: [rome2rio]
+  HotelsCombined: [hotelscombined]
+exclude:
+  airlines: [ryanair, southwest, wizz air, easyjet, delta, united, american airlines,
+    lufthansa, jetblue, spirit, frontier, alaska airlines, british airways, emirates,
+    turkish airlines, air france, klm, norwegian]
+  publications: [the points guy blog, nomadic matt, view from the wing, cnn travel,
+    conde nast traveler, lonely planet]
+  infrastructure: [google, amazon, apple, visa, mastercard, amex, american express,
+    chase, capital one]

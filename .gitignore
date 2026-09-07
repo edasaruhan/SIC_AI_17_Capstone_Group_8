@@ -34,3 +34,11 @@ data/superseded/**
 !data/interim/.gitkeep
 !data/processed/.gitkeep
 !data/superseded/.gitkeep
+
+# Fold atamaları türetilmiş veri değil, deney tanımıdır: aynı bölme olmadan
+# hiçbir skor yeniden üretilemez, bu yüzden sürümlenir.
+!data/processed/modeling/
+!data/processed/modeling/splits_*.json
+
+# Pipeline logları rapor klasörüne düşerse izlenmez.
+reports/**/*.log

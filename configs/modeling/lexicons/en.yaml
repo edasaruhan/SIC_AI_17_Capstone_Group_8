@@ -1,0 +1,72 @@
+# English snippet lexicons, version 1.
+# Terms are matched as whole words against the normalised text of the organic
+# results that mention the candidate brand. Each group is a hypothesis about what
+# moves an assistant's recommendation, taken from the literature: credibility and
+# authority language shifts recommendations, overt promotional language does not
+# (Filandrianos et al., 2025), and specificity beats vagueness (Chu & Hou, 2026).
+version: 1
+language: en
+groups:
+  authority:
+    - audited
+    - audit
+    - independent
+    - certified
+    - verified
+    - peer reviewed
+    - court proven
+    - no logs policy
+    - transparency report
+    - open source
+    - published
+    - lab tested
+    - clinically tested
+    - dermatologist
+    - benchmark
+    - benchmarked
+  social_proof:
+    - most popular
+    - widely used
+    - millions of users
+    - industry standard
+    - market leader
+    - best selling
+    - top rated
+    - award winning
+    - editors choice
+    - recommended by
+    - trusted by
+  specificity:
+    - per month
+    - gbps
+    - mbps
+    - servers in
+    - countries
+    - money back
+    - free tier
+    - uptime
+    - latency
+    - encryption
+    - aes 256
+    - wireguard
+    - concentration
+    - spf
+  hedging:
+    - may
+    - might
+    - could
+    - depends
+    - generally
+    - typically
+    - in some cases
+    - your mileage
+    - not for everyone
+  superlative:
+    - best
+    - fastest
+    - cheapest
+    - top
+    - leading
+    - ultimate
+    - number one
+    - greatest

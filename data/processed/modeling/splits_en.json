@@ -1,0 +1,58 @@
+{
+  "folds_by_category": {
+    "editors": {
+      "editor_01": 3,
+      "editor_02": 4,
+      "editor_03": 2,
+      "editor_04": 1,
+      "editor_05": 2,
+      "editor_06": 4,
+      "editor_07": 0,
+      "editor_08": 0,
+      "editor_09": 3,
+      "editor_10": 1
+    },
+    "hosting": {
+      "hosting_01": 2,
+      "hosting_02": 4,
+      "hosting_03": 2,
+      "hosting_04": 0,
+      "hosting_05": 3,
+      "hosting_06": 1,
+      "hosting_07": 3,
+      "hosting_08": 1,
+      "hosting_09": 0,
+      "hosting_10": 4
+    },
+    "travel": {
+      "travel_01": 2,
+      "travel_02": 1,
+      "travel_03": 3,
+      "travel_04": 3,
+      "travel_05": 4,
+      "travel_06": 1,
+      "travel_07": 2,
+      "travel_08": 0,
+      "travel_09": 4,
+      "travel_10": 0
+    },
+    "vpn": {
+      "vpn_01": 3,
+      "vpn_02": 1,
+      "vpn_03": 4,
+      "vpn_04": 2,
+      "vpn_05": 2,
+      "vpn_06": 3,
+      "vpn_07": 4,
+      "vpn_08": 0,
+      "vpn_09": 1,
+      "vpn_10": 0
+    }
+  },
+  "grouping": "query_id",
+  "n_splits": 5,
+  "queries": 40,
+  "responses": 9586,
+  "seed": 42,
+  "track": "en"
+}

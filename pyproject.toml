@@ -8,10 +8,25 @@ dependencies = [
   "datasets>=2.20,<5",
   "duckdb>=1,<2",
   "httpx>=0.27,<1",
+  "lightgbm>=4.5,<5",
   "loguru>=0.7,<1",
+  "numpy>=1.26,<3",
   "pandas>=2.2,<4",
   "pyarrow>=17,<24",
   "pyyaml>=6,<7",
+  "scikit-learn>=1.5,<2",
+]
+
+[project.optional-dependencies]
+# M3 only. Kept out of the default install because torch is ~2.4 GB and CI has
+# no reason to download it: the cross-encoder is the one stage that needs a GPU,
+# and its imports live inside the function that runs it.
+# For CUDA wheels install from the PyTorch index, e.g.
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cu124
+m3 = [
+  "accelerate>=1,<2",
+  "torch>=2.4,<3",
+  "transformers>=4.44,<6",
 ]
 
 [project.scripts]

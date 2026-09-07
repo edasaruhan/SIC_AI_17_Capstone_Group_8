@@ -35,6 +35,12 @@ check: ## Kod ve iskelet kontrollerini çalıştır
 reference-data: ## Sabit sürümdeki İngilizce referans verisini hazırla
 	uv run python src/reference_data.py --config configs/base.yaml
 
+turkish-data: ## Yayınlanmış Türkçe veri setini modelleme için indir
+	uv run python src/turkish_data.py
+
+modeling-data: reference-data turkish-data ## Her iki korpusu indir ve pair/kanıt tablolarını üret
+	uv run python scripts/build_pairs.py
+
 reference-report: reference-data ## Referans doğrulama notebook'unu baştan sona çalıştır
 	uv run --with jupyter --with matplotlib python -m jupyter nbconvert \
 		--execute --to notebook --inplace \

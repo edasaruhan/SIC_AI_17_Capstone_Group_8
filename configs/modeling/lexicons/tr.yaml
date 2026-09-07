@@ -1,0 +1,69 @@
+# Turkish snippet lexicons, version 1.
+# Same five hypothesis groups as the English lexicon so the two tracks stay
+# comparable. Terms are matched against text normalised with the project's
+# i-folding, which is why entries are written without dotted-I distinctions
+# mattering ("ıspatlanmıs" and "ispatlanmis" collapse to the same token run).
+version: 1
+language: tr
+groups:
+  authority:
+    - denetlendi
+    - bagimsiz denetim
+    - denetim raporu
+    - sertifikali
+    - dogrulanmis
+    - kayit tutmama
+    - seffaflik raporu
+    - acik kaynak
+    - laboratuvar testi
+    - klinik test
+    - dermatolog
+    - dermatolojik
+    - test edildi
+    - onayli
+    - patentli
+  social_proof:
+    - en cok tercih
+    - en populer
+    - milyonlarca kullanici
+    - sektor lideri
+    - pazar lideri
+    - cok satan
+    - kullanici favorisi
+    - odul
+    - tavsiye edilen
+    - guvenilen
+  specificity:
+    - aylik
+    - ayda
+    - gbps
+    - mbps
+    - sunucu
+    - ulkede
+    - para iade
+    - ucretsiz surum
+    - calisma suresi
+    - gecikme
+    - sifreleme
+    - cilt tipi
+    - icerik listesi
+    - konsantrasyon
+    - faktor
+  hedging:
+    - olabilir
+    - bagli
+    - degisebilir
+    - genellikle
+    - tipik olarak
+    - bazi durumlarda
+    - herkes icin
+    - kisiye gore
+  superlative:
+    - en iyi
+    - en hizli
+    - en ucuz
+    - en guclu
+    - lider
+    - bir numara
+    - zirve
+    - mukemmel

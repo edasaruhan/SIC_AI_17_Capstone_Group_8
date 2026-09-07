@@ -1,0 +1,44 @@
+# VPN brand registry. Shared by the English and Turkish tracks.
+# `canonical` maps a display name to every surface form observed in either corpus.
+# Keys are compared after `comparison_key()`: NFKC, I/İ/ı/i folded to "i",
+# non-alphanumerics and spaces removed, lowercased. Turkish casefolding in the
+# collection pipeline turned "IVPN" into "ıvpn"; the i-folding undoes that.
+category: vpn
+canonical:
+  Proton VPN: [proton vpn, protonvpn]
+  NordVPN: [nordvpn, nord vpn]
+  Mullvad: [mullvad, mullvad vpn]
+  ExpressVPN: [expressvpn, express vpn]
+  Surfshark: [surfshark, surf shark]
+  IVPN: [ivpn]
+  Private Internet Access: [private internet access, pia, private internet access pia]
+  Windscribe: [windscribe]
+  CyberGhost: [cyberghost, cyber ghost]
+  TunnelBear: [tunnelbear, tunnel bear]
+  hide.me: [hide me, hide me vpn, hideme]
+  AirVPN: [airvpn]
+  Mozilla VPN: [mozilla vpn]
+  Cloudflare WARP: [cloudflare warp, warp]
+  Atlas VPN: [atlas vpn, atlasvpn]
+  Hotspot Shield: [hotspot shield]
+  AdGuard VPN: [adguard vpn]
+  IPVanish: [ipvanish]
+  Planet VPN: [planet vpn]
+  Opera VPN: [opera vpn]
+  Tailscale: [tailscale]
+  NetBird: [netbird]
+  VyprVPN: [vyprvpn]
+  PrivadoVPN: [privadovpn]
+# Surface forms that the judge extracted as brands but are not consumer VPN
+# services. Excluded from the candidate universe for both targets.
+exclude:
+  protocols: [wireguard, openvpn, nordlynx, ikev2, openconnect]
+  auditors: [deloitte, pwc, cure53, securitum, kpmg, ey, leviathan security]
+  publications: [pcmag, wirecutter, cnet, wired, privacy guides, privacyguides.org,
+    techradar, tom's guide, restore privacy, the verge]
+  browsers_and_tools: [tor, tor browser, firefox, chrome, brave, ublock origin,
+    mozilla, orbot, signal]
+  streaming: [netflix, disney+, hulu, bbc iplayer, amazon prime video, youtube]
+  infrastructure: [cloudflare, quad9, nextdns, digitalocean, hetzner, google,
+    facebook, apple, microsoft, amazon, aws, "1.1.1.1"]
+  parent_companies: [kape technologies, ziff davis, j2 global]
