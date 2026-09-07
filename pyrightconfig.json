@@ -1,5 +1,5 @@
 {
-  "include": ["src", "tests", "scripts/audit_listwise_run.py"],
+  "include": ["src", "tests", "scripts/audit_listwise_run.py", "scripts/run_english_listwise.py"],
   "pythonVersion": "3.11",
   "venvPath": ".",
   "venv": ".venv"

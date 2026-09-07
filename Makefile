@@ -13,7 +13,8 @@ PYRIGHT := .venv/bin/pyright
 PYTEST := .venv/bin/pytest
 BIAS_EVAL := PYTHONPATH=src $(PYTHON) -m bias_eval
 ENV_RUN := set -a; [ ! -f .env ] || . ./.env; set +a;
-DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval tests scripts/audit_listwise_run.py
+TRAINING_SCRIPTS := scripts/audit_listwise_run.py scripts/run_english_listwise.py
+DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval tests $(TRAINING_SCRIPTS)
 
 help: ## Kullanılabilir komutları göster
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "%-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -23,11 +24,11 @@ setup: ## Ortamı kur ve Git kontrollerini etkinleştir
 	uv run pre-commit install
 
 format: ## Kodu biçimlendir
-	$(RUFF) check --fix src tests scripts/audit_listwise_run.py
+	$(RUFF) check --fix src tests $(TRAINING_SCRIPTS)
 	find $(DATASET_PYTHON_PATHS) -type f -name '*.py' -exec .venv/bin/black --quiet {} \;
 
 check: ## Kod ve iskelet kontrollerini çalıştır
-	$(RUFF) check src tests scripts/audit_listwise_run.py
+	$(RUFF) check src tests $(TRAINING_SCRIPTS)
 	find $(DATASET_PYTHON_PATHS) -type f -name '*.py' -exec .venv/bin/black --quiet --check {} \;
 	$(PYRIGHT) -p pyrightconfig.json
 	$(PYTEST) -q
@@ -71,6 +72,13 @@ modeling-m3-smoke: ## Açık revision ve çalışan GPU ile küçük listwise e�
 
 modeling-m3-train: ## Açık revision ve çalışan GPU ile kontrollü listwise eğitim
 	$(EVIDENCE) m3-train $(M3_ARGS)
+
+.PHONY: modeling-en-train modeling-en-status
+modeling-en-train: ## İngilizce VPN seed 7: offline smoke, tam eğitim ve checkpoint denetimi
+	PYTHONPATH=src $(PYTHON) scripts/run_english_listwise.py --root "$(EVIDENCE_ROOT)"
+
+modeling-en-status: ## İngilizce uzun eğitimin durumu; GPU/API çağrısı yapmaz
+	PYTHONPATH=src $(PYTHON) scripts/run_english_listwise.py --root "$(EVIDENCE_ROOT)" --status
 
 brand-report: ## Marka için kaynaklı Markdown ve JSON rapor oluştur (offline)
 	$(EVIDENCE) report --brand "$(BRAND)" --domain "$(DOMAIN)" --language "$(LANGUAGE)"
