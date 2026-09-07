@@ -72,16 +72,30 @@ def _as_list(value: Any) -> list[Any]:
 
 
 def _organic(search_results: Any) -> list[dict[str, Any]]:
-    """Flatten every search round into one position-ordered organic result list."""
+    """Flatten every search round into one organic result list.
+
+    The round's own search query and index are copied onto each result. An
+    assistant often searches several times per answer, so "which query surfaced
+    this page, on which round" is part of the evidence a recommendation has to
+    cite -- losing it here would make it unrecoverable downstream.
+    """
     rounds = _as_list(search_results)
     organic: list[dict[str, Any]] = []
-    for item in rounds:
+    for index, item in enumerate(rounds):
         payload = json.loads(item) if isinstance(item, str) else item
         if not isinstance(payload, dict):
             continue
+        search_query = payload.get("query")
+        search_round = payload.get("round")
         for result in payload.get("organic") or []:
             if isinstance(result, dict):
-                organic.append(result)
+                organic.append(
+                    {
+                        **result,
+                        "search_query": search_query,
+                        "search_round": index if search_round is None else search_round,
+                    }
+                )
     return organic
 
 

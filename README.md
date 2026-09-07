@@ -128,20 +128,62 @@ iki naive temel → **M0** yalnız marka prior'ı → **M1** + arama konumu ve k
    temelini +0,27 PR-AUC geçiyor (0,801 vs 0,535) ve top-1 doğruluğu %64,1'den
    %72,4'e çıkıyor. Görünürlük hedefinde M2 altı domain-dil kombinasyonunun dördünde
    kazanıyor.
-3. **Tanınırlık ve içerik ayrıştırıldı.** Snippet'lerdeki her marka adı `[BRAND]` ile
-   değiştirildiğinde İngilizce'de PR-AUC yarıya iniyor (0,714 → 0,362, üç seed'de de
-   aynı yönde). Kararın kabaca yarısı içeriğin ne dediğinden değil, hangi markanın adı
-   olduğundan geliyor. Türkçe'de aynı ölçüm 57 karara bağlanmış yanıtla yapılamıyor.
+3. **Marka kimliği tahmin edilebilirliğin büyük kısmını taşıyor.** Snippet'lerdeki her
+   marka adı `[BRAND]` ile değiştirildiğinde İngilizce'de PR-AUC yarıya iniyor
+   (0,714 → 0,362, üç seed'de de aynı yönde). Dikkat: bu, *bizim tahmin modelimizin*
+   neye dayandığını gösterir, asistanın karar mekanizmasını değil — M3 bir vekil model.
+   Ayrıca maskeleme yalnız ad dizgisini siler, bir markanın hangi sayfalarda göründüğünü
+   silmez; o örüntü kimlikle ilişkili kalır. Sonuç bu nedenle içerik payının *alt*,
+   tanınırlık payının *üst* sınırı olarak okunmalı. Türkçe'de aynı ölçüm 57 karara
+   bağlanmış yanıtla yapılamıyor.
 
 Ayrıntılı yöntem, beş domainin tamamındaki sonuç tabloları, SHAP atfı, sınırlılıklar
 ve sızıntı önlemleri için [Sprint 2 raporuna](reports/sprint-2/Sprint2_Modelleme_Raporu.pdf)
 bakın. Rakamların ham hâli `reports/modeling/` altındaki CSV'lerde.
 
-Sırayla çalıştırmak için:
+### Veri modelleme koduna nasıl giriyor
+
+Modelleme kodu hiçbir veri dosyasını depoda tutmaz; ikisini de yayınlanmış
+kaynaklarından yeniden üretir. Temiz bir klondan tek komut yeter:
 
 ```bash
-make reference-data
-uv run python scripts/run_family.py       # pair'ler, fold'lar, M0-M2, iki hedef
+make modeling-data
+```
+
+Bu hedef üç adımı sırayla çalıştırır:
+
+| Adım | Komut | Üretilen |
+|---|---|---|
+| İngilizce referans | `make reference-data` | `data/interim/reference.parquet` |
+| Türkçe veri seti | `make turkish-data` | `data/interim/turkish_raw.parquet` |
+| Tablolar | `scripts/build_pairs.py` | `data/processed/modeling/` altındaki üç dosya |
+
+`make turkish-data`, HuggingFace'teki `furkankarli/turkish-brand-bias-evaluations`
+setini indirir ve donmuş deney tasarımına karşı doğrular: 300 satır, domain başına
+150, koşul başına 150, üç üretim modeli, bozuk JSON alanı yok. Herhangi biri
+tutmazsa **hata verir** — yayınlanan set değişmişse mevcut skorlar artık
+karşılaştırılabilir değildir ve bunun sessizce geçmemesi gerekir. Bu adım API
+anahtarı istemez; anahtarlar yalnız veriyi *toplayan* `bias-eval` hattı için gerekir.
+
+`scripts/build_pairs.py` her hat için üç dosya yazar:
+
+| Dosya | Şekil | Ne için |
+|---|---|---|
+| `splits_<hat>.json` | sorgu → fold | Donmuş bölme. **Depoda sürümlü.** Varsa yeniden kullanılır, sessizce yeniden karılmaz. |
+| `pairs_<hat>.parquet` | (yanıt × aday marka) | M0–M3'ün eğitildiği özellik tablosu |
+| `evidence_<hat>.parquet` | (yanıt × marka × arama sonucu) | Kaynak izlenebilirliği: arama sorgusu, tur, sıra, URL, alan adı, kaynak tipi, başlık, snippet |
+
+**Kanıt tablosu neden ayrı.** `pairs` bir markayı destekleyen arama sonuçlarını
+sayılara indirger — model için doğru şekil, kaynak gösterecek bir öneri için yanlış.
+`evidence` uzun formattadır: bir marka altı sonuçta geçiyorsa altı satır alır ve her
+satır o sayfanın hangi arama sorgusuyla, kaçıncı turda, kaçıncı sırada geldiğini
+saklar. İkisi `(record_id, brand)` üzerinden birleşir. Ölçek: İngilizce 169.719 satır
+/ 9.919 farklı URL, Türkçe 2.391 satır / 333 URL.
+
+Veriler yerine oturduktan sonra modelleme aşamaları:
+
+```bash
+uv run python scripts/run_family.py       # M0-M2, iki hedef, beş domain
 uv run python scripts/score_tables.py     # metrik tabloları, yeniden eğitmeden
 uv run python scripts/run_m3.py           # M3 + maskeleme ablation'ı
 uv run python scripts/compare_tracks.py   # VPN yan yana tablosu

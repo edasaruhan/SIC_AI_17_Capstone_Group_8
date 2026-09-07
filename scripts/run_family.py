@@ -9,8 +9,7 @@ sys.path.insert(0, "src")
 
 import pandas as pd  # noqa: E402
 
-from modeling import evaluate, models, pairs, splits  # noqa: E402
-from modeling.datasets import load_track  # noqa: E402
+from modeling import evaluate, models, splits  # noqa: E402
 
 OUT = Path("reports/modeling")
 PAIRS = Path("data/processed/modeling")
@@ -20,11 +19,14 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     rows = []
     for track_name in ("tr", "en"):
-        track = load_track(track_name)
-        frame = track.frame
         fold_by_query = splits.load_frozen(track_name)
         pair_path = PAIRS / f"pairs_{track_name}.parquet"
-        table = pd.read_parquet(pair_path) if pair_path.exists() else pairs.build(frame)
+        if not pair_path.exists():
+            raise SystemExit(
+                f"{pair_path} is missing. Run `make modeling-data` first -- building the "
+                "pairs here would leave no saved table for the later stages to read."
+            )
+        table = pd.read_parquet(pair_path)
 
         for target in ("y_top", "y_mention"):
             scored = models.run_family(table, fold_by_query, target=target)

@@ -183,6 +183,109 @@ def _source_type(
     return "other"
 
 
+EVIDENCE_COLUMNS = [
+    "record_id",
+    "language",
+    "category",
+    "query_id",
+    "query_text",
+    "model_id",
+    "condition",
+    "run_index",
+    "brand",
+    "search_query",
+    "search_round",
+    "position",
+    "link",
+    "domain",
+    "source_type",
+    "title",
+    "snippet",
+    "brand_in_title",
+    "y_mention",
+    "y_top",
+]
+
+
+def _domain(link: str) -> str:
+    return re.sub(r"^https?://", "", link or "").split("/")[0].casefold()
+
+
+def build_evidence(frame: pd.DataFrame) -> pd.DataFrame:
+    """One row per (response, brand, retrieved result) with the source kept intact.
+
+    ``build`` reduces the retrieved evidence to per-brand counts, which is what a
+    model needs and the wrong shape for anything that has to cite a source. This
+    table keeps the search query that surfaced each page, its round, rank, URL,
+    domain and snippet text, so a later stage can point at the pages that carried
+    a brand into the answer rather than only report that some existed.
+
+    Long format: a brand appearing in six results gets six rows. Join back to the
+    feature table on ``(record_id, brand)``.
+    """
+    languages = set(frame["language"])
+    if len(languages) != 1:
+        raise ValueError(f"build_evidence() handles one language at a time, got {sorted(languages)}")
+    universes = {c: build_universe(frame, c) for c in sorted(frame["category"].unique())}
+    registries = {c: load_registry(c) for c in universes}
+    forms = {
+        (c, brand): _match_forms(registries[c], brand)
+        for c, brands in universes.items()
+        for brand in brands
+    }
+    brand_keys = {
+        (c, brand): [k for k, d in registries[c].display_by_key.items() if d == brand]
+        for c, brands in universes.items()
+        for brand in brands
+    }
+
+    rows: list[dict[str, Any]] = []
+    for record in frame.to_dict("records"):
+        category = str(record["category"])
+        mentioned = set(record["brands_mentioned"])
+        top = record["top_recommendation"]
+        for item in record["organic"]:
+            title = str(item.get("title") or "")
+            snippet = str(item.get("snippet") or "")
+            link = str(item.get("link") or "")
+            raw = f"{title} {snippet}"
+            squashed = text_key(raw).replace(" ", "")
+            title_squashed = text_key(title).replace(" ", "")
+            for brand in universes[category]:
+                key = (category, brand)
+                if not _mentions(forms[key], raw, squashed):
+                    continue
+                rows.append(
+                    {
+                        "record_id": record["record_id"],
+                        "language": record["language"],
+                        "category": category,
+                        "query_id": record["query_id"],
+                        "query_text": record["query_text"],
+                        "model_id": record["model_id"],
+                        "condition": record["condition"],
+                        "run_index": record["run_index"],
+                        "brand": brand,
+                        "search_query": item.get("search_query"),
+                        "search_round": item.get("search_round"),
+                        "position": int(item.get("position") or 0),
+                        "link": link,
+                        "domain": _domain(link),
+                        "source_type": _source_type(
+                            link, brand_keys[key], EDITORIAL, FORUM, AFFILIATE
+                        ),
+                        "title": title,
+                        "snippet": snippet,
+                        "brand_in_title": int(_mentions(forms[key], title, title_squashed)),
+                        "y_mention": int(brand in mentioned),
+                        "y_top": int(brand == top) if top else 0,
+                    }
+                )
+    # reindex rather than the columns= argument, so an empty result still carries
+    # the full schema instead of coming back with no columns at all.
+    return pd.DataFrame(rows).reindex(columns=EVIDENCE_COLUMNS)
+
+
 def brand_snippets(frame: pd.DataFrame, *, mask: bool = False) -> pd.DataFrame:
     """The retrieved text supporting each candidate brand, for the M3 encoder.
 

@@ -1,7 +1,9 @@
+import json
+
 import pandas as pd
 import pytest
 
-from modeling import features, pairs, splits
+from modeling import datasets, features, pairs, splits
 from modeling.brands import comparison_key, load_registry
 
 
@@ -209,3 +211,103 @@ def test_unambiguous_brand_names_match_case_insensitively() -> None:
     registry = load_registry("vpn")
     forms = pairs._match_forms(registry, "NordVPN")
     assert pairs._mentions(forms, "nordvpn review 2026", " nordvpn review 2026 ".replace(" ", ""))
+
+
+def _search_results() -> str:
+    return json.dumps(
+        [
+            {
+                "query": "en iyi vpn",
+                "round": 0,
+                "organic": [
+                    {
+                        "title": "NordVPN incelemesi",
+                        "link": "https://nordvpn.com/tr/",
+                        "snippet": "Hizli ve guvenli.",
+                        "position": 1,
+                    },
+                    {
+                        "title": "En iyi VPN listesi",
+                        "link": "https://www.webtekno.com/vpn",
+                        "snippet": "Surfshark da iyi bir secenek.",
+                        "position": 2,
+                    },
+                ],
+            },
+            {
+                "query": "vpn fiyat karsilastirma",
+                "round": 1,
+                "organic": [
+                    {
+                        "title": "Fiyatlar",
+                        "link": "https://vpnmentor.com/tr/",
+                        "snippet": "NordVPN kampanyasi.",
+                        "position": 1,
+                    }
+                ],
+            },
+        ]
+    )
+
+
+def test_organic_results_keep_the_query_and_round_that_surfaced_them() -> None:
+    # A recommendation has to be able to cite which search produced a page, so
+    # the round's own query and index travel with every result.
+    results = datasets._organic(_search_results())
+    assert [item["search_query"] for item in results] == [
+        "en iyi vpn",
+        "en iyi vpn",
+        "vpn fiyat karsilastirma",
+    ]
+    assert [item["search_round"] for item in results] == [0, 0, 1]
+
+
+def _response_frame() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "record_id": "r1",
+                "language": "tr",
+                "category": "vpn",
+                "query_id": "vpn_tr_01",
+                "query_text": "En iyi VPN hangisi?",
+                "model_id": "test-model",
+                "condition": "search_on",
+                "run_index": 0,
+                "brands_mentioned": ["NordVPN", "Surfshark"],
+                "top_recommendation": "NordVPN",
+                "organic": datasets._organic(_search_results()),
+            }
+        ]
+    )
+
+
+def test_evidence_keeps_one_row_per_source_with_its_url_and_snippet() -> None:
+    evidence = pairs.build_evidence(_response_frame())
+    nord = evidence[evidence["brand"] == "NordVPN"]
+    # NordVPN is named in two of the three retrieved pages, so it gets two rows.
+    assert len(nord) == 2
+    assert set(nord["link"]) == {"https://nordvpn.com/tr/", "https://vpnmentor.com/tr/"}
+    assert set(nord["search_query"]) == {"en iyi vpn", "vpn fiyat karsilastirma"}
+    assert set(nord["source_type"]) == {"official", "affiliate"}
+    assert all(len(text) > 0 for text in nord["snippet"])
+
+
+def test_evidence_labels_match_the_response_so_the_tables_join() -> None:
+    evidence = pairs.build_evidence(_response_frame())
+    by_brand = evidence.groupby("brand")[["y_mention", "y_top"]].max()
+    assert by_brand.loc["NordVPN", "y_top"] == 1
+    assert by_brand.loc["Surfshark", "y_top"] == 0
+    assert by_brand.loc["Surfshark", "y_mention"] == 1
+
+
+def test_evidence_flags_a_brand_named_in_the_title_separately_from_the_snippet() -> None:
+    evidence = pairs.build_evidence(_response_frame())
+    titled = evidence[(evidence["brand"] == "NordVPN") & (evidence["position"] == 1)]
+    assert set(titled["brand_in_title"]) == {1, 0}
+
+
+def test_evidence_refuses_to_mix_languages_in_one_call() -> None:
+    frame = pd.concat([_response_frame(), _response_frame().assign(language="en")])
+    with pytest.raises(ValueError, match="one language at a time"):
+        pairs.build_evidence(frame)
