@@ -13,7 +13,7 @@ PYRIGHT := .venv/bin/pyright
 PYTEST := .venv/bin/pytest
 BIAS_EVAL := PYTHONPATH=src $(PYTHON) -m bias_eval
 ENV_RUN := set -a; [ ! -f .env ] || . ./.env; set +a;
-DATASET_PYTHON_PATHS := src/bias_eval tests
+DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval tests
 
 help: ## Kullanılabilir komutları göster
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "%-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -40,6 +40,40 @@ turkish-data: ## Yayınlanmış Türkçe veri setini modelleme için indir
 
 modeling-data: reference-data turkish-data ## Her iki korpusu indir ve pair/kanıt tablolarını üret
 	uv run python scripts/build_pairs.py
+
+# Offline analysis v1. Never source .env or invoke collection from these targets.
+EVIDENCE_ROOT ?= data/processed/evidence_v1
+EVIDENCE := PYTHONPATH=src $(PYTHON) -m evidence_eval --root "$(EVIDENCE_ROOT)"
+LANGUAGE ?= tr
+DOMAIN ?= vpn
+M3_ARGS ?=
+
+.PHONY: turkish-data modeling-data modeling-prepare modeling-validate evidence-sample \
+	evidence-review-check modeling-baselines modeling-m3-smoke modeling-m3-train brand-report
+
+modeling-prepare: ## Yerel veri kopyalarından sürümlü yeni analiz tablolarını hazırla (offline)
+	$(EVIDENCE) prepare
+
+modeling-validate: ## Türkçe 300 hücreyi ve varsa analiz manifestini doğrula (offline)
+	$(EVIDENCE) validate
+
+evidence-sample: ## 3 pilot ve 30 inceleme kaydı; boş insan etiketleri (offline)
+	$(EVIDENCE) sample
+
+evidence-review-check: ## 30 kaydın insan incelemesi tamamlanmadıysa hata ver
+	$(EVIDENCE) review-check --require-complete
+
+modeling-baselines: ## CPU üzerinde sorgu-dışı taban çizgileri ve SHAP üret
+	$(EVIDENCE) baselines
+
+modeling-m3-smoke: ## Açık revision ve çalışan GPU ile küçük listwise eğitim kontrolü
+	$(EVIDENCE) m3-smoke $(M3_ARGS)
+
+modeling-m3-train: ## Açık revision ve çalışan GPU ile kontrollü listwise eğitim
+	$(EVIDENCE) m3-train $(M3_ARGS)
+
+brand-report: ## Marka için kaynaklı Markdown ve JSON rapor oluştur (offline)
+	$(EVIDENCE) report --brand "$(BRAND)" --domain "$(DOMAIN)" --language "$(LANGUAGE)"
 
 reference-report: reference-data ## Referans doğrulama notebook'unu baştan sona çalıştır
 	uv run --with jupyter --with matplotlib python -m jupyter nbconvert \
