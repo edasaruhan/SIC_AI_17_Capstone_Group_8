@@ -155,8 +155,8 @@ def add_priors(pairs: pd.DataFrame, train_mask: pd.Series) -> pd.DataFrame:
     """Attach brand priors fitted on the training rows only.
 
     ``*_off`` priors use the retrieval-off condition, which is the corpus's
-    direct measure of what the model believes without being shown anything --
-    the recognition signal M0 isolates. ``*_all`` priors pool both conditions.
+    observed recommendation frequency without retrieval, not a direct measure
+    of internal beliefs or recognition. ``*_all`` priors pool both conditions.
     """
     train = select(pairs, train_mask)
     out = pairs.copy()
