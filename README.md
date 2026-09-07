@@ -107,6 +107,11 @@ eklenmez. Çalıştırılmış analiz `notebooks/S0-4-reference-validation.ipynb
 
 ## Modelleme ve bulgular
 
+Yeni çalışma için önce [kaynaklı marka analizi rehberini](docs/kaynakli-marka-analizi.md)
+okuyun. `evidence_v1`, aşağıdaki tarihsel S2 deneyinden ayrı, sabit veri sürümlü
+analiz hattıdır. Canlı web taraması veya yeni generation/judge çağrısı yapmaz.
+İnsan incelemesi ve GPU eğitimi tamamlanmadan tamamlanmış ürün gibi sunulmaz.
+
 `src/modeling/` altındaki paket, İngilizce referans ile Türkçe veri setini **aynı
 kodla iki kez** işler; hiçbir yerde dile özel ayrı bir hat yoktur. İki korpus 282.450
 (yanıt, aday marka) çiftine açılır ve iki hedef modellenir: markanın yanıtta anılması
@@ -133,8 +138,8 @@ iki naive temel → **M0** yalnız marka prior'ı → **M1** + arama konumu ve k
    (0,714 → 0,362, üç seed'de de aynı yönde). Dikkat: bu, *bizim tahmin modelimizin*
    neye dayandığını gösterir, asistanın karar mekanizmasını değil — M3 bir vekil model.
    Ayrıca maskeleme yalnız ad dizgisini siler, bir markanın hangi sayfalarda göründüğünü
-   silmez; o örüntü kimlikle ilişkili kalır. Sonuç bu nedenle içerik payının *alt*,
-   tanınırlık payının *üst* sınırı olarak okunmalı. Türkçe'de aynı ölçüm 57 karara
+   silmez; o örüntü kimlikle ilişkili kalır. Sonuç nedensel katkı yüzdesi veya
+   marka/içerik payına bir alt ya da üst sınır vermez. Türkçe'de aynı ölçüm 57 karara
    bağlanmış yanıtla yapılamıyor.
 
 Ayrıntılı yöntem, beş domainin tamamındaki sonuç tabloları, SHAP atfı, sınırlılıklar
@@ -164,6 +169,10 @@ setini indirir ve donmuş deney tasarımına karşı doğrular: 300 satır, doma
 tutmazsa **hata verir** — yayınlanan set değişmişse mevcut skorlar artık
 karşılaştırılabilir değildir ve bunun sessizce geçmemesi gerekir. Bu adım API
 anahtarı istemez; anahtarlar yalnız veriyi *toplayan* `bias-eval` hattı için gerekir.
+
+İndirme artık `4d274b954be7d9b0abbfe3314b2cbc387dfd800f` revision'ına ve kaynak
+SHA-256 değerine sabittir. Hücreler, sorgu metinleri, dil ve tekrarlar da denetlenir.
+Yeni veri release'i aynı analiz çıktılarının üzerine yazılmaz.
 
 `scripts/build_pairs.py` her hat için üç dosya yazar:
 
