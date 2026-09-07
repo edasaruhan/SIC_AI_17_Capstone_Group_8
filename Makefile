@@ -13,7 +13,7 @@ PYRIGHT := .venv/bin/pyright
 PYTEST := .venv/bin/pytest
 BIAS_EVAL := PYTHONPATH=src $(PYTHON) -m bias_eval
 ENV_RUN := set -a; [ ! -f .env ] || . ./.env; set +a;
-DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval tests
+DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval tests scripts/audit_listwise_run.py
 
 help: ## Kullanılabilir komutları göster
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "%-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -23,11 +23,11 @@ setup: ## Ortamı kur ve Git kontrollerini etkinleştir
 	uv run pre-commit install
 
 format: ## Kodu biçimlendir
-	$(RUFF) check --fix src tests
+	$(RUFF) check --fix src tests scripts/audit_listwise_run.py
 	find $(DATASET_PYTHON_PATHS) -type f -name '*.py' -exec .venv/bin/black --quiet {} \;
 
 check: ## Kod ve iskelet kontrollerini çalıştır
-	$(RUFF) check src tests
+	$(RUFF) check src tests scripts/audit_listwise_run.py
 	find $(DATASET_PYTHON_PATHS) -type f -name '*.py' -exec .venv/bin/black --quiet --check {} \;
 	$(PYRIGHT) -p pyrightconfig.json
 	$(PYTEST) -q

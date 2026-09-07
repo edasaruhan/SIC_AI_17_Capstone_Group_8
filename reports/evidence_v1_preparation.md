@@ -4,6 +4,10 @@ Tarih: 2026-09-07. Başlangıç: birleşmiş S2 commit'i `ab7a3de`.
 Yeni dal: `feat/evidence-backed-brand-reports`. Üretim veri seti yeniden toplanmadı.
 Hiçbir Serper, generation veya Cerebras judge çağrısı yapılmadı.
 
+**Sonraki aşama güncellemesi:** Aşağıdaki GPU durumu bu hazırlık notunun ilk
+yazıldığı ana aittir. Aynı gün Türkçe listwise eğitimleri tamamlandı;
+[gerçek eğitim sonuçları ve kalan kapılar](listwise_tr_seed7.md) ayrı nottadır.
+
 ## Uygulananlar
 
 - Türkçe veri indirmesi revision ve kaynak hash'ine sabitlendi. Tam 300 deney

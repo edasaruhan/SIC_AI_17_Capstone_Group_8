@@ -111,6 +111,8 @@ Yeni çalışma için önce [kaynaklı marka analizi rehberini](docs/kaynakli-ma
 okuyun. `evidence_v1`, aşağıdaki tarihsel S2 deneyinden ayrı, sabit veri sürümlü
 analiz hattıdır. Canlı web taraması veya yeni generation/judge çağrısı yapmaz.
 İnsan incelemesi ve GPU eğitimi tamamlanmadan tamamlanmış ürün gibi sunulmaz.
+Türkçe ilk GPU koşusu tamamlandı: [eğitim sonuçları ve checkpoint doğrulaması](reports/listwise_tr_seed7.md).
+Bu, çapraz doğrulama eğitimidir; insan incelemesi, final model paketi ve canlı servis henüz tamamlanmadı.
 
 `src/modeling/` altındaki paket, İngilizce referans ile Türkçe veri setini **aynı
 kodla iki kez** işler; hiçbir yerde dile özel ayrı bir hat yoktur. İki korpus 282.450

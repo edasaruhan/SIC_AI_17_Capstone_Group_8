@@ -201,6 +201,63 @@ iki test yanıtını bir fold'da çalıştırır; sonuçları tam deney metriği
 4 GB GPU'ya sığacağı garanti edilmez; bellek yetmezse küçük candidate batch veya
 max length ile **ayrı run** açılır. Otomatik ayar/model değişimi yapılmaz.
 
+### Sabit Türkçe model sürümü ve checkpoint denetimi
+
+2026-09-07 tarihli yerel koşuda BERTurk revision'ı
+`b6e1de16c983e0f2c70664591ea3f22810072608` kullanılır. Paket kurulumu kilit dosyasını
+değiştirmeden yapılır; normal `uv sync` isteğe bağlı eğitim paketlerini kaldırabilir:
+
+```bash
+uv sync --extra m3 --group dev --locked
+export HF_HOME="$PWD/data/processed/evidence_v1/hf_cache"
+export HF_HUB_DISABLE_IMPLICIT_TOKEN=1
+```
+
+Model daha önce bu cache'e indirilmediyse önce yalnız bu ilk komutta indirmeyi aç:
+
+```bash
+HF_HUB_OFFLINE=0 make modeling-m3-smoke M3_ARGS="--track tr --category vpn --model-revision b6e1de16c983e0f2c70664591ea3f22810072608 --seed 7 --allow-download"
+```
+
+Sonraki komutlar tamamen offline çalışabilir:
+
+```bash
+export HF_HUB_OFFLINE=1
+export TOKENIZERS_PARALLELISM=false
+export OMP_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=1
+
+make modeling-m3-smoke M3_ARGS="--track tr --category vpn --model-revision b6e1de16c983e0f2c70664591ea3f22810072608 --seed 7"
+make modeling-m3-smoke M3_ARGS="--track tr --category cosmetics --model-revision b6e1de16c983e0f2c70664591ea3f22810072608 --seed 7"
+make modeling-m3-train M3_ARGS="--track tr --category vpn --model-revision b6e1de16c983e0f2c70664591ea3f22810072608 --seed 7"
+make modeling-m3-train M3_ARGS="--track tr --category cosmetics --model-revision b6e1de16c983e0f2c70664591ea3f22810072608 --seed 7"
+```
+
+CUDA erişimi kısıtlı bir araç ortamında `nvidia-smi` başarısız olabilir; bu tek
+başına sürücünün bozuk olduğunu göstermez. Aynı kontrol normal terminalde de
+yapılmalıdır. Eğitim komutlarını root/sudo ile çalıştırmak gerekmez.
+
+Tam koşunun sonunda yazdırılan `output` dizinini kullanarak denetle:
+
+```bash
+PYTHONPATH=src .venv/bin/python scripts/audit_listwise_run.py \
+  --run data/processed/evidence_v1/listwise/RUN_ID --reload
+```
+
+`RUN_ID` gerçek koşu kimliğidir; smoke dizini kabul edilmez. Bu komut tüm fold
+checkpoint/skor hash'lerini, beklenen aday/etiket panelini, sorgu bölmelerini ve
+grup olasılıklarını doğrular. `--reload` ayrıca **her checkpoint'ten bir yanıtı**
+yerel GPU'da yeniden skorlar ve kayıtlı tahminlerle karşılaştırır; bütün yanıtlar
+yeniden tahmin edilmiş gibi raporlanmaz. Model indirmez, eğitim yapmaz. Sonuç
+`audit.json` dosyasına yazılır.
+
+M0/M1/M2 ve baselinelar aynı test yanıtlarına daraltılarak karşılaştırılır; eğitim
+kapsamları farklıdır (CPU modelleri iki koşul/tüm track kategorileri, M3 tek
+domain/arama açık). Bu yüzden sonuç saf mimari karşılaştırması değildir.
+Checkpoint'lerin varlığı bir servis veya nihai ürünün hazır olduğu anlamına
+gelmez: bunlar sorgu-dışı değerlendirme modelleridir; final model seçimi,
+tam-veri eğitimi, inference sözleşmesi ve insan doğrulaması ayrı aşamalardır.
+
 ## Nihai ürüne geçiş kapısı
 
 Bu sürümden sonra eklenecekler: yeni marka ve site girdisi, canlı arama ve tam
