@@ -1,6 +1,25 @@
 {
-  "include": ["src", "tests", "scripts/audit_listwise_run.py", "scripts/run_english_listwise.py", "scripts/verify_final_models.py", "scripts/ai_review_report.py", "scripts/run_generalization.py"],
+  "include": [
+    "src",
+    "tests",
+    "scripts/audit_listwise_run.py",
+    "scripts/run_english_listwise.py",
+    "scripts/verify_final_models.py",
+    "scripts/ai_review_report.py",
+    "scripts/run_generalization.py",
+    "scripts/run_fairness.py",
+    "scripts/collect_masking.py"
+  ],
   "pythonVersion": "3.11",
   "venvPath": ".",
-  "venv": ".venv"
+  "venv": ".venv",
+  "executionEnvironments": [
+    {
+      "root": "src/final_model",
+      "reportMissingImports": "none"
+    },
+    {
+      "root": "."
+    }
+  ]
 }

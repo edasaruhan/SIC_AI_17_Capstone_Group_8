@@ -106,9 +106,11 @@ def render(table: pd.DataFrame) -> str:
     for _, r in table.sort_values(["track", "category"]).iterrows():
         lines.append(
             f"| {r.track} | {SECTOR_TR.get(r.category, r.category)} | {int(r.n_pairs)} | "
-            f"{fmt(r.named_pr_auc)} | {fmt(r.masked_pr_auc)} | "
-            f"{fmt(r.delta_pr_auc)} [{fmt(r.delta_pr_auc_lo)}, {fmt(r.delta_pr_auc_hi)}] | "
-            f"{fmt(r['delta_top1'])} [{fmt(r['delta_top1_lo'])}, {fmt(r['delta_top1_hi'])}] | "
+            f"{fmt(float(r.named_pr_auc))} | {fmt(float(r.masked_pr_auc))} | "
+            f"{fmt(float(r.delta_pr_auc))} "
+            f"[{fmt(float(r.delta_pr_auc_lo))}, {fmt(float(r.delta_pr_auc_hi))}] | "
+            f"{fmt(float(r['delta_top1']))} "
+            f"[{fmt(float(r['delta_top1_lo']))}, {fmt(float(r['delta_top1_hi']))}] | "
             f"{int(r.independent_query_groups)} |"
         )
     lines += [

@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pandas as pd
 
@@ -38,19 +38,20 @@ def fmt(value: Any, digits: int = 2) -> str:
 
 
 def interval(row: pd.Series, name: str, digits: int = 2) -> str:
-    if pd.isna(row[name]):
+    if bool(pd.isna(row[name])):
         return "–"
-    return f"{fmt(row[name], digits)} [{fmt(row[f'{name}_lo'], digits)}, {fmt(row[f'{name}_hi'], digits)}]"
+    low, high = float(row[f"{name}_lo"]), float(row[f"{name}_hi"])
+    return f"{fmt(float(row[name]), digits)} [{fmt(low, digits)}, {fmt(high, digits)}]"
 
 
 def points(value: float) -> str:
-    return "–" if pd.isna(value) else f"{100 * value:+.1f}"
+    return "–" if pd.isna(value) else f"{100 * float(value):+.1f}"
 
 
 def gain_interval(row: pd.Series) -> str:
-    if pd.isna(row["retrieval_gain_lo"]):
+    if bool(pd.isna(row["retrieval_gain_lo"])):
         return "–"
-    return f"[{points(row['retrieval_gain_lo'])}, {points(row['retrieval_gain_hi'])}]"
+    return f"[{points(float(row['retrieval_gain_lo']))}, {points(float(row['retrieval_gain_hi']))}]"
 
 
 def concentration_tables(pairs: dict[str, pd.DataFrame]) -> pd.DataFrame:
@@ -113,7 +114,7 @@ def write_markdown(
         "| Track | Sektör | Koşul | Ölçü | N_eff [95% GA] | İlk-3 payı [95% GA] | Hiç anılmayan | Sorgu |",
         "|---|---|---|---|---|---|---:|---:|",
     ]
-    pooled = concentration[concentration["model_id"] == "ALL"]
+    pooled = cast("pd.DataFrame", concentration[concentration["model_id"] == "ALL"])
     for _, r in pooled.sort_values(["track", "category", "target", "condition"]).iterrows():
         lines.append(
             f"| {r.track} | {SECTOR_TR.get(r.category, r.category)} | "
