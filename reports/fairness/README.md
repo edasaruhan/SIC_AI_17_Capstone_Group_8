@@ -67,7 +67,30 @@ birkaç liderin bulunduğu listeler dönüyor. Bu bir hipotezdir; test edilmedi.
 modelin arama kapalıyken markayı anma oranıdır; ciro, pazar payı veya çalışan sayısı
 verisi yok. İki kavramı karıştırmayın.
 
-## 4. Yerli marka farkı: ölçülebilir bir dezavantaj görünmüyor
+## 4. Hangi asistanın yanıtladığı, kaç markanın görüneceğini değiştiriyor
+
+Arama açık, anılma düzeyinde etkin marka sayısı (aynı sorgular, aynı registry):
+
+| Sektör | Claude Opus 4.6 | Grok 4.20 | GLM-5 | GPT-5.4 |
+|---|---:|---:|---:|---:|
+| Kod editörleri (30) | **15,0** | 13,5 | 13,8 | 14,6 |
+| Hosting (36) | **22,5** | 20,5 | 20,2 | 16,3 |
+| Seyahat (27) | **14,2** | 12,4 | 10,2 | 8,9 |
+| VPN (24) | **6,5** | 6,4 | 5,9 | 5,7 |
+
+Sıralama dört sektörün dördünde de aynı yönde: Claude en geniş, GPT-5.4 en dar alanı
+gösteriyor. Seyahatte fark 1,6 katına çıkıyor — aynı soruya Claude 14 marka
+genişliğinde, GPT 9 marka genişliğinde bir cevap veriyor.
+
+Türkçe tarafta MiniMax en geniş (kozmetik 33,0; VPN 8,4), Gemini Flash Lite kozmetikte
+en dar (26,1). Türkçe ve İngilizce asistan kümeleri farklı olduğu için iki tablo
+birbiriyle karşılaştırılmaz.
+
+Bu, bir markanın görünürlüğünün yalnız kendi içeriğine değil, kullanıcının hangi
+asistanı kullandığına da bağlı olduğu anlamına gelir. Tek bir asistan üzerinden
+ölçülen görünürlük, pazarın tamamı için genellenemez.
+
+## 5. Yerli marka farkı: ölçülebilir bir dezavantaj görünmüyor
 
 | Menşe (TR kozmetik) | Marka | Aramasız | Aramalı | Aramadan kazanç |
 |---|---:|---:|---:|---|
