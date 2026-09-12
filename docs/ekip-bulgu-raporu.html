@@ -118,10 +118,11 @@
   <div class="kicker">Samsung Innovation Campus · Capstone · Grup 8</div>
   <h1>Yapay zekâ asistanlarında marka görünürlüğü: ne ölçtük, ne bulduk</h1>
   <p class="standfirst">
-    Asistanların marka önerilerini iki ayrı yoldan inceledik: 9.886 kayıtlı yanıt üzerinde
+    Asistanların marka önerilerini üç ayrı yoldan inceledik: 9.886 kayıtlı yanıt üzerinde
     <em>hangi sinyaller sektörler ve diller arasında taşınıyor</em> sorusunu, 1.080 kontrollü
     canlı çağrı ile de <em>önerdiğimiz değişiklikler cevabı gerçekten değiştiriyor mu</em>
-    sorusunu yanıtladık. Bu rapor iki çalışmanın ortak sonucudur.
+    sorusunu yanıtladık; bir de dağılım sorusunu sorduk — bir cevapta pazarın ne kadarı
+    görünüyor ve kim kazanıyor. Bu rapor üç çalışmanın ortak sonucudur.
   </p>
   <div class="meta">
     12 Eylül 2026 · Kaynak tablolar <code>reports/generalization/</code> ve
@@ -132,7 +133,7 @@
 <h2>1. Yönetici özeti</h2>
 
 <div class="keybox">
-  <h3>Beş bulgu</h3>
+  <h3>Yedi bulgu</h3>
   <ol>
     <li><strong>Taşınan sinyal içerik dili değil, retrieval'daki göreli konum.</strong>
       Bir markanın kaç bağımsız arama sonucunda, rakiplerine göre ne sıklıkta ve ne kadar
@@ -150,6 +151,16 @@
     <li><strong>Üstünlük dilinin ("en iyi", "#1") desteği yok.</strong> Ne gözlemsel veride
       ne de kontrollü testte ölçülebilir bir kazanç verdi; gözlemsel veride çoğu sektörde
       işaret ters yönde.</li>
+    <li><strong>Birincil öneri neredeyse tek markaya gidiyor.</strong> Etkin marka
+      sayısıyla ölçtüğümüzde kod editörlerinde 30 markadan 1,14, İngilizce VPN'de 24'ten
+      1,32 marka varmış gibi davranılıyor; birincil önerilerin %97'si ilk üçe çıkıyor.
+      Arama bu alanı daraltmıyor, hafifçe genişletiyor — ama kimin kazandığı sektöre göre
+      değişiyor: hosting'de en tanınan üçte bir 11,8 puan kaybediyor, Türkçe VPN'de 9,5
+      puan kazanıyor.</li>
+    <li><strong>"Model marka adını ezberliyor" bulgusu sektöre bağlı.</strong> Snippet'lerdeki
+      marka adları maskelendiğinde tahmin gücü kod editörlerinde ve VPN'de yarıya
+      düşüyor, seyahat ve hosting'de çok daha az, Türkçe kozmetikte hiç düşmüyor. Tek
+      sektörle ölçülmüş olsaydı yanlış genellerdik.</li>
   </ol>
 </div>
 
@@ -198,7 +209,82 @@
 </table>
 </div>
 
-<h2>3. Gözlemsel analiz: hangi sinyal genel?</h2>
+<h2>3. Model ailesi ve maskeleme ablasyonu</h2>
+
+<p>
+  Model ailesi kümülatiftir, çünkü anlamlı olan tek bir skor değil aralarındaki farktır.
+  Her katman bir öncekine tek bir bilgi türü ekler; kazanç o bilginin katkısıdır.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 3 — Model ailesi</div>
+  <table>
+    <tbody>
+      <tr><td><code>naive_position</code> · <code>naive_frequency</code></td><td>Eğitimsiz taban: en üst arama sonucunun markası; en sık kazanan marka</td></tr>
+      <tr><td><strong>M0</strong></td><td>Yalnız marka prior'ı (kimlik)</td></tr>
+      <tr><td><strong>M1</strong></td><td>+ arama konumu ve kaynak tipi</td></tr>
+      <tr><td><strong>M2</strong></td><td>+ snippet dil özellikleri · LightGBM, SHAP ile öneri üretir · <em>üretim modeli</em></td></tr>
+      <tr><td><strong>M3</strong></td><td>Cross-encoder (BERT / BERTurk): sorgu ve snippet birlikte kodlanır · yalnız maskeleme ablasyonu için</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="note">
+  Ödev planı cross-encoder için XLM-R veya DeBERTa öngörüyordu; gerçekleşen
+  <code>bert-base-uncased</code> ve BERTurk'tür. Gerekçe veri ölçeğidir: sektör başına
+  ~1.000 yanıt ve 10 bağımsız sorgu, daha büyük bir modeli aşırı öğrenmeye götürürdü.
+  M3 zaten üretim modeli değil, ablasyon aracıdır.
+</p>
+
+<h3>3.1 Maskeleme: tahmin ne kadar marka adına dayanıyor?</h3>
+
+<p>
+  Snippet'lerdeki her marka adı <code>[BRAND]</code> ile değiştirilip M3 yeniden
+  eğitildi. İki koşu aynı satırlar üzerinde eşleştirildi ve tek bir sorgu-küme
+  bootstrap'ı ile karşılaştırıldı. Pozitif fark, ad silindiğinde tahminin kötüleştiği
+  anlamına gelir.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 4 — Maskeleme ablasyonu, birincil öneri (y_top), seed 7</div>
+  <table>
+    <thead>
+      <tr><th>Sektör</th><th class="n">İsimli PR-AUC</th><th class="n">Maskeli PR-AUC</th><th class="n">Fark [95% GA]</th><th class="n">Sorgu</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Kod editörleri</td><td class="n">0,841</td><td class="n">0,427</td><td class="n hi">+0,414 [+0,21 · +0,59]</td><td class="n">10</td></tr>
+      <tr><td>VPN · EN</td><td class="n">0,735</td><td class="n">0,389</td><td class="n hi">+0,347 [+0,14 · +0,49]</td><td class="n">10</td></tr>
+      <tr><td>Seyahat</td><td class="n">0,642</td><td class="n">0,558</td><td class="n">+0,084 [−0,13 · +0,32]</td><td class="n">10</td></tr>
+      <tr><td>Hosting</td><td class="n">0,210</td><td class="n">0,138</td><td class="n hi">+0,072 [+0,02 · +0,13]</td><td class="n">10</td></tr>
+      <tr><td>VPN · TR</td><td class="n">0,146</td><td class="n">0,120</td><td class="n">+0,026 [−0,08 · +0,15]</td><td class="n">5</td></tr>
+      <tr><td>Kozmetik · TR</td><td class="n">0,055</td><td class="n">0,072</td><td class="n">−0,017 [−0,02 · +0,16] · 3 sorgu, yön çağrılmaz</td><td class="n">3</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+  <strong>Üç rejim.</strong> Kod editörleri ve İngilizce VPN <em>kimlik ağırlıklı</em>:
+  ad silinince tahmin gücü yarıdan fazla düşüyor. Hosting'de etki ölçülebilir ama onda
+  bir büyüklükte. Seyahat ve Türkçe sektörlerde aralıklar sıfırı içeriyor.
+</p>
+
+<p>
+  Bu, projenin kendi önceki iddiasını daraltan bir bulgudur. Maskeleme daha önce yalnız
+  VPN'de ölçülmüş ve "marka kimliği tahmin edilebilirliğin büyük kısmını taşıyor" sonucu
+  oradan yazılmıştı; altı sektöre yayıldığında bunun evrensel değil <strong>sektöre
+  özgü</strong> olduğu görülüyor. Tek sektörle genelleme yapılsaydı rapor yanlış bir
+  iddia taşıyacaktı. İngilizce VPN bu turda yeniden koşuldu ve önceki sonucu bağımsız
+  olarak doğruladı (0,735 → 0,389; önceki seed'lerde 0,714 → 0,362).
+</p>
+
+<p class="note">
+  M3 bir <strong>vekil</strong> modeldir: ölçülen şey bizim tahmin modelimizin neye
+  dayandığıdır, asistanın karar mekanizması değil. Maskeleme yalnız ad dizgisini siler,
+  markanın hangi sayfalarda göründüğünü silmez; o örüntü kimlikle ilişkili kalır. Fark
+  bu yüzden "marka payı / içerik payı" olarak okunamaz ve bir sınır vermez.
+</p>
+
+<h2>4. Gözlemsel analiz: hangi sinyal genel?</h2>
 
 <p>
   Önceki değerlendirme sorgu düzeyinde fold kullanıyordu: aynı sorgu hem eğitimde hem testte
@@ -207,7 +293,7 @@
   testi ve <strong>sinyal kararlılık matrisi</strong> bunu yanıtlar.
 </p>
 
-<h3>3.1 Sinyalleri göreli ifade edince transfer açığı kapanıyor</h3>
+<h3>4.1 Sinyalleri göreli ifade edince transfer açığı kapanıyor</h3>
 
 <p>
   <strong>M2-General</strong> ham sayıları kullanır (kaç sonuçta anıldı, en iyi sıra, kaynak
@@ -218,7 +304,7 @@
 </p>
 
 <div class="tblock">
-  <div class="tcap">Tablo 3 — Birincil öneri (y_top), İngilizce, <strong>modelin hiç görmediği sektör</strong></div>
+  <div class="tcap">Tablo 5 — Birincil öneri (y_top), İngilizce, <strong>modelin hiç görmediği sektör</strong></div>
   <table>
   <thead>
     <tr><th>Test sektörü</th><th class="n">M2-General PR-AUC</th><th class="n">M2-Invariant PR-AUC</th><th class="n">M2_full (prior'lı, sektörü görmüş)</th><th class="n">M2-Invariant top-1</th><th class="n">M2_full top-1</th></tr>
@@ -246,10 +332,10 @@
   göreli biçimde ifade edilince taşınıyor.
 </p>
 
-<h3>3.2 İngilizce → Türkçe: dil ve üretici model birlikte değişirken</h3>
+<h3>4.2 İngilizce → Türkçe: dil ve üretici model birlikte değişirken</h3>
 
 <div class="tblock">
-  <div class="tcap">Tablo 4 — Yalnız İngilizce veriyle eğitilen göreli model, Türkçe test panelinde</div>
+  <div class="tcap">Tablo 6 — Yalnız İngilizce veriyle eğitilen göreli model, Türkçe test panelinde</div>
   <table>
   <thead>
     <tr><th>TR sektör / hedef</th><th class="n">Konum kuralı</th><th class="n">M2-Invariant (EN'de eğitilmiş)</th><th class="n">M2_full (TR'de eğitilmiş, prior'lı)</th></tr>
@@ -269,7 +355,7 @@
   ve kanıt sayılmaz.
 </p>
 
-<h3>3.3 Sinyal kararlılık matrisi</h3>
+<h3>4.3 Sinyal kararlılık matrisi</h3>
 
 <p>
   Her sinyal, her sektörde, aynı yanıttaki kazanan ve kaybeden adaylar arasında karşılaştırıldı.
@@ -279,7 +365,7 @@
 </p>
 
 <div class="tblock">
-  <div class="tcap">Tablo 5 — Sinyallerin sektörler arası kararlılığı</div>
+  <div class="tcap">Tablo 7 — Sinyallerin sektörler arası kararlılığı</div>
   <table>
   <thead>
     <tr><th>Sinyal</th><th>Marjinal</th><th>Hacim-eşli</th><th>Yorum</th></tr>
@@ -302,7 +388,115 @@
   etkisi, markayı anan sonuç sayısının etkisinden ayrılamıyor.
 </p>
 
-<h2>4. Kontrollü test: öneriler cevabı değiştiriyor mu?</h2>
+<h2>5. Yoğunlaşma ve adalet: kim vitrine çıkabiliyor?</h2>
+
+<p>
+  Sinyal analizi hangi özelliğin görünürlüğü belirlediğini söyler; bu bölüm dağılımı
+  sorar. Bir cevapta pazarın ne kadarı görünüyor, arama açıldığında bu genişliyor mu
+  daralıyor mu, ve kazanan kim oluyor? Ölçü <strong>etkin marka sayısı</strong>
+  <code>N_eff = 1/HHI</code>: asistan, sektörde kaç marka varmış gibi davranıyor.
+  Ham HHI sektörler arasında karşılaştırılamaz (alt sınırı <code>1/N</code>); Gini ise
+  asistan davranışını değil bizim marka listemizin uzunluğunu ölçerdi. İkisi de bu
+  yüzden başlık sayısı değildir.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 8 — Etkin marka sayısı (N_eff), tüm asistanlar birlikte</div>
+  <table>
+    <thead>
+      <tr><th>Sektör (registry markası)</th><th class="n">Anılma · aramasız</th><th class="n">Anılma · aramalı</th><th class="n">Birincil öneri · aramasız</th><th class="n">Birincil öneri · aramalı</th><th class="n">İlk-3 payı</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Kod editörleri (30)</td><td class="n">14,7</td><td class="n">14,8</td><td class="n hi">1,14</td><td class="n hi">1,25</td><td class="n">%97</td></tr>
+      <tr><td>VPN · EN (24)</td><td class="n">6,5</td><td class="n">6,3</td><td class="n hi">1,32</td><td class="n hi">2,45</td><td class="n">%98</td></tr>
+      <tr><td>Seyahat (27)</td><td class="n">12,1</td><td class="n">11,8</td><td class="n">1,48</td><td class="n">1,71</td><td class="n">%90</td></tr>
+      <tr><td>Hosting (36)</td><td class="n">18,9</td><td class="n">20,8</td><td class="n">4,62</td><td class="n">5,44</td><td class="n">%67</td></tr>
+      <tr><td>Kozmetik · TR (74)</td><td class="n">28,9</td><td class="n">35,9</td><td class="n">4,15</td><td class="n">3,60</td><td class="n">%79</td></tr>
+      <tr><td>VPN · TR (24)</td><td class="n">7,0</td><td class="n">7,0</td><td class="n">3,88</td><td class="n">3,95</td><td class="n">%81</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+  <strong>Birincil öneri neredeyse tek markaya gidiyor.</strong> Kod editörlerinde 30
+  markalık bir listeden asistan fiilen bir marka varmış gibi davranıyor; birincil
+  önerilerin %97'si ilk üç markaya çıkıyor. Sunumun çıkış noktası olan "on bağlantı
+  yerine üç isim" tespiti, birincil öneri düzeyinde üçten de dar. Anılma düzeyinde
+  tablo çok daha yumuşak — ve bu fark, kontrollü testin bulgusuyla birebir örtüşüyor:
+  içerik stratejisi listeye sokuyor, birinciliğe taşımıyor.
+</p>
+
+<p>
+  <strong>Arama pazarı daraltmıyor.</strong> Beklenti, ticari içerikle dolu aramanın
+  yoğunlaşmayı artırmasıydı. Hiçbir sektörde anlamlı daralma yok; çoğunda etkin marka
+  sayısı artıyor (EN VPN birincil öneride 1,32 → 2,45; TR kozmetik anılmada 28,9 → 35,9).
+  Aramanın etkisi <em>kaç</em> markanın göründüğünde değil, <em>kimin</em> kazandığında.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 9 — Aramadan kim kazanıyor? Tanınırlık tercillerine göre anılma kazancı (puan)</div>
+  <table>
+    <thead>
+      <tr><th>Sektör</th><th class="n">Az tanınan üçte bir</th><th class="n">Orta</th><th class="n">Çok tanınan üçte bir</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Hosting</td><td class="n hi">+2,7 [+1,2 · +4,2]</td><td class="n">−0,2</td><td class="n hi">−11,8 [−14,5 · −9,1]</td></tr>
+      <tr><td>Kozmetik · TR</td><td class="n hi">+5,3 [+1,8 · +9,3]</td><td class="n">+2,5</td><td class="n">−1,2 [−5,2 · +3,2]</td></tr>
+      <tr><td>Kod editörleri</td><td class="n">+0,8 [−1,0 · +2,8]</td><td class="n">+1,9</td><td class="n">−4,0 [−9,5 · +2,1]</td></tr>
+      <tr><td>Seyahat</td><td class="n">+1,8 [−0,8 · +4,0]</td><td class="n">−0,8</td><td class="n">+2,8 [−1,0 · +7,5]</td></tr>
+      <tr><td>VPN · EN</td><td class="n">+0,4 [−0,0 · +1,1]</td><td class="n">−0,7</td><td class="n">+3,8 [−1,0 · +9,7]</td></tr>
+      <tr><td>VPN · TR</td><td class="n hi">+1,2 [+0,5 · +2,0]</td><td class="n">+1,2</td><td class="n hi">+9,5 [+5,5 · +14,8]</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+  İki zıt örüntü var. Hosting ve Türkçe kozmetikte arama <strong>yeniden dağıtıyor</strong>:
+  az tanınan markalar kazanıyor, yerleşikler kaybediyor — hosting'de lider üçte bir
+  11,8 puan geriliyor. Türkçe VPN'de tam tersi: arama yerleşiği büyütüyor. Muhtemel
+  sebep sektörün kaynak yapısı — hosting ve kozmetikte çok sayıda karşılaştırma sayfası
+  uzun kuyruğu getiriyor, VPN aramasında aynı birkaç liderin listeleri dönüyor. Bu bir
+  hipotezdir, test edilmedi.
+</p>
+
+<p class="note">
+  "Az tanınan" şirket büyüklüğü demek değildir. Elimizdeki tek tanınırlık ölçüsü modelin
+  arama kapalıyken markayı anma oranıdır; ciro veya pazar payı verisi yok.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 10 — Aynı soru, farklı asistan: etkin marka sayısı (arama açık, anılma)</div>
+  <table>
+    <thead>
+      <tr><th>Sektör</th><th class="n">Claude Opus 4.6</th><th class="n">GPT-5.4</th><th class="n">Grok 4.20</th><th class="n">GLM-5</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Kod editörleri (30)</td><td class="n hi">15,0</td><td class="n">14,6</td><td class="n">13,5</td><td class="n">13,8</td></tr>
+      <tr><td>Hosting (36)</td><td class="n hi">22,5</td><td class="n">16,3</td><td class="n">20,5</td><td class="n">20,2</td></tr>
+      <tr><td>Seyahat (27)</td><td class="n hi">14,2</td><td class="n">8,9</td><td class="n">12,4</td><td class="n">10,2</td></tr>
+      <tr><td>VPN (24)</td><td class="n hi">6,5</td><td class="n">5,7</td><td class="n">6,4</td><td class="n">5,9</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+  Sıralama dört sektörün dördünde de aynı: Claude en geniş, GPT-5.4 en dar alanı
+  gösteriyor; seyahatte fark 1,6 kat. Bir markanın görünürlüğü yalnız kendi içeriğine
+  değil, kullanıcının hangi asistanı açtığına da bağlı. Tek asistanla ölçülen görünürlük
+  pazarın tamamına genellenemez — bu, kendi kontrollü testimizin de sınırıdır.
+</p>
+
+<p>
+  <strong>Yerli marka farkı.</strong> Türkiye menşeli 9 kozmetik markası aramasız
+  koşulda %9,5, aramalı koşulda %11,0 oranında anılıyor; 65 küresel marka için aynı
+  sayılar %10,8 ve %13,0. Aramadan kazanç +1,5 [−0,6 · +3,9] ve +2,3 [+0,4 · +4,3] puan;
+  aralıklar örtüşüyor. <strong>Ölçülebilir bir dezavantaj bulunamadı</strong> — ama 9
+  marka ve 5 bağımsız sorguyla bu "fark yoktur" demek değildir. Menşe kırılımı yalnız
+  Türkçe kozmetikte mümkün; Türkçe VPN registry'sinde Türkiye menşeli marka yok.
+  Etiketler analiz kodu yazılmadan önce ayrı bir commit'te mühürlendi ve hash'i sabitlendi.
+</p>
+
+<h2>6. Kontrollü test: öneriler cevabı değiştiriyor mu?</h2>
 
 <p>
   Gözlemsel ilişki nedensellik değildir; bir markanın çok sonuçta anılması zaten tanınmış
@@ -311,7 +505,7 @@
 </p>
 
 <div class="tblock">
-  <div class="tcap">Tablo 6 — Tasarım</div>
+  <div class="tcap">Tablo 11 — Tasarım</div>
   <table>
   <tbody>
     <tr><td>Asistan</td><td>Gemini 3.5 Flash Lite, sıcaklık 0,7</td></tr>
@@ -399,12 +593,12 @@
   <figcaption>
     Nokta: ortalama etki. Çubuk: 95% güven aralığı (30 sorgu×marka hücresi üzerinden bootstrap).
     Dikey çizgi sıfırdır; aralık çizgiyi kesiyorsa etki ölçülebilir değildir. Sayısal değerler
-    Tablo 7'de.
+    Tablo 12'de.
   </figcaption>
 </figure>
 
 <div class="tblock">
-  <div class="tcap">Tablo 7 — Etkiler, anılma olasılığı (puan)</div>
+  <div class="tcap">Tablo 12 — Etkiler, anılma olasılığı (puan)</div>
   <table>
     <thead>
       <tr><th>Öneri</th><th class="n">Tümü</th><th class="n">VPN</th><th class="n">Hosting</th><th class="n">Seyahat</th></tr>
@@ -472,7 +666,7 @@
   </figcaption>
 </figure>
 
-<h3>4.1 Pilot: tek markalı sayfa çalışmadı</h3>
+<h3>6.1 Pilot: tek markalı sayfa çalışmadı</h3>
 <p>
   Tam koşudan önce, yalnız hedef markayı öven tek markalı bir inceleme sayfası denendi.
   27 çağrının <strong>hiçbirinde</strong> hedef anılmadı; asistan her seferinde aynı liderleri
@@ -481,10 +675,10 @@
   liste yanıtlarını değiştirmiyor.
 </p>
 
-<h2>5. İki analiz birlikte: öneri karnesi</h2>
+<h2>7. İki analiz birlikte: öneri karnesi</h2>
 
 <div class="tblock">
-  <div class="tcap">Tablo 8 — Arayüzün verdiği her öneri, iki kanıt türüyle</div>
+  <div class="tcap">Tablo 13 — Arayüzün verdiği her öneri, iki kanıt türüyle</div>
   <table>
   <thead>
     <tr><th>Öneri</th><th>Gözlemsel (9.886 yanıt)</th><th>Nedensel (1.080 çağrı)</th><th>Karar</th></tr>
@@ -536,7 +730,47 @@
   listeye girmek de yetmiyor; üst sıra şart oluyor.
 </p>
 
-<h2>6. Ne söylemiyoruz</h2>
+<h2>8. Etik: görünürlük aracı neden manipülasyon aracı değil</h2>
+
+<p>
+  Bu projenin merkezindeki etik sorun basit: <strong>görünürlüğü en çok artıran
+  taktiklerin bir kısmı okuyucuyu aldatmaktan geçiyor.</strong> Literatür, uydurma
+  klinik alıntıların ve var olmayan uzman onaylarının asistan yanıtlarında en etkili
+  kaldıraçlar arasında olduğunu gösteriyor. Görünürlüğü naif biçimde optimize eden bir
+  araç, en üst önerisi olarak tam da bunu söylerdi.
+</p>
+
+<p>
+  Kısıt bu yüzden <strong>tavsiye düzeyinde değil, kod düzeyinde</strong>:
+  <code>src/visibility/ethics.py</code> yedi kuralı Türkçe ve İngilizce olarak tutar —
+  sahte inceleme, editoryal süsü verilmiş ücretli yerleşim, uydurma klinik veya uzman
+  otoritesi, garantili sıralama vaadi, toplu spam, başkasının sitesini değiştirme,
+  gerçek kullanıcı taklidi. Filtre, model metninin kullanıcıya ulaştığı tek noktada,
+  adım doğrulayıcısının içinde çalışır: takılan bir öneri ne önbelleğe yazılır ne
+  rapora girer. Uygulamanın sabit öneri havuzu da aynı kuraldan geçirilir; bugün
+  hiçbirini tetiklemiyor, ki amaç budur — ileride manipülatif bir şablon eklenirse
+  test paketi kırılır.
+</p>
+
+<p>
+  Kuralların her biri bir eylemi nesnesiyle birlikte arar; "inceleme" veya
+  "karşılaştırma" kelimesini içeren meşru öneriler etkilenmez. Filtre bir doğruluk
+  sınıflandırıcısı değildir: bir cümlenin doğru olup olmadığını değil, markaya kanıt
+  imal etmeyi önerip önermediğini kontrol eder. 16 birim testi her kuralı ayrı ayrı
+  doğrular.
+</p>
+
+<p>
+  Diğer üç etik taahhüt: <strong>kişisel veri toplanmadı</strong> — girdiler sentetik
+  sorular, çıktılar model metinleridir; kullanıcı testi notları rol düzeyinde tutulur,
+  ham kayıt saklanmaz. <strong>Her tahminin yanında dayanağı vardır</strong>; arayüz
+  çıplak skor göstermez, her öneri hangi sinyale ve hangi ölçülen etkiye dayandığını
+  yazar, ölçülmemişse "ölçülmedi" der. <strong>Kendi aracımızın yanlılığı da
+  yayımlanmıştır</strong>: marka evreni, sorgu havuzu, leksikonlar ve menşe etiketleri
+  depodadır ve eleştiriye açıktır.
+</p>
+
+<h2>9. Ne söylemiyoruz</h2>
 
 <ul>
   <li><strong>Tek asistan.</strong> Nedensel test yalnız Gemini 3.5 Flash Lite ve İngilizce
@@ -558,16 +792,18 @@
     doğrulanmadı.</li>
 </ul>
 
-<h2>7. Yeniden üretim</h2>
+<h2>10. Yeniden üretim</h2>
 
 <div class="tblock">
-  <div class="tcap">Tablo 9 — Komutlar ve çıktılar</div>
+  <div class="tcap">Tablo 14 — Komutlar ve çıktılar</div>
   <table>
   <thead><tr><th>Adım</th><th>Komut</th><th>Çıktı</th></tr></thead>
   <tbody>
     <tr><td>Veri sürümü</td><td><code>make evidence-v2-prepare</code></td><td><code>data/processed/evidence_v2</code></td></tr>
     <tr><td>Taban çizgileri</td><td><code>make evidence-v2-baselines</code></td><td><code>reports/modeling/</code></td></tr>
     <tr><td>Genelleme + kararlılık</td><td><code>make modeling-generalization</code></td><td><code>reports/generalization/</code></td></tr>
+    <tr><td>Yoğunlaşma + adalet</td><td><code>make modeling-fairness</code></td><td><code>reports/fairness/</code></td></tr>
+    <tr><td>Maskeleme ablasyonu</td><td><code>make modeling-masking</code></td><td><code>reports/masking/</code> (eğitim için GPU)</td></tr>
     <tr><td>Marka arayüzü (offline)</td><td><code>make app</code></td><td>Streamlit, API çağrısı yok</td></tr>
     <tr><td>Kontrollü test planı</td><td><code>make intervention-plan</code></td><td>Ücretsiz, çağrı yapmaz</td></tr>
     <tr><td>Kontrollü test koşusu</td><td><code>make intervention-run INTERVENTION_ARGS="--yes --retry-failed"</code></td><td>Ücretli; kaldığı yerden devam eder</td></tr>
@@ -575,6 +811,15 @@
   </tbody>
 </table>
 </div>
+
+<p>
+  <strong>Temiz klon doğrulaması.</strong> 12 Eylül 2026'da ayrı bir dizine yapılan
+  taze klonda <code>uv sync --group dev --locked</code> ve <code>pytest</code>
+  komutları <strong>252 testi</strong> on saniyede geçirdi: anahtar, GPU veya
+  indirilmiş veri gerekmedi. Hangi adımın ağ, GPU veya anahtar istediği ve GPU'su
+  olmayan bir değerlendiricinin raporu nasıl doğrulayabileceği
+  <code>docs/tekrarlanabilirlik.md</code> dosyasındadır.
+</p>
 
 <p class="note">
   Bu rapor <code>docs/ekip-bulgu-raporu.html</code> kaynağından üretilmiştir; sayılar
