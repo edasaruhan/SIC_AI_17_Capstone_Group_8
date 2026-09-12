@@ -17,6 +17,8 @@ import pandas as pd
 
 from modeling.features import select
 
+from . import ethics
+
 TRACK_SECTORS = {"en": ("editors", "hosting", "travel", "vpn"), "tr": ("cosmetics", "vpn")}
 SECTOR_TR = {
     "vpn": "VPN",
@@ -249,4 +251,7 @@ def recommendations(
     )
     for rec in recs:
         rec["verdict"] = verdict(rec["test"])
+        # The pool is static, so this never fires in production; it is here so an
+        # edit that smuggles in a manipulative template fails on the way out.
+        ethics.screen(f"{rec['title']} {rec['why']} {rec['action']}", where=rec["title"])
     return recs

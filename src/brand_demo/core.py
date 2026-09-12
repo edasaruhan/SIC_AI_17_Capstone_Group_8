@@ -10,6 +10,7 @@ from pathlib import Path
 
 from evidence_eval.io import digest, safe_url
 from modeling.brands import load_registry
+from visibility import ethics
 
 MODEL = "MiniMax-M2.7"
 LIMITATIONS = [
@@ -208,7 +209,10 @@ def advice(content: str, sources: list[dict]) -> list[dict]:
             raise ValueError("Önerinin kaynak kimliği veya birebir alıntısı doğrulanamadı")
         if not 10 <= len(row["suggestion"]) <= 1200:
             raise ValueError("Öneri uzunluğu geçersiz")
-    return value["actions"]
+    # Structural, not advisory: a suggestion that tells the brand to manufacture
+    # evidence or buy placement is refused here, where the step validator runs, so
+    # it is never cached and never rendered.
+    return ethics.screen_actions(value["actions"])
 
 
 def render(report: dict) -> str:
