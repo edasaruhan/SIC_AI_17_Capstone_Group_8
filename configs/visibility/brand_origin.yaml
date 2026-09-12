@@ -1,0 +1,150 @@
+# Marka menşei etiketleri — adalet analizinin girdisi
+#
+# NEDEN AYRI DOSYA: `configs/modeling/**` altındaki her yaml/json dosyası
+# evidence_v2 manifestinde hash'lenir (src/evidence_eval/workspace.py:47-51);
+# oraya yeni dosya koymak bütün kanıt hattını durdurur. Bu dosya o sınırın
+# dışındadır ve yalnız `src/visibility/fairness.py` tarafından okunur.
+#
+# KURAL (sonuçlara bakılmadan sabitlendi):
+#   origin   = markanın kurulduğu ve birincil olarak hizmet ettiği ülke
+#   owner_hq = markayı bugün elinde tutan şirketin ana merkezi
+# Analiz `origin` üzerinden yürür. İkisinin ayrılması bilinçlidir: Flormar
+# Türkiye'de kurulmuş bir markadır ama 2012'den beri Fransız Groupe Rocher'e
+# aittir. "Yerli marka görünürlüğü" sorusunun öznesi tüketicinin karşılaştığı
+# marka olduğu için köken esas alınır; sahiplik alanı da kaydedilir ki analiz
+# diğer tanımla yeniden üretilebilsin.
+#
+# ÖLÇÜT OLMAYANLAR: alan adı uzantısı (`.com.tr`), Türkiye'de satılıyor olmak,
+# Türkçe içerik üretmek. Kanıt: source_domains_v2.json içinde `.com.tr` alan
+# adına sahip 10 markanın 7'si küresel (L'Oréal Paris, CeraVe, Clinique,
+# Avène, Bioderma, La Roche-Posay, Weleda). Alan adı menşe göstermez.
+#
+# DOĞRULAMA DURUMU: etiketler model bilgisinden taslaklanmıştır ve insan
+# doğrulaması beklemektedir (`verification: pending_human_review`). Projede
+# AI kökenli kayıt insan onayı yerine geçmez; aynı ayrım burada da geçerlidir.
+# `confidence: low` olan satırlar önce doğrulanmalıdır. Etiket düzeltilirse
+# yalnız bu dosya değişir ve rapor yeniden üretilir.
+#
+# MÜHÜR: bu dosya adalet analizi kodundan önce, ayrı bir commit'te dondurulmuştur.
+# `src/visibility/fairness.py` içindeki ORIGIN_SHA256 sabiti içeriğini bağlar;
+# uyuşmazlıkta analiz çalışmaz.
+
+version: 1
+sealed_before_analysis: true
+verification: pending_human_review
+date: 2026-09-12
+
+rule: >-
+  Menşe, markanın kurulduğu ve birincil olarak hizmet ettiği ülkedir. Alan adı
+  uzantısı, dağıtım ağı veya yerelleştirilmiş içerik ölçüt değildir. Bugünkü
+  sahiplik ayrı alanda tutulur ve analizde kullanılmaz.
+
+values:
+  tr: Türkiye menşeli
+  global: Türkiye dışı menşeli
+  unclear: belirlenemedi; ana analizden çıkarılır, sayısı raporlanır
+
+cosmetics:
+  Abib: {origin: global, hq: KR}
+  Anua: {origin: global, hq: KR}
+  Aveeno: {origin: global, hq: US, owner_hq: US}
+  Avène: {origin: global, hq: FR, owner_hq: FR}
+  Beauty of Joseon: {origin: global, hq: KR}
+  Benton: {origin: global, hq: KR}
+  Bepanthol: {origin: global, hq: DE, owner_hq: DE}
+  Bioderma: {origin: global, hq: FR, owner_hq: FR}
+  Burt's Bees: {origin: global, hq: US, owner_hq: US}
+  COSRX: {origin: global, hq: KR}
+  Catrice: {origin: global, hq: DE, owner_hq: DE}
+  CeraVe: {origin: global, hq: US, owner_hq: FR}
+  Cetaphil: {origin: global, hq: US, owner_hq: CH}
+  Chanel: {origin: global, hq: FR}
+  Charlotte Tilbury: {origin: global, hq: GB}
+  Clinique: {origin: global, hq: US, owner_hq: US}
+  Dermokil: {origin: tr, hq: TR, owner_hq: TR}
+  Dior: {origin: global, hq: FR, owner_hq: FR}
+  Dove: {origin: global, hq: US, owner_hq: GB}
+  Dr.Jart+: {origin: global, hq: KR, owner_hq: US}
+  Drunk Elephant: {origin: global, hq: US, owner_hq: JP}
+  Essence: {origin: global, hq: DE, owner_hq: DE}
+  Estée Lauder: {origin: global, hq: US}
+  Etude House: {origin: global, hq: KR, owner_hq: KR}
+  Eucerin: {origin: global, hq: DE, owner_hq: DE}
+  Farmasi: {origin: tr, hq: TR, owner_hq: TR}
+  Fenty Beauty: {origin: global, hq: US}
+  Flormar: {origin: tr, hq: TR, owner_hq: FR}
+  Garnier: {origin: global, hq: FR, owner_hq: FR}
+  Golden Rose: {origin: tr, hq: TR, owner_hq: TR}
+  Huda Beauty: {origin: global, hq: AE}
+  Innisfree: {origin: global, hq: KR, owner_hq: KR}
+  Isana: {origin: global, hq: DE, owner_hq: DE}
+  KIKO Milano: {origin: global, hq: IT}
+  Kiehl's: {origin: global, hq: US, owner_hq: FR}
+  Kylie Cosmetics: {origin: global, hq: US}
+  Kérastase: {origin: global, hq: FR, owner_hq: FR}
+  L'Oréal Paris: {origin: global, hq: FR, owner_hq: FR}
+  La Mer: {origin: global, hq: US, owner_hq: US}
+  La Roche-Posay: {origin: global, hq: FR, owner_hq: FR}
+  Lancôme: {origin: global, hq: FR, owner_hq: FR}
+  Laneige: {origin: global, hq: KR, owner_hq: KR}
+  MAC: {origin: global, hq: CA, owner_hq: US}
+  Maybelline: {origin: global, hq: US, owner_hq: FR}
+  Medik8: {origin: global, hq: GB}
+  Missha: {origin: global, hq: KR}
+  NARS: {origin: global, hq: US, owner_hq: JP}
+  NYX Professional Makeup: {origin: global, hq: US, owner_hq: FR}
+  Neutrogena: {origin: global, hq: US, owner_hq: US}
+  Nivea: {origin: global, hq: DE, owner_hq: DE}
+  Note Cosmetics: {origin: tr, hq: TR, owner_hq: TR}
+  Olaplex: {origin: global, hq: US}
+  Pastel: {origin: tr, hq: TR, owner_hq: TR}
+  Paula's Choice: {origin: global, hq: US, owner_hq: GB}
+  Purito: {origin: global, hq: KR}
+  Rare Beauty: {origin: global, hq: US}
+  Revolution Beauty: {origin: global, hq: GB}
+  Rival de Loop: {origin: global, hq: DE, owner_hq: DE}
+  Shiseido: {origin: global, hq: JP}
+  Sinoz: {origin: tr, hq: TR, owner_hq: TR}
+  SkinCeuticals: {origin: global, hq: US, owner_hq: FR}
+  Sulwhasoo: {origin: global, hq: KR, owner_hq: KR}
+  The Body Shop: {origin: global, hq: GB}
+  The Ceel: {origin: tr, hq: TR, owner_hq: TR, confidence: low}
+  The INKEY List: {origin: global, hq: GB}
+  The Ordinary: {origin: global, hq: CA, owner_hq: CA}
+  The Purest Solutions: {origin: tr, hq: TR, owner_hq: TR, confidence: low}
+  Vichy: {origin: global, hq: FR, owner_hq: FR}
+  W7: {origin: global, hq: GB}
+  Weleda: {origin: global, hq: CH}
+  Yves Rocher: {origin: global, hq: FR}
+  Yves Saint Laurent: {origin: global, hq: FR, owner_hq: FR}
+  e.l.f. Cosmetics: {origin: global, hq: US}
+  theBalm: {origin: global, hq: US}
+
+# VPN registry'sinde Türkiye menşeli marka yoktur; menşe kırılımı bu sektörde
+# uygulanamaz ve rapor `not_applicable` satırı yazar. Liste yine de tutulur ki
+# bu iddia denetlenebilsin.
+vpn:
+  AdGuard VPN: {origin: global, hq: CY, confidence: low}
+  AirVPN: {origin: global, hq: IT}
+  Atlas VPN: {origin: global, hq: US, owner_hq: LT}
+  Cloudflare WARP: {origin: global, hq: US}
+  CyberGhost: {origin: global, hq: RO, owner_hq: GB}
+  ExpressVPN: {origin: global, hq: VG, owner_hq: GB}
+  Hotspot Shield: {origin: global, hq: US}
+  IPVanish: {origin: global, hq: US}
+  IVPN: {origin: global, hq: GI}
+  Mozilla VPN: {origin: global, hq: US}
+  Mullvad: {origin: global, hq: SE}
+  NetBird: {origin: global, hq: DE, confidence: low}
+  NordVPN: {origin: global, hq: LT}
+  Opera VPN: {origin: global, hq: NO}
+  Planet VPN: {origin: unclear, confidence: low}
+  PrivadoVPN: {origin: global, hq: CH}
+  Private Internet Access: {origin: global, hq: US, owner_hq: GB}
+  Proton VPN: {origin: global, hq: CH}
+  Surfshark: {origin: global, hq: NL, owner_hq: LT}
+  Tailscale: {origin: global, hq: CA}
+  TunnelBear: {origin: global, hq: CA, owner_hq: US}
+  VyprVPN: {origin: global, hq: CH}
+  Windscribe: {origin: global, hq: CA}
+  hide.me: {origin: global, hq: MY}
