@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>AI Asistanlarında Marka Görünürlüğü — Bulgular</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 16mm;
+    @bottom-center {
+      content: counter(page) " / " counter(pages);
+      font: 8.5pt "Liberation Sans", sans-serif;
+      color: #6b6a66;
+    }
+    @bottom-right {
+      content: "SIC Capstone · Grup 8";
+      font: 8.5pt "Liberation Sans", sans-serif;
+      color: #9a9992;
+    }
+  }
+  @page :first { @bottom-center { content: none } @bottom-right { content: none } }
+
+  :root {
+    --ink: #14140f;
+    --ink-2: #3f3e38;
+    --muted: #6b6a63;
+    --rule: #d9d8d2;
+    --track: #edece7;
+    --surface: #f7f6f2;
+    --s1: #2a78d6;
+    --s2: #eb6834;
+    --ord-1: #86b6ef;
+    --ord-2: #2a78d6;
+    --ord-3: #184f95;
+  }
+
+  html { font-size: 10.5pt; }
+  body {
+    margin: 0;
+    font-family: "Liberation Serif", "DejaVu Serif", Georgia, serif;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  h1, h2, h3, th, .label, .kicker, figcaption, .tag, .legend, .num {
+    font-family: "Liberation Sans", "DejaVu Sans", sans-serif;
+  }
+  h1 { font-size: 23pt; line-height: 1.15; margin: 0 0 6pt; letter-spacing: -0.4pt; }
+  h2 {
+    font-size: 13pt; margin: 20pt 0 7pt; padding-top: 7pt;
+    border-top: 1.6pt solid var(--ink); break-after: avoid;
+  }
+  h3 { font-size: 10.5pt; margin: 13pt 0 4pt; break-after: avoid; }
+  p { margin: 0 0 7pt; }
+  ul { margin: 0 0 8pt; padding-left: 14pt; }
+  li { margin-bottom: 3pt; }
+  strong { font-weight: 700; }
+  code {
+    font-family: "Liberation Mono", monospace; font-size: 8.6pt;
+    background: var(--surface); padding: 0.5pt 2.5pt; border-radius: 2pt;
+  }
+
+  .kicker { font-size: 8.5pt; letter-spacing: 1.4pt; text-transform: uppercase; color: var(--muted); margin-bottom: 8pt; }
+  .standfirst { font-size: 11.5pt; line-height: 1.45; color: var(--ink-2); margin: 10pt 0 14pt; }
+  .meta { font-size: 8.7pt; color: var(--muted); font-family: "Liberation Sans", sans-serif; border-top: 0.6pt solid var(--rule); padding-top: 6pt; }
+  .cover { border-bottom: 1.6pt solid var(--ink); padding-bottom: 12pt; margin-bottom: 4pt; }
+
+  .keybox { background: var(--surface); border-left: 2.5pt solid var(--s1); padding: 9pt 12pt; margin: 10pt 0 14pt; break-inside: avoid; }
+  .keybox h3 { margin-top: 0; }
+  .keybox ol { margin: 0; padding-left: 15pt; }
+  .keybox li { margin-bottom: 5pt; }
+
+  table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 8.9pt; break-inside: avoid; }
+  .tblock { break-inside: avoid; margin: 6pt 0 10pt; }
+  .tcap { font-family: "Liberation Sans", sans-serif; font-size: 8.5pt; color: var(--muted); padding-bottom: 3pt; }
+  .tblock table { margin: 0; }
+  th { text-align: left; font-size: 8.3pt; font-weight: 700; color: var(--ink-2); border-bottom: 1pt solid var(--ink); padding: 4pt 5pt; }
+  td { padding: 4pt 5pt; border-bottom: 0.5pt solid var(--rule); vertical-align: top; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0.8pt solid var(--ink); }
+  .hi { font-weight: 700; }
+
+  figure { margin: 10pt 0 14pt; break-inside: avoid; }
+  figcaption { font-size: 8.4pt; color: var(--muted); margin-top: 6pt; line-height: 1.4; }
+  .fig-title { font-family: "Liberation Sans", sans-serif; font-size: 9.5pt; font-weight: 700; margin-bottom: 8pt; }
+
+  .bar-row { margin-bottom: 6pt; }
+  .bar-label { font-family: "Liberation Sans", sans-serif; font-size: 8.4pt; color: var(--ink-2); margin-bottom: 2pt; }
+  .track { background: var(--track); height: 13pt; position: relative; border-radius: 2pt; }
+  .fill { height: 13pt; border-radius: 0 3pt 3pt 0; background: var(--s1); }
+  .val { position: absolute; top: 1.5pt; font-family: "Liberation Sans", sans-serif; font-size: 8.3pt; font-weight: 700; color: var(--ink); }
+
+  .ci-row { margin-bottom: 9pt; }
+  .ci-track { position: relative; height: 15pt; background: var(--track); border-radius: 2pt; }
+  .zero { position: absolute; top: 0; height: 15pt; width: 1pt; background: var(--ink-2); }
+  .ci { position: absolute; top: 6pt; height: 3pt; background: var(--s1); border-radius: 1.5pt; }
+  .dot { position: absolute; top: 3.5pt; margin-left: -4pt; height: 8pt; width: 8pt; border-radius: 4pt; background: var(--s1); border: 1.2pt solid #fff; }
+  .axis { position: relative; height: 11pt; margin-top: 1pt; }
+  .tick { position: absolute; font-family: "Liberation Sans", sans-serif; font-size: 7.6pt; color: var(--muted); transform: translateX(-50%); }
+
+  .legend { font-size: 8.3pt; color: var(--ink-2); margin-bottom: 7pt; }
+  .swatch { display: inline-block; width: 8pt; height: 8pt; border-radius: 2pt; margin: 0 3pt 0 10pt; vertical-align: -0.5pt; }
+  .swatch:first-child { margin-left: 0; }
+  .sector { margin-bottom: 9pt; }
+  .sector-name { font-family: "Liberation Sans", sans-serif; font-size: 8.8pt; font-weight: 700; margin-bottom: 3pt; }
+  .mini { height: 9pt; margin-bottom: 2.5pt; position: relative; }
+  .mini .fill { height: 9pt; }
+  .mini .val { top: -0.5pt; font-weight: 400; }
+
+  .verdict-yes { color: #1a6b2e; font-weight: 700; }
+  .verdict-no { color: #8a2f2c; font-weight: 700; }
+  .verdict-flat { color: var(--muted); font-weight: 700; }
+  .note { font-size: 8.6pt; color: var(--muted); border-top: 0.5pt solid var(--rule); padding-top: 5pt; }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="kicker">Samsung Innovation Campus · Capstone · Grup 8</div>
+  <h1>Yapay zekâ asistanlarında marka görünürlüğü: ne ölçtük, ne bulduk</h1>
+  <p class="standfirst">
+    Asistanların marka önerilerini iki ayrı yoldan inceledik: 9.886 kayıtlı yanıt üzerinde
+    <em>hangi sinyaller sektörler ve diller arasında taşınıyor</em> sorusunu, 1.080 kontrollü
+    canlı çağrı ile de <em>önerdiğimiz değişiklikler cevabı gerçekten değiştiriyor mu</em>
+    sorusunu yanıtladık. Bu rapor iki çalışmanın ortak sonucudur.
+  </p>
+  <div class="meta">
+    12 Eylül 2026 · Kaynak tablolar <code>reports/generalization/</code> ve
+    <code>reports/intervention/</code> · Bütün sayılar bu depodaki komutlarla yeniden üretilebilir
+  </div>
+</header>
+
+<h2>1. Yönetici özeti</h2>
+
+<div class="keybox">
+  <h3>Beş bulgu</h3>
+  <ol>
+    <li><strong>Taşınan sinyal içerik dili değil, retrieval'daki göreli konum.</strong>
+      Bir markanın kaç bağımsız arama sonucunda, rakiplerine göre ne sıklıkta ve ne kadar
+      üstte anıldığı; her sektörde ve iki dilde belirleyici. Üstünlük dili, kaynak tipi ve
+      otorite ifadeleri hacim eşitlenince ayakta kalmıyor.</li>
+    <li><strong>Sektörden bağımsız bir model kurulabiliyor.</strong> Sinyaller yanıt içi
+      göreli biçimde ifade edildiğinde (M2-Invariant), modeli hiç görmediği bir sektörde
+      test etsek bile başarı korunuyor: dört sektörün dördünde ham sayılara göre anlamlı
+      kazanç (ΔPR-AUC +0,10 … +0,33).</li>
+    <li><strong>Öneri nedensel olarak çalışıyor.</strong> Kontrollü testte, rakiplerini anan
+      tek bir bağımsız karşılaştırma sayfasına girmek hedef markanın anılma olasılığını
+      %2,1'den %33'e; aynı sayfa 1. sıraya alındığında %65'e çıkardı.</li>
+    <li><strong>Görünmek, birinci önerilmek değildir.</strong> 1.080 çağrının hiçbirinde hedef
+      marka <em>ilk anılan</em> marka olmadı. Asistan her koşulda önce yerleşik liderleri saydı.</li>
+    <li><strong>Üstünlük dilinin ("en iyi", "#1") desteği yok.</strong> Ne gözlemsel veride
+      ne de kontrollü testte ölçülebilir bir kazanç verdi; gözlemsel veride çoğu sektörde
+      işaret ters yönde.</li>
+  </ol>
+</div>
+
+<h2>2. Veri ve kapsam</h2>
+
+<p>
+  Çalışma, kaydedilmiş asistan yanıtlarından oluşan <code>evidence_v2</code> veri sürümü
+  üzerinde yürüdü. Her yanıt iki koşulda toplandı: <strong>arama açık</strong> (asistana web
+  sonuçları verildi) ve <strong>arama kapalı</strong> (yalnız modelin kendi bilgisi).
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 1 — Veri kapsamı</div>
+  <table>
+  <thead>
+    <tr><th>Korpus</th><th class="n">Yanıt</th><th class="n">Sorgu</th><th>Sektör</th><th class="n">Marka-aday satırı</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>İngilizce</td><td class="n">9.586</td><td class="n">40</td><td>VPN, hosting, seyahat, editör</td><td class="n">280.440</td></tr>
+    <tr><td>Türkçe</td><td class="n">300</td><td class="n">10</td><td>VPN, kozmetik</td><td class="n">14.700</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  <code>evidence_v2</code>, v1'e göre yalnız <strong>kaynak taksonomisini</strong> düzeltir.
+  v1'de editoryal ve affiliate domain listeleri boştu; arama sonuçlarının %88'i
+  <code>unknown</code> sayılıyor, bu yüzden sunumdaki affiliate hipotezi test edilemiyordu.
+  Yanıtlar, adaylar, etiketler ve fold'lar değişmedi.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 2 — Kaynak tipi dağılımı, kanıt satırı payı (taksonomi düzeltmesinin etkisi)</div>
+  <table>
+  <thead>
+    <tr><th>Kaynak tipi</th><th class="n">EN v1</th><th class="n">EN v2</th><th class="n">TR v1</th><th class="n">TR v2</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Editoryal</td><td class="n">%0</td><td class="n">%19</td><td class="n">%0</td><td class="n">%36</td></tr>
+    <tr><td>Affiliate / karşılaştırma</td><td class="n">%0</td><td class="n">%8</td><td class="n">%0</td><td class="n">%11</td></tr>
+    <tr><td>Forum / kullanıcı içeriği</td><td class="n">%10</td><td class="n">%28</td><td class="n">%7</td><td class="n">%12</td></tr>
+    <tr><td>Resmî site</td><td class="n">%2</td><td class="n">%8</td><td class="n">%2</td><td class="n">%2</td></tr>
+    <tr><td>Satıcı</td><td class="n">%0</td><td class="n">%0</td><td class="n">%1</td><td class="n">%15</td></tr>
+    <tr><td>Bilinmeyen</td><td class="n">%88</td><td class="n">%33</td><td class="n">%90</td><td class="n">%24</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>3. Gözlemsel analiz: hangi sinyal genel?</h2>
+
+<p>
+  Önceki değerlendirme sorgu düzeyinde fold kullanıyordu: aynı sorgu hem eğitimde hem testte
+  bulunmuyordu, ama model test ettiği sektörü eğitimde yine görüyordu. "VPN'de öğrendiğimiz
+  şey VPN'e mi özgü?" sorusu bu yüzden cevapsızdı. <strong>Leave-one-domain-out (LODO)</strong>
+  testi ve <strong>sinyal kararlılık matrisi</strong> bunu yanıtlar.
+</p>
+
+<h3>3.1 Sinyalleri göreli ifade edince transfer açığı kapanıyor</h3>
+
+<p>
+  <strong>M2-General</strong> ham sayıları kullanır (kaç sonuçta anıldı, en iyi sıra, kaynak
+  sayıları). <strong>M2-Invariant</strong> aynı bilgiyi <em>aynı yanıttaki rakiplere göre</em>
+  ifade eder (sonuç payı, lidere oran, sıra yüzdeliği). "7 sonuçta anıldı" bilgisi 10 sonuç
+  getiren bir sektörde ve 40 sonuç getiren bir sektörde farklı anlama gelir; payı ve rakiplere
+  göre sırası ise gelmez. Her iki model de marka kimliği (prior) kullanmaz.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 3 — Birincil öneri (y_top), İngilizce, <strong>modelin hiç görmediği sektör</strong></div>
+  <table>
+  <thead>
+    <tr><th>Test sektörü</th><th class="n">M2-General PR-AUC</th><th class="n">M2-Invariant PR-AUC</th><th class="n">M2_full (prior'lı, sektörü görmüş)</th><th class="n">M2-Invariant top-1</th><th class="n">M2_full top-1</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Editör</td><td class="n">0,348</td><td class="n hi">0,675</td><td class="n">0,848</td><td class="n">%67,5</td><td class="n">%89,2</td></tr>
+    <tr><td>Hosting</td><td class="n">0,192</td><td class="n hi">0,290</td><td class="n">0,269</td><td class="n">%34,6</td><td class="n">%34,6</td></tr>
+    <tr><td>Seyahat</td><td class="n">0,249</td><td class="n hi">0,361</td><td class="n">0,554</td><td class="n">%49,5</td><td class="n">%75,6</td></tr>
+    <tr><td>VPN</td><td class="n">0,256</td><td class="n hi">0,566</td><td class="n">0,688</td><td class="n">%62,2</td><td class="n">%61,4</td></tr>
+  </tbody>
+</table>
+</div>
+
+<ul>
+  <li>M2-Invariant, görülmemiş sektörde M2-General'i dört sektörün dördünde geçiyor; bütün
+    güven aralıkları sıfırın üstünde.</li>
+  <li>Sektörü görmek ile görmemek arasındaki top-1 farkı sıfıra yakın (en fazla +2,3 puan).
+    M2-General'de bu fark editörde 20, VPN'de 30 puandı.</li>
+  <li>Hosting ve VPN'de, marka kimliği bilmeyen ve sektörü hiç görmemiş model, prior kullanan
+    üretim modelinin top-1 başarısına ulaşıyor.</li>
+</ul>
+
+<p>
+  Yani ham sayılarla öğrenilen kural sektöre özgü <em>görünüyordu</em>; aynı bilgi yanıt içi
+  göreli biçimde ifade edilince taşınıyor.
+</p>
+
+<h3>3.2 İngilizce → Türkçe: dil ve üretici model birlikte değişirken</h3>
+
+<div class="tblock">
+  <div class="tcap">Tablo 4 — Yalnız İngilizce veriyle eğitilen göreli model, Türkçe test panelinde</div>
+  <table>
+  <thead>
+    <tr><th>TR sektör / hedef</th><th class="n">Konum kuralı</th><th class="n">M2-Invariant (EN'de eğitilmiş)</th><th class="n">M2_full (TR'de eğitilmiş, prior'lı)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>VPN · birincil öneri, top-1</td><td class="n">%15,8</td><td class="n hi">%42,1</td><td class="n">%22,8</td></tr>
+    <tr><td>VPN · anılma, PR-AUC</td><td class="n">0,599</td><td class="n hi">0,794</td><td class="n">0,809</td></tr>
+    <tr><td>Kozmetik · anılma, PR-AUC</td><td class="n">0,409</td><td class="n hi">0,485</td><td class="n">0,510</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Türkçe VPN'de yalnız İngilizce veriyle eğitilen göreli model konum kuralını anlamlı biçimde
+  geçiyor: birincil öneride +0,27 PR-AUC [0,04 · 0,48], anılmada +0,19 [0,13 · 0,22]. Türkçe
+  veri küçüktür (VPN'de 57 kazanan, 5 sorgu); kozmetik birincil önerisinde yalnız 3 sorgu var
+  ve kanıt sayılmaz.
+</p>
+
+<h3>3.3 Sinyal kararlılık matrisi</h3>
+
+<p>
+  Her sinyal, her sektörde, aynı yanıttaki kazanan ve kaybeden adaylar arasında karşılaştırıldı.
+  İçerik sayaçları sonuç sayısıyla birlikte arttığı için her sinyal bir de <strong>yalnız aynı
+  sayıda sonuçta anılan çiftler</strong> arasında test edildi ("hacim-eşli"). Kararlılık
+  sınıfının kuralı sonuçlara bakılmadan önce sabitlendi.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 5 — Sinyallerin sektörler arası kararlılığı</div>
+  <table>
+  <thead>
+    <tr><th>Sinyal</th><th>Marjinal</th><th>Hacim-eşli</th><th>Yorum</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Aramada görünmek</td><td>Güçlü</td><td class="hi">Güçlü</td><td>Her sektörde ve iki dilde belirleyici.</td></tr>
+    <tr><td>Kaç sonuçta anıldığı</td><td>Güçlü</td><td class="hi">Güçlü</td><td>En büyük transfer katkısı (LODO ΔPR-AUC 0,10–0,12).</td></tr>
+    <tr><td>Snippet uzunluğu</td><td>Orta/Güçlü</td><td>Orta</td><td>Hacimden bağımsız kalan tek içerik sinyali.</td></tr>
+    <tr><td>Üstünlük dili</td><td>Orta/Çelişkili</td><td>Çelişkili</td><td>Çoğu sektörde <strong>ters</strong> yönde. Genel bir kural yok.</td></tr>
+    <tr><td>En iyi sıra (mutlak)</td><td>Güçlü</td><td>Zayıf</td><td>Eşit hacimde ayırt etmiyor; <em>göreli</em> sıra transferde işe yarıyor.</td></tr>
+    <tr><td>Affiliate kaynak sayısı</td><td>Güçlü</td><td>Zayıf</td><td>Marjinal ilişki hacimden geliyor.</td></tr>
+    <tr><td>Editoryal kaynak sayısı</td><td>Orta/Çelişkili</td><td>Orta (ters)</td><td>Eşit hacimde editoryal pay anılmayla ters ilişkili.</td></tr>
+    <tr><td>Otorite / sosyal kanıt / yıl</td><td>Çoğu Güçlü</td><td>Zayıf–Çelişkili</td><td>Marjinal etkinin çoğu "daha çok sonuç, daha çok metin" etkisi.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  <strong>Affiliate hipotezi bu gözlemsel veriyle desteklenmiyor:</strong> affiliate kaynakların
+  etkisi, markayı anan sonuç sayısının etkisinden ayrılamıyor.
+</p>
+
+<h2>4. Kontrollü test: öneriler cevabı değiştiriyor mu?</h2>
+
+<p>
+  Gözlemsel ilişki nedensellik değildir; bir markanın çok sonuçta anılması zaten tanınmış
+  olmasının sonucu olabilir. Bunu ayırmak için kayıtlı <em>gerçek</em> bir arama bağlamına tek
+  bir değişiklik ekleyip aynı soruyu tekrar sorduk.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 6 — Tasarım</div>
+  <table>
+  <tbody>
+    <tr><td>Asistan</td><td>Gemini 3.5 Flash Lite, sıcaklık 0,7</td></tr>
+    <tr><td>Bağlam</td><td>15 kayıtlı arama bağlamı (sektör başına 5 sorgu, ilk 10 sonuç)</td></tr>
+    <tr><td>Hedef markalar</td><td>Önceden sabit kural: aramasız yanıtlarda %5–40 anılan (asistan tanıyor), aramada en az görünen iki marka. VPN: Private Internet Access, Windscribe · Hosting: Supabase, Coolify · Seyahat: The Flight Deal, Secret Flying</td></tr>
+    <tr><td>Müdahale</td><td>Sektörün iki liderini ve hedefi listeleyen bağımsız bir karşılaştırma sayfası — arayüzün verdiği önerinin tam karşılığı. Sayfalar ayrılmış <code>.example</code> alan adlarında; hiçbir gerçek yayın taklit edilmedi.</td></tr>
+    <tr><td>Ölçüm</td><td>Marka adı eşleştirmesi (LLM yargıcı değil): hedef anıldı mı, ilk anılan marka mı</td></tr>
+    <tr><td>Hacim</td><td>Planlanan 1.080 çağrının tamamı; her hücrede 8 tekrar, kol başına 240 gözlem; ~1,17M girdi + 498K çıktı token</td></tr>
+  </tbody>
+</table>
+</div>
+
+<figure>
+  <div class="fig-title">Şekil 1 — Hedef markanın anılma oranı, kola göre</div>
+  <div class="bar-row">
+    <div class="bar-label">Kontrol: kayıtlı arama bağlamı, değişiklik yok</div>
+    <div class="track"><div class="fill" style="width:3.0%"></div><div class="val" style="left:5.0%">%2,1</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">+1 karşılaştırma sayfası, 5. sıra</div>
+    <div class="track"><div class="fill" style="width:47.6%"></div><div class="val" style="left:49.6%">%33,3</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">+1 karşılaştırma sayfası, 1. sıra</div>
+    <div class="track"><div class="fill" style="width:92.3%"></div><div class="val" style="left:83.3%; color:#fff">%64,6</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">+1 üstünlük dilli karşılaştırma sayfası, 5. sıra</div>
+    <div class="track"><div class="fill" style="width:56.6%"></div><div class="val" style="left:58.6%">%39,6</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">+2 karşılaştırma sayfası (iki ayrı site), 5. ve 8. sıra</div>
+    <div class="track"><div class="fill" style="width:56.6%"></div><div class="val" style="left:58.6%">%39,6</div></div>
+  </div>
+  <figcaption>
+    Ölçek 0–%70. Her kol 240 sorgu×marka gözlemi (30 hücre × 8 tekrar). Sayılar sorgu×hedef marka hücrelerinin
+    ortalamasıdır; tekrarlar bağımsız gözlem sayılmaz.
+  </figcaption>
+</figure>
+
+<figure>
+  <div class="fig-title">Şekil 2 — Her önerinin ölçülen etkisi (eşleştirilmiş fark, puan)</div>
+
+  <div class="ci-row">
+    <div class="bar-label">Bağımsız bir sonuçta görünmek (kontrol → 5. sıra)</div>
+    <div class="ci-track">
+      <div class="zero" style="left:16.67%"></div>
+      <div class="ci" style="left:48.67%; width:41.67%"></div>
+      <div class="dot" style="left:68.67%"></div>
+    </div>
+  </div>
+  <div class="ci-row">
+    <div class="bar-label">Sıra: 5. sıradan 1. sıraya</div>
+    <div class="ci-track">
+      <div class="zero" style="left:16.67%"></div>
+      <div class="ci" style="left:48.67%; width:41.67%"></div>
+      <div class="dot" style="left:68.67%"></div>
+    </div>
+  </div>
+  <div class="ci-row">
+    <div class="bar-label">Dil: üstünlük iddiası vs tarafsız</div>
+    <div class="ci-track">
+      <div class="zero" style="left:16.67%"></div>
+      <div class="ci" style="left:16.0%; width:24.33%"></div>
+      <div class="dot" style="left:27.0%"></div>
+    </div>
+  </div>
+  <div class="ci-row">
+    <div class="bar-label">Hacim: aynı metin ikinci bir sitede de</div>
+    <div class="ci-track">
+      <div class="zero" style="left:16.67%"></div>
+      <div class="ci" style="left:16.0%; width:23.67%"></div>
+      <div class="dot" style="left:27.0%"></div>
+    </div>
+    <div class="axis">
+      <span class="tick" style="left:0%">−10</span>
+      <span class="tick" style="left:16.67%">0</span>
+      <span class="tick" style="left:33.33%">+10</span>
+      <span class="tick" style="left:50%">+20</span>
+      <span class="tick" style="left:66.67%">+30</span>
+      <span class="tick" style="left:83.33%">+40</span>
+      <span class="tick" style="left:100%">+50</span>
+    </div>
+  </div>
+  <figcaption>
+    Nokta: ortalama etki. Çubuk: 95% güven aralığı (30 sorgu×marka hücresi üzerinden bootstrap).
+    Dikey çizgi sıfırdır; aralık çizgiyi kesiyorsa etki ölçülebilir değildir. Sayısal değerler
+    Tablo 7'de.
+  </figcaption>
+</figure>
+
+<div class="tblock">
+  <div class="tcap">Tablo 7 — Etkiler, anılma olasılığı (puan)</div>
+  <table>
+    <thead>
+      <tr><th>Öneri</th><th class="n">Tümü</th><th class="n">VPN</th><th class="n">Hosting</th><th class="n">Seyahat</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Rakipleri anan karşılaştırma sayfasında yer almak</td>
+        <td class="n hi">+31,2 [+19,2 · +44,2]</td><td class="n">+33,8 [+12,5 · +57,5]</td>
+        <td class="n">+51,2 [+28,7 · +73,8]</td><td class="n">+8,8 [+1,2 · +17,5]</td>
+      </tr>
+      <tr>
+        <td>Aynı sayfanın 5. yerine 1. sırada olması</td>
+        <td class="n hi">+31,2 [+19,2 · +44,2]</td><td class="n">+35,0 [+12,5 · +58,8]</td>
+        <td class="n">+20,0 [+5,0 · +38,8]</td><td class="n">+38,8 [+16,2 · +61,3]</td>
+      </tr>
+      <tr>
+        <td>Aynı sayfada üstünlük dili ("en iyi", "#1")</td>
+        <td class="n">+6,2 [−0,4 · +14,2]</td><td class="n">+16,2 [−2,5 · +36,2]</td>
+        <td class="n">+3,8 [−1,2 · +8,8]</td><td class="n">−1,2 [−5,0 · +2,5]</td>
+      </tr>
+      <tr>
+        <td>Aynı metnin ikinci bir sitede de olması</td>
+        <td class="n">+6,2 [−0,4 · +13,8]</td><td class="n">+8,8 [−2,5 · +23,8]</td>
+        <td class="n">+0,0 [−6,2 · +5,0]</td><td class="n">+10,0 [−1,2 · +26,2]</td>
+      </tr>
+      <tr>
+        <td>Markanın <strong>ilk anılan</strong> marka olması</td>
+        <td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<figure>
+  <div class="fig-title">Şekil 3 — Sektörler aynı tepkiyi vermiyor</div>
+  <div class="legend">
+    <span class="swatch" style="background:var(--ord-1)"></span>Kontrol
+    <span class="swatch" style="background:var(--ord-2)"></span>Sayfa 5. sırada
+    <span class="swatch" style="background:var(--ord-3)"></span>Sayfa 1. sırada
+  </div>
+
+  <div class="sector">
+    <div class="sector-name">VPN</div>
+    <div class="track mini"><div class="fill" style="width:1.5%; background:var(--ord-1)"></div><div class="val" style="left:3.5%">%1,2</div></div>
+    <div class="track mini"><div class="fill" style="width:43.8%; background:var(--ord-2)"></div><div class="val" style="left:45.8%">%35,0</div></div>
+    <div class="track mini"><div class="fill" style="width:87.5%; background:var(--ord-3)"></div><div class="val" style="left:78.5%; color:#fff">%70,0</div></div>
+  </div>
+  <div class="sector">
+    <div class="sector-name">Hosting</div>
+    <div class="track mini"><div class="fill" style="width:6.25%; background:var(--ord-1)"></div><div class="val" style="left:8.25%">%5,0</div></div>
+    <div class="track mini"><div class="fill" style="width:70.25%; background:var(--ord-2)"></div><div class="val" style="left:72.25%">%56,2</div></div>
+    <div class="track mini"><div class="fill" style="width:95.25%; background:var(--ord-3)"></div><div class="val" style="left:86.25%; color:#fff">%76,2</div></div>
+  </div>
+  <div class="sector">
+    <div class="sector-name">Seyahat</div>
+    <div class="track mini"><div class="fill" style="width:0%; background:var(--ord-1)"></div><div class="val" style="left:1.5%">%0,0</div></div>
+    <div class="track mini"><div class="fill" style="width:11.0%; background:var(--ord-2)"></div><div class="val" style="left:13.0%">%8,8</div></div>
+    <div class="track mini"><div class="fill" style="width:59.4%; background:var(--ord-3)"></div><div class="val" style="left:61.4%">%47,5</div></div>
+  </div>
+  <figcaption>
+    Ölçek 0–%80. Hosting'de tek bir karşılaştırma sayfası 5. sırada bile anılmayı %5'ten
+    %56'ya çıkarıyor (+51,2 puan). Seyahatte aynı sayfanın 5. sıradaki etkisi çok küçük
+    (+8,8 puan); asıl etki sayfa 1. sıraya alındığında ortaya çıkıyor (+38,8). Sektör başına
+    10 hücre var, aralıklar geniştir; bu fark yön göstericidir.
+  </figcaption>
+</figure>
+
+<h3>4.1 Pilot: tek markalı sayfa çalışmadı</h3>
+<p>
+  Tam koşudan önce, yalnız hedef markayı öven tek markalı bir inceleme sayfası denendi.
+  27 çağrının <strong>hiçbirinde</strong> hedef anılmadı; asistan her seferinde aynı liderleri
+  saydı. Müdahale bu yüzden, arayüzün gerçekten verdiği öneriyle — rakipleri de listeleyen
+  bağımsız karşılaştırma sayfası — hizalandı. Kendi hakkında yazılmış bir sayfa, bu asistanın
+  liste yanıtlarını değiştirmiyor.
+</p>
+
+<h2>5. İki analiz birlikte: öneri karnesi</h2>
+
+<div class="tblock">
+  <div class="tcap">Tablo 8 — Arayüzün verdiği her öneri, iki kanıt türüyle</div>
+  <table>
+  <thead>
+    <tr><th>Öneri</th><th>Gözlemsel (9.886 yanıt)</th><th>Nedensel (1.080 çağrı)</th><th>Karar</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Rakiplerini anan bağımsız karşılaştırma sayfalarında yer al</td>
+      <td>Güçlü, hacim-eşli kontrolde de ayakta</td>
+      <td>+31 puan, aralık sıfırın üstünde</td>
+      <td class="verdict-yes">Öner</td>
+    </tr>
+    <tr>
+      <td>Üst sıralarda görünmeyi hedefle</td>
+      <td>Göreli sıra transferde işe yarıyor (mutlak sıra değil)</td>
+      <td>+31 puan, aralık sıfırın üstünde</td>
+      <td class="verdict-yes">Öner</td>
+    </tr>
+    <tr>
+      <td>Birden çok bağımsız kaynakta anıl</td>
+      <td>En büyük transfer katkısı</td>
+      <td>Aynı metnin kopyası için +6, aralık sıfırı içeriyor</td>
+      <td class="verdict-flat">Öner, ama kopya değil ayrı içerik</td>
+    </tr>
+    <tr>
+      <td>Üstünlük dili kullan</td>
+      <td>Çelişkili; çoğu sektörde ters yön</td>
+      <td>+6, aralık sıfırı içeriyor</td>
+      <td class="verdict-no">Tek başına strateji yapma</td>
+    </tr>
+    <tr>
+      <td>Affiliate kaynaklara odaklan</td>
+      <td>Etki hacimden ayrılamıyor</td>
+      <td>Ayrıca test edilmedi</td>
+      <td class="verdict-no">Desteklenmiyor</td>
+    </tr>
+    <tr>
+      <td>Birincil öneri olmayı hedefle</td>
+      <td>Büyük kısmını marka kimliği taşıyor</td>
+      <td>Hiçbir kolda değişmedi</td>
+      <td class="verdict-no">İçerikle ulaşılmıyor</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Pratik özet: <strong>içerik ve kaynak stratejisi listeye girmeyi sağlıyor, liderliği
+  sağlamıyor.</strong> Asistanın yerleşik lider listesi güçlü olduğunda (seyahat) yalnız
+  listeye girmek de yetmiyor; üst sıra şart oluyor.
+</p>
+
+<h2>6. Ne söylemiyoruz</h2>
+
+<ul>
+  <li><strong>Tek asistan.</strong> Nedensel test yalnız Gemini 3.5 Flash Lite ve İngilizce
+    bağlamla yapıldı. Başka modellere kendiliğinden genellenmez.</li>
+  <li><strong>"Aramada çıkarsa" testi.</strong> Sayfalar kayıtlı arama sonuçlarına eklendi.
+    Gerçek web'de bir sayfada yer almak, aramanın o sayfayı getireceğini garanti etmez; test
+    yalnız "getirilirse ne olur" sorusunu yanıtlar.</li>
+  <li><strong>Az bağımsız sorgu.</strong> İngilizce sektör başına 10, Türkçe 5 sorgu; nedensel
+    testte sektör başına 10 hücre. Sektör kırılımları yön göstericidir.</li>
+  <li><strong>Gözlemsel etkiler nedensel değildir.</strong> Hacim-eşli karşılaştırma bile
+    nedensel değil; nedensel iddia yalnız 4. bölümdeki kontrollü test için geçerlidir.</li>
+  <li><strong>Ölçüm yaklaşıktır.</strong> Sonuçlar marka adı eşleştirmesiyle ölçüldü; "ilk
+    anılan marka", birincil önerinin vekilidir.</li>
+  <li><strong>Sentetik alan adları.</strong> Eklenen sayfalar <code>.example</code> alan
+    adlarında; modelin bunlara güveni gerçek yayınlardan düşük olabilir, etkiler bu açıdan
+    muhafazakârdır.</li>
+  <li><strong>Kaynak taksonomisi kural tabanlıdır.</strong> En sık domainler elle sınıflandırıldı;
+    EN kanıt satırlarının %33'ü hâlâ <code>unknown</code> ve iki bağımsız işaretleyiciyle
+    doğrulanmadı.</li>
+</ul>
+
+<h2>7. Yeniden üretim</h2>
+
+<div class="tblock">
+  <div class="tcap">Tablo 9 — Komutlar ve çıktılar</div>
+  <table>
+  <thead><tr><th>Adım</th><th>Komut</th><th>Çıktı</th></tr></thead>
+  <tbody>
+    <tr><td>Veri sürümü</td><td><code>make evidence-v2-prepare</code></td><td><code>data/processed/evidence_v2</code></td></tr>
+    <tr><td>Taban çizgileri</td><td><code>make evidence-v2-baselines</code></td><td><code>reports/modeling/</code></td></tr>
+    <tr><td>Genelleme + kararlılık</td><td><code>make modeling-generalization</code></td><td><code>reports/generalization/</code></td></tr>
+    <tr><td>Marka arayüzü (offline)</td><td><code>make app</code></td><td>Streamlit, API çağrısı yok</td></tr>
+    <tr><td>Kontrollü test planı</td><td><code>make intervention-plan</code></td><td>Ücretsiz, çağrı yapmaz</td></tr>
+    <tr><td>Kontrollü test koşusu</td><td><code>make intervention-run INTERVENTION_ARGS="--yes --retry-failed"</code></td><td>Ücretli; kaldığı yerden devam eder</td></tr>
+    <tr><td>Etkiler ve rapor</td><td><code>make intervention-analyze</code></td><td><code>reports/intervention/</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="note">
+  Bu rapor <code>docs/ekip-bulgu-raporu.html</code> kaynağından üretilmiştir; sayılar
+  <code>reports/generalization/</code> ve <code>reports/intervention/</code> altındaki
+  üretilmiş tablolardan alınmıştır. Ayrıntılı yöntem ve tam tablolar için o klasörlerdeki
+  <code>README.md</code> ve <code>bulgular.md</code> dosyalarına bakın.
+</p>
+
+</body>
+</html>

@@ -5,6 +5,35 @@ Samsung Innovation Campus capstone projesi. Amaç, yapay zekâ asistanlarının 
 
 [Fikir önerisi (PDF)](docs/references/fikir-onerisi.pdf)
 
+MiniMax + Serper ile marka/sektör girilen terminal prototipi: **`make brand-demo`**.
+Anahtarsız sentetik örnek: `make brand-demo-offline`.
+[CLI demo, çağrı sınırları ve devam rehberi](docs/brand-cli-demo.md).
+Mevcut demo raporuna API harcamadan somut iş planı eklemek için:
+`make brand-demo-actions DEMO_RUN=data/processed/brand_demo/<id>`.
+
+Seçilen üç sıralama modelinin tam veriyle yeniden eğitimi, kaydedilmiş ağırlıklardan
+tahmin ve sınırları: [Nihai deneysel model paketi](docs/final-model-training.md).
+`make final-model-train` yerel GPU/CPU kullanır; veri toplama veya API çağrısı yapmaz.
+
+### Genellenebilirlik, marka arayüzü ve öneri testi (evidence_v2)
+
+- **evidence_v2**: v1'deki boş editoryal/affiliate listeleri tamamlanmış kaynak
+  taksonomisi. `make evidence-v2-prepare` ve `make evidence-v2-baselines` komutlarıyla
+  üretilir. v1 ve v1'e bağlı modeller olduğu gibi kalır.
+- **Sektör dışı genelleme ve sinyal kararlılık matrisi**: prior'suz M2-General,
+  yanıt içi göreli M2-Invariant, leave-one-domain-out testi. Komut:
+  `make modeling-generalization`. Rapor: [`reports/generalization/`](reports/generalization/README.md).
+- **Marka arayüzü**: `make app`. Streamlit, offline çalışır, API çağrısı yapmaz;
+  `uv.lock` değişmez. Marka ve sektör seçilince görünürlük, kaynak kanıtı, rakiplerini
+  anıp seni anmayan sayfalar ve test edilmiş öneriler gösterilir.
+- **Kontrollü öneri testi**:
+  - `make intervention-plan` (ücretsiz)
+  - `make intervention-pilot` / `make intervention-run INTERVENTION_ARGS=--yes`
+    (ücretli Gemini 3.5 Flash Lite çağrıları; `--yes` olmadan çağrı yapılmaz)
+  - `make intervention-analyze` (API yok)
+
+  Rapor: [`reports/intervention/`](reports/intervention/README.md).
+
 Ödev 1 teslimindeki üç raporun Markdown/DOCX sürümleri ve güncellenmiş görselleri
 [`reports/assignment-1/`](reports/assignment-1/) klasöründedir.
 
@@ -215,6 +244,20 @@ uv pip install torch --index-url https://download.pytorch.org/whl/cu124  # CUDA 
 altında dondurulmuş ve sürümlenmiştir — aynı bölme olmadan hiçbir skor yeniden
 üretilemez. Beş domainin marka kayıtları ve dil sözlükleri `configs/modeling/` altında
 denetlenebilir YAML olarak durur.
+
+## AI incelemeli marka raporu (offline önizleme)
+
+Seçilmiş iddiaların AI etiketleri, insan incelemesinden ayrı CSV + manifest olarak
+saklanır. Mevcut eğitim sonuçlarını değiştirmeden rapora eklemek için:
+
+```bash
+make ai-review-check
+make ai-brand-report BRAND="Proton VPN" DOMAIN=vpn LANGUAGE=tr
+```
+
+API kredisi kullanmaz. AI etiketleri insan onayı veya nedensel görünürlük artışı
+kanıtı değildir. Girdi, kapsam ve çıktı ayrıntıları için
+[AI önizleme rehberine](docs/ai_review_preview.md) bakın.
 
 ## Klasörler
 
