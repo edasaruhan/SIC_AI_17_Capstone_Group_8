@@ -150,9 +150,11 @@ def _mentions(brand_forms: tuple[list[str], list[str]], raw: str, squashed: str)
     return False
 
 
-def build_universe(frame: pd.DataFrame, category: str) -> list[str]:
+def build_universe(frame: pd.DataFrame, category: str, *, registry_only: bool = False) -> list[str]:
     """Curated brands for a category that occur at least once in this corpus."""
     registry = load_registry(category)
+    if registry_only:
+        return registry.brands
     subset = frame[frame["category"] == category]
     observed: set[str] = set()
     for brands in subset["brands_mentioned"]:
@@ -350,13 +352,16 @@ def brand_snippets(frame: pd.DataFrame, *, mask: bool = False) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build(frame: pd.DataFrame) -> pd.DataFrame:
+def build(frame: pd.DataFrame, *, registry_only: bool = False) -> pd.DataFrame:
     """Expand every response into one row per candidate brand."""
     languages = set(frame["language"])
     if len(languages) != 1:
         raise ValueError(f"build() handles one language at a time, got {sorted(languages)}")
     lexicon = load_lexicon(next(iter(languages)))
-    universes = {c: build_universe(frame, c) for c in sorted(frame["category"].unique())}
+    universes = {
+        c: build_universe(frame, c, registry_only=registry_only)
+        for c in sorted(frame["category"].unique())
+    }
     registries = {c: load_registry(c) for c in universes}
     forms = {
         (c, brand): _match_forms(registries[c], brand)

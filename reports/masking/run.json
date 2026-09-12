@@ -1,0 +1,13 @@
+{
+  "bootstrap": "query clusters, shared across both variants (generalization.paired_delta)",
+  "sectors": [
+    "en/editors",
+    "en/hosting",
+    "en/travel",
+    "en/vpn",
+    "tr/cosmetics",
+    "tr/vpn"
+  ],
+  "surrogate_warning": "measures our predictor, not the assistant's decision process",
+  "target": "y_top"
+}

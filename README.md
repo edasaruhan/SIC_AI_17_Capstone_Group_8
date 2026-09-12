@@ -5,6 +5,47 @@ Samsung Innovation Campus capstone projesi. Amaç, yapay zekâ asistanlarının 
 
 [Fikir önerisi (PDF)](docs/references/fikir-onerisi.pdf)
 
+MiniMax + Serper ile marka/sektör girilen terminal prototipi: **`make brand-demo`**.
+Anahtarsız sentetik örnek: `make brand-demo-offline`.
+[CLI demo, çağrı sınırları ve devam rehberi](docs/brand-cli-demo.md).
+Mevcut demo raporuna API harcamadan somut iş planı eklemek için:
+`make brand-demo-actions DEMO_RUN=data/processed/brand_demo/<id>`.
+
+Seçilen üç sıralama modelinin tam veriyle yeniden eğitimi, kaydedilmiş ağırlıklardan
+tahmin ve sınırları: [Nihai deneysel model paketi](docs/final-model-training.md).
+`make final-model-train` yerel GPU/CPU kullanır; veri toplama veya API çağrısı yapmaz.
+
+### Genellenebilirlik, marka arayüzü ve öneri testi (evidence_v2)
+
+- **evidence_v2**: v1'deki boş editoryal/affiliate listeleri tamamlanmış kaynak
+  taksonomisi. `make evidence-v2-prepare` ve `make evidence-v2-baselines` komutlarıyla
+  üretilir. v1 ve v1'e bağlı modeller olduğu gibi kalır.
+- **Sektör dışı genelleme ve sinyal kararlılık matrisi**: prior'suz M2-General,
+  yanıt içi göreli M2-Invariant, leave-one-domain-out testi. Komut:
+  `make modeling-generalization`. Rapor: [`reports/generalization/`](reports/generalization/README.md).
+- **Marka arayüzü**: `make app`. Streamlit, offline çalışır, API çağrısı yapmaz;
+  `uv.lock` değişmez. Marka ve sektör seçilince görünürlük, kaynak kanıtı, rakiplerini
+  anıp seni anmayan sayfalar ve test edilmiş öneriler gösterilir.
+- **Kontrollü öneri testi**:
+  - `make intervention-plan` (ücretsiz)
+  - `make intervention-pilot` / `make intervention-run INTERVENTION_ARGS=--yes`
+    (ücretli Gemini 3.5 Flash Lite çağrıları; `--yes` olmadan çağrı yapılmaz)
+  - `make intervention-analyze` (API yok)
+
+  Rapor: [`reports/intervention/`](reports/intervention/README.md).
+- **Yoğunlaşma ve adalet**: `make modeling-fairness`. Bir cevapta kaç marka
+  görünüyor (etkin marka sayısı `N_eff = 1/HHI`), arama açıldığında yoğunlaşma
+  artıyor mu, aramadan hangi tanınırlık tercili kazanıyor ve Türkiye menşeli
+  markalar farklı muamele görüyor mu. API yok.
+  Rapor: [`reports/fairness/`](reports/fairness/README.md).
+- **Maskeleme ablasyonu**: `make modeling-masking`, tamamlanmış M3 koşularından
+  sektör sektör isimli/maskeli farkı üretir (eğitim için `scripts/run_m3.py`, GPU).
+  Rapor: [`reports/masking/`](reports/masking/results.md).
+- **Veri kartı**: [`docs/veri-karti.md`](docs/veri-karti.md) — Türkçe veri setinin
+  tasarımı, alanları, lisansı (CC BY 4.0) ve sınırlılıkları.
+- **Tekrarlanabilirlik**: [`docs/tekrarlanabilirlik.md`](docs/tekrarlanabilirlik.md) —
+  temiz klonda hangi komut ne üretir, hangisi ağ/GPU/anahtar ister.
+
 Ödev 1 teslimindeki üç raporun Markdown/DOCX sürümleri ve güncellenmiş görselleri
 [`reports/assignment-1/`](reports/assignment-1/) klasöründedir.
 
@@ -107,6 +148,15 @@ eklenmez. Çalıştırılmış analiz `notebooks/S0-4-reference-validation.ipynb
 
 ## Modelleme ve bulgular
 
+Yeni çalışma için önce [kaynaklı marka analizi rehberini](docs/kaynakli-marka-analizi.md)
+okuyun. `evidence_v1`, aşağıdaki tarihsel S2 deneyinden ayrı, sabit veri sürümlü
+analiz hattıdır. Canlı web taraması veya yeni generation/judge çağrısı yapmaz.
+İnsan incelemesi ve GPU eğitimi tamamlanmadan tamamlanmış ürün gibi sunulmaz.
+Türkçe ilk GPU koşusu tamamlandı: [eğitim sonuçları ve checkpoint doğrulaması](reports/listwise_tr_seed7.md).
+Bu, çapraz doğrulama eğitimidir; insan incelemesi, final model paketi ve canlı servis henüz tamamlanmadı.
+İngilizce VPN uzun koşusu için [başlatma, durum ve devam rehberi](docs/english-listwise-training.md)
+ve `make modeling-en-status` kullanılabilir; koşunun gerçek durumu yerel durum dosyasındadır.
+
 `src/modeling/` altındaki paket, İngilizce referans ile Türkçe veri setini **aynı
 kodla iki kez** işler; hiçbir yerde dile özel ayrı bir hat yoktur. İki korpus 282.450
 (yanıt, aday marka) çiftine açılır ve iki hedef modellenir: markanın yanıtta anılması
@@ -133,8 +183,8 @@ iki naive temel → **M0** yalnız marka prior'ı → **M1** + arama konumu ve k
    (0,714 → 0,362, üç seed'de de aynı yönde). Dikkat: bu, *bizim tahmin modelimizin*
    neye dayandığını gösterir, asistanın karar mekanizmasını değil — M3 bir vekil model.
    Ayrıca maskeleme yalnız ad dizgisini siler, bir markanın hangi sayfalarda göründüğünü
-   silmez; o örüntü kimlikle ilişkili kalır. Sonuç bu nedenle içerik payının *alt*,
-   tanınırlık payının *üst* sınırı olarak okunmalı. Türkçe'de aynı ölçüm 57 karara
+   silmez; o örüntü kimlikle ilişkili kalır. Sonuç nedensel katkı yüzdesi veya
+   marka/içerik payına bir alt ya da üst sınır vermez. Türkçe'de aynı ölçüm 57 karara
    bağlanmış yanıtla yapılamıyor.
 
 Ayrıntılı yöntem, beş domainin tamamındaki sonuç tabloları, SHAP atfı, sınırlılıklar
@@ -164,6 +214,10 @@ setini indirir ve donmuş deney tasarımına karşı doğrular: 300 satır, doma
 tutmazsa **hata verir** — yayınlanan set değişmişse mevcut skorlar artık
 karşılaştırılabilir değildir ve bunun sessizce geçmemesi gerekir. Bu adım API
 anahtarı istemez; anahtarlar yalnız veriyi *toplayan* `bias-eval` hattı için gerekir.
+
+İndirme artık `4d274b954be7d9b0abbfe3314b2cbc387dfd800f` revision'ına ve kaynak
+SHA-256 değerine sabittir. Hücreler, sorgu metinleri, dil ve tekrarlar da denetlenir.
+Yeni veri release'i aynı analiz çıktılarının üzerine yazılmaz.
 
 `scripts/build_pairs.py` her hat için üç dosya yazar:
 
@@ -202,6 +256,20 @@ uv pip install torch --index-url https://download.pytorch.org/whl/cu124  # CUDA 
 altında dondurulmuş ve sürümlenmiştir — aynı bölme olmadan hiçbir skor yeniden
 üretilemez. Beş domainin marka kayıtları ve dil sözlükleri `configs/modeling/` altında
 denetlenebilir YAML olarak durur.
+
+## AI incelemeli marka raporu (offline önizleme)
+
+Seçilmiş iddiaların AI etiketleri, insan incelemesinden ayrı CSV + manifest olarak
+saklanır. Mevcut eğitim sonuçlarını değiştirmeden rapora eklemek için:
+
+```bash
+make ai-review-check
+make ai-brand-report BRAND="Proton VPN" DOMAIN=vpn LANGUAGE=tr
+```
+
+API kredisi kullanmaz. AI etiketleri insan onayı veya nedensel görünürlük artışı
+kanıtı değildir. Girdi, kapsam ve çıktı ayrıntıları için
+[AI önizleme rehberine](docs/ai_review_preview.md) bakın.
 
 ## Klasörler
 
