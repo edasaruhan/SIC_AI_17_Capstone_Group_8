@@ -33,6 +33,18 @@ tahmin ve sınırları: [Nihai deneysel model paketi](docs/final-model-training.
   - `make intervention-analyze` (API yok)
 
   Rapor: [`reports/intervention/`](reports/intervention/README.md).
+- **Yoğunlaşma ve adalet**: `make modeling-fairness`. Bir cevapta kaç marka
+  görünüyor (etkin marka sayısı `N_eff = 1/HHI`), arama açıldığında yoğunlaşma
+  artıyor mu, aramadan hangi tanınırlık tercili kazanıyor ve Türkiye menşeli
+  markalar farklı muamele görüyor mu. API yok.
+  Rapor: [`reports/fairness/`](reports/fairness/README.md).
+- **Maskeleme ablasyonu**: `make modeling-masking`, tamamlanmış M3 koşularından
+  sektör sektör isimli/maskeli farkı üretir (eğitim için `scripts/run_m3.py`, GPU).
+  Rapor: [`reports/masking/`](reports/masking/results.md).
+- **Veri kartı**: [`docs/veri-karti.md`](docs/veri-karti.md) — Türkçe veri setinin
+  tasarımı, alanları, lisansı (CC BY 4.0) ve sınırlılıkları.
+- **Tekrarlanabilirlik**: [`docs/tekrarlanabilirlik.md`](docs/tekrarlanabilirlik.md) —
+  temiz klonda hangi komut ne üretir, hangisi ağ/GPU/anahtar ister.
 
 Ödev 1 teslimindeki üç raporun Markdown/DOCX sürümleri ve güncellenmiş görselleri
 [`reports/assignment-1/`](reports/assignment-1/) klasöründedir.
