@@ -1,0 +1,11 @@
+{
+  "bootstrap": "query clusters, seed 42, 2000 resamples, 2.5/97.5",
+  "experiment": "310d837a75f4957c012c97a03c4b98868d3861826da43c74f79041331e299e37",
+  "measures": "n_eff = 1/HHI; top-3 share; normalised HHI; never-named count",
+  "min_query_groups_for_direction": 5,
+  "origin_labels": "configs/visibility/brand_origin.yaml",
+  "origin_rule": "Menşe, markanın kurulduğu ve birincil olarak hizmet ettiği ülkedir. Alan adı uzantısı, dağıtım ağı veya yerelleştirilmiş içerik ölçüt değildir. Bugünkü sahiplik ayrı alanda tutulur ve analizde kullanılmaz.",
+  "origin_sha256": "ad2f4f702524093749a60a5349f02ec822c24af26b2ba797fa612f852e5aac57",
+  "recognition_proxy": "retrieval-off mention rate (not company size)",
+  "shares_over": "naming events, not responses; y_top over decided responses"
+}

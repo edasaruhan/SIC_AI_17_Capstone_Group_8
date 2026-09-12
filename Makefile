@@ -14,7 +14,7 @@ PYTEST := .venv/bin/pytest
 BIAS_EVAL := PYTHONPATH=src $(PYTHON) -m bias_eval
 ENV_RUN := set -a; [ ! -f .env ] || . ./.env; set +a;
 TRAINING_SCRIPTS := scripts/audit_listwise_run.py scripts/run_english_listwise.py scripts/verify_final_models.py
-REVIEW_SCRIPTS := scripts/ai_review_report.py scripts/run_generalization.py
+REVIEW_SCRIPTS := scripts/ai_review_report.py scripts/run_generalization.py scripts/run_fairness.py
 DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval src/final_model src/brand_demo src/visibility tests $(TRAINING_SCRIPTS) $(REVIEW_SCRIPTS)
 
 help: ## Kullanılabilir komutları göster
@@ -68,7 +68,7 @@ evidence-review-check: ## 30 kaydın insan incelemesi tamamlanmadıysa hata ver
 modeling-baselines: ## CPU üzerinde sorgu-dışı taban çizgileri ve SHAP üret
 	$(EVIDENCE) baselines
 
-.PHONY: evidence-v2-prepare evidence-v2-baselines modeling-generalization
+.PHONY: evidence-v2-prepare evidence-v2-baselines modeling-generalization modeling-fairness
 EVIDENCE_V2_ROOT ?= data/processed/evidence_v2
 evidence-v2-prepare: ## Tamamlanmış kaynak taksonomisiyle evidence_v2 tablolarını üret; v1'e dokunmaz (offline)
 	PYTHONPATH=src $(PYTHON) -m visibility.evidence_v2 --root "$(EVIDENCE_V2_ROOT)"
@@ -78,6 +78,9 @@ evidence-v2-baselines: ## evidence_v2 üzerinde M0–M2 taban çizgileri ve SHAP
 
 modeling-generalization: ## Prior'suz M2-General, alan-dışı (LODO) test ve sinyal kararlılık matrisi (CPU, offline)
 	PYTHONPATH=src $(PYTHON) scripts/run_generalization.py --root "$(EVIDENCE_V2_ROOT)"
+
+modeling-fairness: ## Yoğunlaşma (N_eff) ve adalet tabloları: kim anılıyor, aramadan kim kazanıyor (CPU, offline)
+	PYTHONPATH=src $(PYTHON) scripts/run_fairness.py --root "$(EVIDENCE_V2_ROOT)"
 
 .PHONY: app intervention-plan intervention-pilot intervention-run intervention-analyze
 app: ## Marka görünürlük arayüzü (Streamlit, offline; uv.lock ve evidence manifestleri değişmez)
