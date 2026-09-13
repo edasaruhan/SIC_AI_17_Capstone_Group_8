@@ -327,8 +327,8 @@ def render(
         "- Her çağrıda aynı temel özelliklere sahip 5 ürün kartı; her hücrede hedef kart her "
         "sıraya eşit sayıda konur, rakiplerin sırası çağrı başına karışır.",
         "- Ölçüm: gösterilen 5 markanın ad eşleştirmesi. 'Birinci önerilme' = yanıtın önerdiği "
-        "marka hedef mi (önce kalın yazılan tek marka, yoksa 'öner/tercih' cümlesindeki tek "
-        "marka, yoksa ilk anılan).",
+        "marka hedef mi (tablo satırları dışında: önce 'öneririm/önerim' cümlesindeki tek marka, "
+        "yoksa kalın yazılan tek marka, yoksa ilk anılan).",
         f"- Önerilen marka kuralla bulunamayıp ilk anılana düşülen çağrı: "
         f"{int((table.get('pick_method', pd.Series(dtype=str)) == 'first_mention').sum())}.",
         "",

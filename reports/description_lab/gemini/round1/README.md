@@ -6,7 +6,7 @@ Tasarım ve önceden sabitlenen kurallar `src/description_lab/design.py` başın
 - Asistan: `gemini-3.5-flash-lite`, sıcaklık 0.7.
 - Tamamlanan çağrı: 280/280.
 - Her çağrıda aynı temel özelliklere sahip 5 ürün kartı; her hücrede hedef kart her sıraya eşit sayıda konur, rakiplerin sırası çağrı başına karışır.
-- Ölçüm: gösterilen 5 markanın ad eşleştirmesi. 'Birinci önerilme' = yanıtın önerdiği marka hedef mi (önce kalın yazılan tek marka, yoksa 'öner/tercih' cümlesindeki tek marka, yoksa ilk anılan).
+- Ölçüm: gösterilen 5 markanın ad eşleştirmesi. 'Birinci önerilme' = yanıtın önerdiği marka hedef mi (tablo satırları dışında: önce 'öneririm/önerim' cümlesindeki tek marka, yoksa kalın yazılan tek marka, yoksa ilk anılan).
 - Önerilen marka kuralla bulunamayıp ilk anılana düşülen çağrı: 0.
 
 ## 1. Marka adı: aynı ürün, farklı marka
