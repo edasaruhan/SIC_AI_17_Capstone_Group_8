@@ -99,6 +99,13 @@ değildir.
 
 ## Tasarım kararları
 
+- **Sorgular marka önerisi sorar.** Kayıtlı olmayan bir sektörde sorgular üretilir; istem,
+  yanıtı marka önermek olan sorular ister ve korpustaki gerçek soruları ("Şu anda en iyi
+  VPN hizmeti hangisi?") biçim örneği olarak verir. İlk bankacılık denemesi bu kural
+  olmadan "nasıl tasarruf ederim" gibi genel sorular üretti; hiçbir banka anılmadığı için
+  her marka yok görünüyordu.
+- **Pazar yoksa teşhis yok.** Arama sonuçlarında ve yanıtlarda 2'den az rakip marka
+  geçiyorsa danışman "aramada görünmüyorsun" demez; teşhis koymaz ve nedenini yazar.
 - **Ölçüm bir modelin görüşü değildir.** Anılma, ilk anılma, arama sonucunda görünme
   ve sıra, koşunun marka listesiyle metin eşleştirerek ölçülür. "Bu marka görünür mü?"
   diye bir LLM'e sormak döngüsel olurdu.

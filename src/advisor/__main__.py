@@ -23,7 +23,7 @@ import httpx
 from brand_demo.workflow import Receipts
 from evidence_eval.io import digest, write_json, write_text
 
-from . import features, model, nodes
+from . import candidates, features, model, nodes
 from .clients import AdvisorClient, require_keys
 
 OUTPUT = Path("data/processed/advisor")
@@ -44,6 +44,9 @@ def plan_id(args: argparse.Namespace) -> str:
             # changed setting collides with cached receipts in the same folder.
             "temperature": nodes.TEMPERATURE,
             "max_tokens": nodes.MAX_TOKENS,
+            "prompts": digest(
+                [nodes.QUERY_PROMPT, nodes.SYSTEM, nodes.SYSTEM_OFFLINE, candidates.EXTRACT_PROMPT]
+            ),
         }
     )[:16]
 

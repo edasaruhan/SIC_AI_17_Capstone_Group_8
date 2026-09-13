@@ -42,11 +42,22 @@ SYSTEM_OFFLINE = (
     "You are a helpful assistant. You have no web access. Do not invent current "
     "information you are unsure about."
 )
+# A generated query must ask for a *recommendation*: the research measured which brands an
+# assistant names when asked to pick one. "How should I save money?" names no brand, so
+# every brand looks absent -- the first banking run failed exactly this way.
 QUERY_PROMPT = (
-    "Bir kullanıcının bir yapay zekâ asistanına sorabileceği, marka adı geçmeyen, "
-    "{sector} kategorisinde {language} dilinde {n} farklı tavsiye sorusu yaz. "
+    "'{sector}' kategorisinde bir kullanıcının bir yapay zekâ asistanına {language_name} "
+    "soracağı {n} farklı soru yaz. Her soru, doğal cevabı belirli şirket, marka, ürün veya "
+    "hizmet adlarını önermek ya da karşılaştırmak olan bir marka tavsiyesi sorusu olsun "
+    "(hangisi, en iyisi, önerir misin gibi). Genel bilgi, nasıl yapılır veya kişisel "
+    "tasarruf/sağlık tavsiyesi sorma. Sorularda hiçbir marka adı geçmesin. Biçim olarak şu "
+    "gerçek sorulara benzesin:\n{examples}\n"
     'Yalnız JSON döndür: {{"queries": ["...", "..."]}}'
 )
+LANGUAGE_NAME = {"tr": "Türkçe", "en": "İngilizce"}
+# Fewer distinct rival brands than this across results and answers means the queries did
+# not surface a market at all; diagnosing the brand as "absent" would be a false finding.
+MIN_RIVALS = 2
 
 
 class BudgetExceeded(ValueError):
@@ -95,6 +106,33 @@ def recorded_queries(sector: str, language: str, limit: int) -> list[str]:
     return [seen[key] for key in sorted(seen)][:limit]
 
 
+def style_examples(language: str, limit: int = 3) -> list[str]:
+    """Real recorded queries in the same language, one per curated sector.
+
+    Generated queries then take the form the transferable model was trained on.
+    """
+    examples: list[str] = []
+    for sector in candidates.CURATED:
+        examples += recorded_queries(sector, language, 1)
+    return examples[:limit]
+
+
+def query_payload(sector: str, language: str, n: int) -> dict:
+    examples = "\n".join(f"- {q}" for q in style_examples(language)) or "- (örnek yok)"
+    prompt = QUERY_PROMPT.format(
+        sector=sector,
+        language_name=LANGUAGE_NAME.get(language, language),
+        n=n,
+        examples=examples,
+    )
+    return {
+        "model": MODEL,
+        "temperature": 0.2,
+        "max_tokens": 512,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+
+
 def _queries_from(result: dict) -> list[str]:
     value = json.loads(result["text"].strip().strip("`").removeprefix("json").strip())
     queries = [str(q).strip() for q in value.get("queries", []) if str(q).strip()]
@@ -111,19 +149,7 @@ def make_plan(runtime: Runtime, budget: int):
         note = f"{len(queries)} sorgu donmuş korpustan alındı ({sector}/{language})."
         if not queries:
             runtime.charge("plan_queries", budget)
-            payload = {
-                "model": MODEL,
-                "temperature": 0.2,
-                "max_tokens": 512,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": QUERY_PROMPT.format(
-                            sector=sector, language=language, n=runtime.n_queries
-                        ),
-                    }
-                ],
-            }
+            payload = query_payload(sector, language, runtime.n_queries)
             result = await runtime.receipts.call(
                 "plan_queries", SERVICE, payload, validator=_queries_from
             )
@@ -295,7 +321,15 @@ def make_analyse(runtime: Runtime):
         targets = measure.outreach_targets(search, brand, rivals, registry)
         scores: dict = {}
         lagging: list[dict] = []
-        notes = [f"Teşhis: {advise.DIAGNOSES[diagnosis]}."]
+        notes: list[str] = []
+        market = market_brands(observations, search, registry) - {brand}
+        if len(market) < MIN_RIVALS:
+            diagnosis = "thin"
+            notes.append(
+                f"Arama sonuçlarında ve yanıtlarda yalnız {len(market)} rakip marka geçti; "
+                "sorgular bir marka önerisi üretmemiş olabilir. Teşhis konmadı."
+            )
+        notes.append(f"Teşhis: {advise.DIAGNOSES[diagnosis]}.")
         if runtime.boosters is not None and runtime.rules is not None:
             frame = features.live_frame(
                 search, registry, runtime.rules, sector=sector, language=language
@@ -315,6 +349,18 @@ def make_analyse(runtime: Runtime):
         }
 
     return analyse
+
+
+def market_brands(
+    observations: list[Observation], search: list[dict], registry: BrandRegistry
+) -> set[str]:
+    """Every brand actually named anywhere in this run: the market the queries surfaced."""
+    named = {brand for row in observations for brand in row["named_brands"]}
+    for page in search:
+        for result in page.get("results", []):
+            text = f"{result.get('title', '')}\n{result.get('snippet', '')}"
+            named.update(measure.named_brands(text, registry))
+    return named
 
 
 def route(state: AdvisorState) -> str:

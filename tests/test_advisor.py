@@ -466,3 +466,59 @@ def test_interrogate_still_aborts_when_the_budget_runs_out():
     runtime.registry = _registry("Windscribe", "NordVPN")
     with pytest.raises(nodes.BudgetExceeded):
         asyncio.run(nodes.make_interrogate(runtime, 1)(_interrogate_state()))
+
+
+# --- queries and honest diagnosis ----------------------------------------------
+
+
+def test_query_prompt_asks_for_brand_recommendations_in_the_recorded_style(monkeypatch):
+    from advisor import nodes
+
+    monkeypatch.setattr(
+        nodes, "style_examples", lambda language, limit=3: ["İyi bir VPN önerir misin?"]
+    )
+    prompt = nodes.query_payload("bankacılık", "tr", 3)["messages"][0]["content"]
+    assert "marka tavsiyesi" in prompt
+    assert "İyi bir VPN önerir misin?" in prompt
+    assert "Türkçe" in prompt and "bankacılık" in prompt
+
+
+def test_style_examples_are_real_recorded_queries():
+    from advisor import nodes
+
+    if not (nodes.CORPUS / "responses_tr.json").exists():
+        pytest.skip("donmuş korpus bu ortamda yok")
+    recorded = {q for s in candidates.CURATED for q in nodes.recorded_queries(s, "tr", 5)}
+    examples = nodes.style_examples("tr")
+    assert examples and set(examples) <= recorded
+
+
+def test_analyse_refuses_to_diagnose_when_no_market_surfaced():
+    """The first banking run: generic questions, no brands anywhere -> not 'absent'."""
+    import asyncio
+
+    from advisor import nodes
+
+    runtime = nodes.Runtime(receipts=_Receipts())  # type: ignore[arg-type]
+    runtime.registry = _registry("Garanti BBVA", "Akbank")
+    observation = measure.observe(
+        brand="Garanti BBVA",
+        registry=runtime.registry,
+        query="tasarruf",
+        condition="search_on",
+        rep=0,
+        answer="Bütçenizi yönetmek için harcamalarınızı takip edin.",
+        results=[],
+    )
+    state: AdvisorState = {
+        "brand": "Garanti BBVA",
+        "sector": SECTOR,
+        "language": "tr",
+        "max_calls": 10,
+        "queries": ["tasarruf"],
+        "search": [],
+        "observations": [observation],
+    }
+    out = asyncio.run(nodes.make_analyse(runtime)(state))
+    assert out["diagnosis"] == "thin"
+    assert any("Teşhis konmadı" in note for note in out["notes"])
