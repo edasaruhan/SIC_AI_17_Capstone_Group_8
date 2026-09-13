@@ -19,6 +19,10 @@
       "reportMissingImports": "none"
     },
     {
+      "root": "src/advisor",
+      "reportMissingImports": "none"
+    },
+    {
       "root": "."
     }
   ]

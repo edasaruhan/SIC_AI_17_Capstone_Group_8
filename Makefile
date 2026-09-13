@@ -15,7 +15,7 @@ BIAS_EVAL := PYTHONPATH=src $(PYTHON) -m bias_eval
 ENV_RUN := set -a; [ ! -f .env ] || . ./.env; set +a;
 TRAINING_SCRIPTS := scripts/audit_listwise_run.py scripts/run_english_listwise.py scripts/verify_final_models.py
 REVIEW_SCRIPTS := scripts/ai_review_report.py scripts/run_generalization.py scripts/run_fairness.py scripts/collect_masking.py
-DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval src/final_model src/brand_demo src/visibility tests $(TRAINING_SCRIPTS) $(REVIEW_SCRIPTS)
+DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval src/final_model src/brand_demo src/visibility src/advisor tests $(TRAINING_SCRIPTS) $(REVIEW_SCRIPTS)
 
 help: ## Kullanılabilir komutları göster
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "%-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -84,6 +84,15 @@ modeling-fairness: ## Yoğunlaşma (N_eff) ve adalet tabloları: kim anılıyor,
 
 modeling-masking: ## Tamamlanmış M3 koşularından sektör sektör maskeleme ablasyonu (CPU, offline)
 	PYTHONPATH=src $(PYTHON) scripts/collect_masking.py
+
+.PHONY: advisor advisor-plan
+ADVISOR := PYTHONPATH=src uv run --with langgraph python -m advisor
+ADVISOR_ARGS ?=
+advisor-plan: ## Canlı görünürlük teşhisi planı ve çağrı tahmini (ücretsiz, çağrı yok)
+	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" $(ADVISOR_ARGS)
+
+advisor: ## LangGraph görünürlük danışmanı: ölç, teşhis et, öner (ÜCRETLİ; --yes gerekir)
+	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" --yes $(ADVISOR_ARGS)
 
 .PHONY: app intervention-plan intervention-pilot intervention-run intervention-analyze
 app: ## Marka görünürlük arayüzü (Streamlit, offline; uv.lock ve evidence manifestleri değişmez)
