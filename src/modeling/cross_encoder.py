@@ -6,9 +6,10 @@ rows and identical folds:
 * **named** -- the candidate and the retrieved snippets keep their brand names.
 * **masked** -- every registry surface form in both is replaced by ``[BRAND]``.
 
-The gap between the two is how much of the decision rides on recognising a name
-rather than on what the content says. A feature-only model cannot perform that
-intervention, because masking is an edit to the text itself.
+The gap measures sensitivity of this surrogate predictor to masking. It is not
+a causal share, a bound on recognition/content contributions, or an observation
+of the generating assistant's private reasoning. This is the legacy pointwise
+experiment; the versioned evidence pipeline implements a separate listwise run.
 
 Only retrieval-on responses are used: with retrieval off there is no snippet to
 read, so masking would remove the entire input rather than isolating one part of

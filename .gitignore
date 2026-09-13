@@ -42,3 +42,9 @@ data/superseded/**
 
 # Pipeline logları rapor klasörüne düşerse izlenmez.
 reports/**/*.log
+
+# Üretilmiş teslim paketleri; `make team-report-pdf` ve paketleme betikleriyle yeniden üretilir.
+output/**
+
+# Geçici çalışma alanı; hiçbir çıktısı teslimin parçası değildir.
+tmp/**
