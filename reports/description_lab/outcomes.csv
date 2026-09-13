@@ -1,0 +1,281 @@
+key,category,identity,variant,rep,target,position,first,mentioned,rank,n_named,first_brand,pick_method,first_named,picked_position
+sunscreen__incumbent__control__r0,sunscreen,incumbent,control,0,La Roche-Posay,2,0,1,2.0,5,Bioderma,bold,Bioderma,1
+sunscreen__small__control__r0,sunscreen,small,control,0,The Purest Solutions,4,0,1,4.0,5,Bioderma,bold,Neutrogena,2
+sunscreen__fictional__control__r0,sunscreen,fictional,control,0,Lumera,4,0,1,4.0,5,Avène,bold,Avène,1
+sunscreen__fictional__statistics__r0,sunscreen,fictional,statistics,0,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__cited_test__r0,sunscreen,fictional,cited_test,0,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__expert_quote__r0,sunscreen,fictional,expert_quote,0,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__authority__r0,sunscreen,fictional,authority,0,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__social_proof__r0,sunscreen,fictional,social_proof,0,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+sunscreen__fictional__certificate__r0,sunscreen,fictional,certificate,0,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__superlative__r0,sunscreen,fictional,superlative,0,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__emotional__r0,sunscreen,fictional,emotional,0,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__technical__r0,sunscreen,fictional,technical,0,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+sunscreen__fictional__price__r0,sunscreen,fictional,price,0,Lumera,4,1,1,5.0,5,Lumera,bold,CeraVe,4
+sunscreen__fictional__fabricated_claim__r0,sunscreen,fictional,fabricated_claim,0,Lumera,5,1,1,5.0,5,Lumera,bold,CeraVe,5
+vpn__incumbent__control__r0,vpn,incumbent,control,0,NordVPN,3,1,1,1.0,5,NordVPN,bold,NordVPN,3
+vpn__small__control__r0,vpn,small,control,0,Windscribe,2,0,0,,1,Proton VPN,bold,Proton VPN,1
+vpn__fictional__control__r0,vpn,fictional,control,0,Veilnet VPN,1,0,1,2.0,5,Proton VPN,bold,Proton VPN,3
+vpn__fictional__statistics__r0,vpn,fictional,statistics,0,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__cited_test__r0,vpn,fictional,cited_test,0,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__expert_quote__r0,vpn,fictional,expert_quote,0,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__authority__r0,vpn,fictional,authority,0,Veilnet VPN,4,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__social_proof__r0,vpn,fictional,social_proof,0,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__certificate__r0,vpn,fictional,certificate,0,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__superlative__r0,vpn,fictional,superlative,0,Veilnet VPN,3,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__emotional__r0,vpn,fictional,emotional,0,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__technical__r0,vpn,fictional,technical,0,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__price__r0,vpn,fictional,price,0,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__fabricated_claim__r0,vpn,fictional,fabricated_claim,0,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+sunscreen__incumbent__control__r1,sunscreen,incumbent,control,1,La Roche-Posay,3,1,1,3.0,5,La Roche-Posay,bold,Neutrogena,3
+sunscreen__small__control__r1,sunscreen,small,control,1,The Purest Solutions,5,0,1,5.0,5,Avène,bold,Avène,1
+sunscreen__fictional__control__r1,sunscreen,fictional,control,1,Lumera,5,0,1,5.0,5,Avène,bold,Avène,1
+sunscreen__fictional__statistics__r1,sunscreen,fictional,statistics,1,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__cited_test__r1,sunscreen,fictional,cited_test,1,Lumera,3,1,1,3.0,5,Lumera,bold,Bioderma,3
+sunscreen__fictional__expert_quote__r1,sunscreen,fictional,expert_quote,1,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__authority__r1,sunscreen,fictional,authority,1,Lumera,5,1,1,1.0,1,Lumera,bold,Lumera,5
+sunscreen__fictional__social_proof__r1,sunscreen,fictional,social_proof,1,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__certificate__r1,sunscreen,fictional,certificate,1,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__superlative__r1,sunscreen,fictional,superlative,1,Lumera,3,1,1,3.0,5,Lumera,bold,CeraVe,3
+sunscreen__fictional__emotional__r1,sunscreen,fictional,emotional,1,Lumera,2,1,1,2.0,5,Lumera,bold,Bioderma,2
+sunscreen__fictional__technical__r1,sunscreen,fictional,technical,1,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__price__r1,sunscreen,fictional,price,1,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__fabricated_claim__r1,sunscreen,fictional,fabricated_claim,1,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+vpn__incumbent__control__r1,vpn,incumbent,control,1,NordVPN,4,0,1,4.0,5,ExpressVPN,bold,ExpressVPN,1
+vpn__small__control__r1,vpn,small,control,1,Windscribe,3,0,1,3.0,5,ExpressVPN,bold,CyberGhost,2
+vpn__fictional__control__r1,vpn,fictional,control,1,Veilnet VPN,2,0,1,2.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__statistics__r1,vpn,fictional,statistics,1,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__cited_test__r1,vpn,fictional,cited_test,1,Veilnet VPN,2,1,1,2.0,5,Veilnet VPN,bold,ExpressVPN,2
+vpn__fictional__expert_quote__r1,vpn,fictional,expert_quote,1,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__authority__r1,vpn,fictional,authority,1,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__social_proof__r1,vpn,fictional,social_proof,1,Veilnet VPN,5,0,1,5.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__certificate__r1,vpn,fictional,certificate,1,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,ExpressVPN,4
+vpn__fictional__superlative__r1,vpn,fictional,superlative,1,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,ExpressVPN,4
+vpn__fictional__emotional__r1,vpn,fictional,emotional,1,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__technical__r1,vpn,fictional,technical,1,Veilnet VPN,2,1,1,2.0,5,Veilnet VPN,bold,Proton VPN,2
+vpn__fictional__price__r1,vpn,fictional,price,1,Veilnet VPN,2,1,1,5.0,5,Veilnet VPN,bold,CyberGhost,2
+vpn__fictional__fabricated_claim__r1,vpn,fictional,fabricated_claim,1,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+sunscreen__incumbent__control__r2,sunscreen,incumbent,control,2,La Roche-Posay,4,0,0,,1,Avène,bold,Avène,1
+sunscreen__small__control__r2,sunscreen,small,control,2,The Purest Solutions,1,1,1,1.0,5,The Purest Solutions,bold,The Purest Solutions,1
+sunscreen__fictional__control__r2,sunscreen,fictional,control,2,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__statistics__r2,sunscreen,fictional,statistics,2,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__cited_test__r2,sunscreen,fictional,cited_test,2,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__expert_quote__r2,sunscreen,fictional,expert_quote,2,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+sunscreen__fictional__authority__r2,sunscreen,fictional,authority,2,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__social_proof__r2,sunscreen,fictional,social_proof,2,Lumera,5,1,1,5.0,5,Lumera,bold,Avène,5
+sunscreen__fictional__certificate__r2,sunscreen,fictional,certificate,2,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__superlative__r2,sunscreen,fictional,superlative,2,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__emotional__r2,sunscreen,fictional,emotional,2,Lumera,3,1,1,3.0,5,Lumera,bold,CeraVe,3
+sunscreen__fictional__technical__r2,sunscreen,fictional,technical,2,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__price__r2,sunscreen,fictional,price,2,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__fabricated_claim__r2,sunscreen,fictional,fabricated_claim,2,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+vpn__incumbent__control__r2,vpn,incumbent,control,2,NordVPN,5,0,1,5.0,5,Proton VPN,bold,Proton VPN,1
+vpn__small__control__r2,vpn,small,control,2,Windscribe,4,0,1,4.0,5,Proton VPN,bold,Proton VPN,1
+vpn__fictional__control__r2,vpn,fictional,control,2,Veilnet VPN,3,0,0,,1,Surfshark,bold,Surfshark,1
+vpn__fictional__statistics__r2,vpn,fictional,statistics,2,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__cited_test__r2,vpn,fictional,cited_test,2,Veilnet VPN,3,0,1,3.0,5,CyberGhost,bold,Surfshark,5
+vpn__fictional__expert_quote__r2,vpn,fictional,expert_quote,2,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__authority__r2,vpn,fictional,authority,2,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__social_proof__r2,vpn,fictional,social_proof,2,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__certificate__r2,vpn,fictional,certificate,2,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__superlative__r2,vpn,fictional,superlative,2,Veilnet VPN,5,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__emotional__r2,vpn,fictional,emotional,2,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,Proton VPN,4
+vpn__fictional__technical__r2,vpn,fictional,technical,2,Veilnet VPN,3,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__price__r2,vpn,fictional,price,2,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__fabricated_claim__r2,vpn,fictional,fabricated_claim,2,Veilnet VPN,3,1,1,5.0,5,Veilnet VPN,bold,ExpressVPN,3
+sunscreen__incumbent__control__r3,sunscreen,incumbent,control,3,La Roche-Posay,5,1,1,5.0,5,La Roche-Posay,bold,Bioderma,5
+sunscreen__small__control__r3,sunscreen,small,control,3,The Purest Solutions,2,0,1,2.0,5,Avène,bold,Avène,1
+sunscreen__fictional__control__r3,sunscreen,fictional,control,3,Lumera,2,0,1,2.0,5,Avène,bold,Avène,1
+sunscreen__fictional__statistics__r3,sunscreen,fictional,statistics,3,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__cited_test__r3,sunscreen,fictional,cited_test,3,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__expert_quote__r3,sunscreen,fictional,expert_quote,3,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__authority__r3,sunscreen,fictional,authority,3,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__social_proof__r3,sunscreen,fictional,social_proof,3,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__certificate__r3,sunscreen,fictional,certificate,3,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__superlative__r3,sunscreen,fictional,superlative,3,Lumera,5,1,1,5.0,5,Lumera,bold,Bioderma,5
+sunscreen__fictional__emotional__r3,sunscreen,fictional,emotional,3,Lumera,4,1,1,4.0,5,Lumera,bold,Neutrogena,4
+sunscreen__fictional__technical__r3,sunscreen,fictional,technical,3,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__price__r3,sunscreen,fictional,price,3,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__fabricated_claim__r3,sunscreen,fictional,fabricated_claim,3,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+vpn__incumbent__control__r3,vpn,incumbent,control,3,NordVPN,1,1,1,1.0,5,NordVPN,bold,NordVPN,1
+vpn__small__control__r3,vpn,small,control,3,Windscribe,5,0,1,5.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__control__r3,vpn,fictional,control,3,Veilnet VPN,4,0,1,4.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__statistics__r3,vpn,fictional,statistics,3,Veilnet VPN,3,1,1,3.0,5,Veilnet VPN,bold,Proton VPN,3
+vpn__fictional__cited_test__r3,vpn,fictional,cited_test,3,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,Surfshark,4
+vpn__fictional__expert_quote__r3,vpn,fictional,expert_quote,3,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,ExpressVPN,4
+vpn__fictional__authority__r3,vpn,fictional,authority,3,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__social_proof__r3,vpn,fictional,social_proof,3,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__certificate__r3,vpn,fictional,certificate,3,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__superlative__r3,vpn,fictional,superlative,3,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__emotional__r3,vpn,fictional,emotional,3,Veilnet VPN,5,0,1,5.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__technical__r3,vpn,fictional,technical,3,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,ExpressVPN,4
+vpn__fictional__price__r3,vpn,fictional,price,3,Veilnet VPN,4,1,1,5.0,5,Veilnet VPN,bold,CyberGhost,4
+vpn__fictional__fabricated_claim__r3,vpn,fictional,fabricated_claim,3,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,ExpressVPN,4
+sunscreen__incumbent__control__r4,sunscreen,incumbent,control,4,La Roche-Posay,1,1,1,1.0,5,La Roche-Posay,bold,La Roche-Posay,1
+sunscreen__small__control__r4,sunscreen,small,control,4,The Purest Solutions,3,0,1,3.0,5,Neutrogena,bold,Neutrogena,1
+sunscreen__fictional__control__r4,sunscreen,fictional,control,4,Lumera,3,0,1,3.0,5,CeraVe,bold,CeraVe,1
+sunscreen__fictional__statistics__r4,sunscreen,fictional,statistics,4,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__cited_test__r4,sunscreen,fictional,cited_test,4,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__expert_quote__r4,sunscreen,fictional,expert_quote,4,Lumera,5,1,1,5.0,5,Lumera,bold,Bioderma,5
+sunscreen__fictional__authority__r4,sunscreen,fictional,authority,4,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+sunscreen__fictional__social_proof__r4,sunscreen,fictional,social_proof,4,Lumera,2,0,1,2.0,5,Avène,bold,Neutrogena,5
+sunscreen__fictional__certificate__r4,sunscreen,fictional,certificate,4,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__superlative__r4,sunscreen,fictional,superlative,4,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__emotional__r4,sunscreen,fictional,emotional,4,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__technical__r4,sunscreen,fictional,technical,4,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__price__r4,sunscreen,fictional,price,4,Lumera,3,1,1,5.0,5,Lumera,bold,Avène,3
+sunscreen__fictional__fabricated_claim__r4,sunscreen,fictional,fabricated_claim,4,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+vpn__incumbent__control__r4,vpn,incumbent,control,4,NordVPN,2,0,1,2.0,5,ExpressVPN,bold,CyberGhost,5
+vpn__small__control__r4,vpn,small,control,4,Windscribe,1,1,1,1.0,5,Windscribe,bold,Windscribe,1
+vpn__fictional__control__r4,vpn,fictional,control,4,Veilnet VPN,5,0,1,5.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__statistics__r4,vpn,fictional,statistics,4,Veilnet VPN,4,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__cited_test__r4,vpn,fictional,cited_test,4,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__expert_quote__r4,vpn,fictional,expert_quote,4,Veilnet VPN,5,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__authority__r4,vpn,fictional,authority,4,Veilnet VPN,3,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__social_proof__r4,vpn,fictional,social_proof,4,Veilnet VPN,3,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__certificate__r4,vpn,fictional,certificate,4,Veilnet VPN,2,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__superlative__r4,vpn,fictional,superlative,4,Veilnet VPN,2,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__emotional__r4,vpn,fictional,emotional,4,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__technical__r4,vpn,fictional,technical,4,Veilnet VPN,5,1,1,5.0,5,Veilnet VPN,bold,CyberGhost,5
+vpn__fictional__price__r4,vpn,fictional,price,4,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__fabricated_claim__r4,vpn,fictional,fabricated_claim,4,Veilnet VPN,5,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,5
+sunscreen__incumbent__control__r5,sunscreen,incumbent,control,5,La Roche-Posay,2,0,1,2.0,5,CeraVe,bold,CeraVe,1
+sunscreen__small__control__r5,sunscreen,small,control,5,The Purest Solutions,4,0,1,4.0,5,Bioderma,bold,Neutrogena,2
+sunscreen__fictional__control__r5,sunscreen,fictional,control,5,Lumera,4,0,1,4.0,5,Avène,bold,Avène,1
+sunscreen__fictional__statistics__r5,sunscreen,fictional,statistics,5,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__cited_test__r5,sunscreen,fictional,cited_test,5,Lumera,2,1,1,1.0,3,Lumera,bold,Lumera,2
+sunscreen__fictional__expert_quote__r5,sunscreen,fictional,expert_quote,5,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__authority__r5,sunscreen,fictional,authority,5,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__social_proof__r5,sunscreen,fictional,social_proof,5,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__certificate__r5,sunscreen,fictional,certificate,5,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__superlative__r5,sunscreen,fictional,superlative,5,Lumera,2,1,1,2.0,5,Lumera,bold,CeraVe,2
+sunscreen__fictional__emotional__r5,sunscreen,fictional,emotional,5,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__technical__r5,sunscreen,fictional,technical,5,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__price__r5,sunscreen,fictional,price,5,Lumera,4,1,1,4.0,5,Lumera,bold,Bioderma,4
+sunscreen__fictional__fabricated_claim__r5,sunscreen,fictional,fabricated_claim,5,Lumera,5,1,1,5.0,5,Lumera,bold,Neutrogena,5
+vpn__incumbent__control__r5,vpn,incumbent,control,5,NordVPN,3,1,1,3.0,5,NordVPN,bold,Surfshark,3
+vpn__small__control__r5,vpn,small,control,5,Windscribe,2,0,1,2.0,5,ExpressVPN,bold,Surfshark,3
+vpn__fictional__control__r5,vpn,fictional,control,5,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__statistics__r5,vpn,fictional,statistics,5,Veilnet VPN,5,1,1,5.0,5,Veilnet VPN,bold,Surfshark,5
+vpn__fictional__cited_test__r5,vpn,fictional,cited_test,5,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__expert_quote__r5,vpn,fictional,expert_quote,5,Veilnet VPN,1,1,1,5.0,5,Veilnet VPN,bold,Surfshark,1
+vpn__fictional__authority__r5,vpn,fictional,authority,5,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__social_proof__r5,vpn,fictional,social_proof,5,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,Surfshark,4
+vpn__fictional__certificate__r5,vpn,fictional,certificate,5,Veilnet VPN,3,1,1,3.0,5,Veilnet VPN,bold,ExpressVPN,3
+vpn__fictional__superlative__r5,vpn,fictional,superlative,5,Veilnet VPN,3,1,1,3.0,5,Veilnet VPN,bold,Surfshark,3
+vpn__fictional__emotional__r5,vpn,fictional,emotional,5,Veilnet VPN,2,1,1,2.0,5,Veilnet VPN,bold,ExpressVPN,2
+vpn__fictional__technical__r5,vpn,fictional,technical,5,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__price__r5,vpn,fictional,price,5,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__fabricated_claim__r5,vpn,fictional,fabricated_claim,5,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+sunscreen__incumbent__control__r6,sunscreen,incumbent,control,6,La Roche-Posay,3,0,0,,1,Neutrogena,bold,Neutrogena,1
+sunscreen__small__control__r6,sunscreen,small,control,6,The Purest Solutions,5,0,1,5.0,5,CeraVe,bold,CeraVe,1
+sunscreen__fictional__control__r6,sunscreen,fictional,control,6,Lumera,5,0,0,,1,Avène,bold,Avène,1
+sunscreen__fictional__statistics__r6,sunscreen,fictional,statistics,6,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__cited_test__r6,sunscreen,fictional,cited_test,6,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+sunscreen__fictional__expert_quote__r6,sunscreen,fictional,expert_quote,6,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__authority__r6,sunscreen,fictional,authority,6,Lumera,5,1,1,1.0,1,Lumera,bold,Lumera,5
+sunscreen__fictional__social_proof__r6,sunscreen,fictional,social_proof,6,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__certificate__r6,sunscreen,fictional,certificate,6,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__superlative__r6,sunscreen,fictional,superlative,6,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__emotional__r6,sunscreen,fictional,emotional,6,Lumera,2,1,1,2.0,5,Lumera,bold,Bioderma,2
+sunscreen__fictional__technical__r6,sunscreen,fictional,technical,6,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__price__r6,sunscreen,fictional,price,6,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__fabricated_claim__r6,sunscreen,fictional,fabricated_claim,6,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+vpn__incumbent__control__r6,vpn,incumbent,control,6,NordVPN,4,0,0,,1,CyberGhost,bold,CyberGhost,1
+vpn__small__control__r6,vpn,small,control,6,Windscribe,3,0,1,3.0,5,CyberGhost,bold,CyberGhost,1
+vpn__fictional__control__r6,vpn,fictional,control,6,Veilnet VPN,2,0,1,2.0,5,ExpressVPN,bold,ExpressVPN,1
+vpn__fictional__statistics__r6,vpn,fictional,statistics,6,Veilnet VPN,1,1,1,5.0,5,Veilnet VPN,bold,Proton VPN,1
+vpn__fictional__cited_test__r6,vpn,fictional,cited_test,6,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__expert_quote__r6,vpn,fictional,expert_quote,6,Veilnet VPN,2,1,1,5.0,5,Veilnet VPN,bold,Surfshark,2
+vpn__fictional__authority__r6,vpn,fictional,authority,6,Veilnet VPN,5,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__social_proof__r6,vpn,fictional,social_proof,6,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__certificate__r6,vpn,fictional,certificate,6,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__superlative__r6,vpn,fictional,superlative,6,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__emotional__r6,vpn,fictional,emotional,6,Veilnet VPN,3,0,0,,1,CyberGhost,bold,CyberGhost,1
+vpn__fictional__technical__r6,vpn,fictional,technical,6,Veilnet VPN,2,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__price__r6,vpn,fictional,price,6,Veilnet VPN,2,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__fabricated_claim__r6,vpn,fictional,fabricated_claim,6,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+sunscreen__incumbent__control__r7,sunscreen,incumbent,control,7,La Roche-Posay,4,0,1,4.0,5,CeraVe,bold,Neutrogena,5
+sunscreen__small__control__r7,sunscreen,small,control,7,The Purest Solutions,1,1,1,1.0,5,The Purest Solutions,bold,The Purest Solutions,1
+sunscreen__fictional__control__r7,sunscreen,fictional,control,7,Lumera,1,0,1,1.0,5,Bioderma,bold,Lumera,5
+sunscreen__fictional__statistics__r7,sunscreen,fictional,statistics,7,Lumera,2,1,1,2.0,5,Lumera,bold,Avène,2
+sunscreen__fictional__cited_test__r7,sunscreen,fictional,cited_test,7,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__expert_quote__r7,sunscreen,fictional,expert_quote,7,Lumera,3,0,1,2.0,4,CeraVe,bold,Bioderma,5
+sunscreen__fictional__authority__r7,sunscreen,fictional,authority,7,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__social_proof__r7,sunscreen,fictional,social_proof,7,Lumera,5,1,1,5.0,5,Lumera,bold,Neutrogena,5
+sunscreen__fictional__certificate__r7,sunscreen,fictional,certificate,7,Lumera,5,0,1,5.0,5,Avène,bold,Avène,1
+sunscreen__fictional__superlative__r7,sunscreen,fictional,superlative,7,Lumera,4,1,1,4.0,5,Lumera,bold,CeraVe,4
+sunscreen__fictional__emotional__r7,sunscreen,fictional,emotional,7,Lumera,3,0,1,3.0,5,CeraVe,bold,CeraVe,1
+sunscreen__fictional__technical__r7,sunscreen,fictional,technical,7,Lumera,5,1,1,5.0,5,Lumera,bold,Bioderma,5
+sunscreen__fictional__price__r7,sunscreen,fictional,price,7,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__fabricated_claim__r7,sunscreen,fictional,fabricated_claim,7,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+vpn__incumbent__control__r7,vpn,incumbent,control,7,NordVPN,5,1,1,5.0,5,NordVPN,bold,Proton VPN,5
+vpn__small__control__r7,vpn,small,control,7,Windscribe,4,0,1,4.0,5,ExpressVPN,bold,ExpressVPN,1
+vpn__fictional__control__r7,vpn,fictional,control,7,Veilnet VPN,3,0,1,3.0,5,ExpressVPN,bold,CyberGhost,4
+vpn__fictional__statistics__r7,vpn,fictional,statistics,7,Veilnet VPN,2,1,1,5.0,5,Veilnet VPN,bold,CyberGhost,2
+vpn__fictional__cited_test__r7,vpn,fictional,cited_test,7,Veilnet VPN,3,0,1,3.0,5,Proton VPN,bold,Proton VPN,1
+vpn__fictional__expert_quote__r7,vpn,fictional,expert_quote,7,Veilnet VPN,3,1,1,3.0,5,Veilnet VPN,bold,CyberGhost,3
+vpn__fictional__authority__r7,vpn,fictional,authority,7,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__social_proof__r7,vpn,fictional,social_proof,7,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__certificate__r7,vpn,fictional,certificate,7,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__superlative__r7,vpn,fictional,superlative,7,Veilnet VPN,5,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__emotional__r7,vpn,fictional,emotional,7,Veilnet VPN,4,1,1,4.0,5,Veilnet VPN,bold,CyberGhost,4
+vpn__fictional__technical__r7,vpn,fictional,technical,7,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__price__r7,vpn,fictional,price,7,Veilnet VPN,3,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__fabricated_claim__r7,vpn,fictional,fabricated_claim,7,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+sunscreen__incumbent__control__r8,sunscreen,incumbent,control,8,La Roche-Posay,5,0,1,5.0,5,Bioderma,bold,Bioderma,1
+sunscreen__small__control__r8,sunscreen,small,control,8,The Purest Solutions,2,0,1,2.0,5,Neutrogena,bold,Bioderma,5
+sunscreen__fictional__control__r8,sunscreen,fictional,control,8,Lumera,2,0,1,2.0,5,Avène,bold,Avène,1
+sunscreen__fictional__statistics__r8,sunscreen,fictional,statistics,8,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+sunscreen__fictional__cited_test__r8,sunscreen,fictional,cited_test,8,Lumera,5,1,1,5.0,5,Lumera,bold,CeraVe,5
+sunscreen__fictional__expert_quote__r8,sunscreen,fictional,expert_quote,8,Lumera,4,1,1,1.0,5,Lumera,bold,Lumera,4
+sunscreen__fictional__authority__r8,sunscreen,fictional,authority,8,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__social_proof__r8,sunscreen,fictional,social_proof,8,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__certificate__r8,sunscreen,fictional,certificate,8,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__superlative__r8,sunscreen,fictional,superlative,8,Lumera,5,1,1,1.0,5,Lumera,bold,Lumera,5
+sunscreen__fictional__emotional__r8,sunscreen,fictional,emotional,8,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__technical__r8,sunscreen,fictional,technical,8,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__price__r8,sunscreen,fictional,price,8,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__fabricated_claim__r8,sunscreen,fictional,fabricated_claim,8,Lumera,3,1,1,1.0,5,Lumera,bold,Lumera,3
+vpn__incumbent__control__r8,vpn,incumbent,control,8,NordVPN,1,1,1,1.0,5,NordVPN,bold,NordVPN,1
+vpn__small__control__r8,vpn,small,control,8,Windscribe,5,0,0,,1,Surfshark,bold,Surfshark,1
+vpn__fictional__control__r8,vpn,fictional,control,8,Veilnet VPN,4,0,0,,1,ExpressVPN,bold,ExpressVPN,2
+vpn__fictional__statistics__r8,vpn,fictional,statistics,8,Veilnet VPN,3,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,3
+vpn__fictional__cited_test__r8,vpn,fictional,cited_test,8,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__expert_quote__r8,vpn,fictional,expert_quote,8,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__authority__r8,vpn,fictional,authority,8,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__social_proof__r8,vpn,fictional,social_proof,8,Veilnet VPN,2,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,2
+vpn__fictional__certificate__r8,vpn,fictional,certificate,8,Veilnet VPN,1,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__superlative__r8,vpn,fictional,superlative,8,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__emotional__r8,vpn,fictional,emotional,8,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__technical__r8,vpn,fictional,technical,8,Veilnet VPN,4,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__price__r8,vpn,fictional,price,8,Veilnet VPN,4,0,1,4.0,5,ExpressVPN,bold,ExpressVPN,1
+vpn__fictional__fabricated_claim__r8,vpn,fictional,fabricated_claim,8,Veilnet VPN,4,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,4
+sunscreen__incumbent__control__r9,sunscreen,incumbent,control,9,La Roche-Posay,1,1,1,1.0,5,La Roche-Posay,bold,La Roche-Posay,1
+sunscreen__small__control__r9,sunscreen,small,control,9,The Purest Solutions,3,0,1,3.0,5,CeraVe,bold,CeraVe,1
+sunscreen__fictional__control__r9,sunscreen,fictional,control,9,Lumera,3,0,1,3.0,5,CeraVe,bold,CeraVe,1
+sunscreen__fictional__statistics__r9,sunscreen,fictional,statistics,9,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+sunscreen__fictional__cited_test__r9,sunscreen,fictional,cited_test,9,Lumera,1,1,1,1.0,1,Lumera,bold,Lumera,1
+sunscreen__fictional__expert_quote__r9,sunscreen,fictional,expert_quote,9,Lumera,5,1,1,1.0,1,Lumera,bold,Lumera,5
+sunscreen__fictional__authority__r9,sunscreen,fictional,authority,9,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__social_proof__r9,sunscreen,fictional,social_proof,9,Lumera,2,1,1,1.0,1,Lumera,bold,Lumera,2
+sunscreen__fictional__certificate__r9,sunscreen,fictional,certificate,9,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__superlative__r9,sunscreen,fictional,superlative,9,Lumera,1,1,1,1.0,5,Lumera,bold,Lumera,1
+sunscreen__fictional__emotional__r9,sunscreen,fictional,emotional,9,Lumera,5,1,1,5.0,5,Lumera,bold,Neutrogena,5
+sunscreen__fictional__technical__r9,sunscreen,fictional,technical,9,Lumera,2,1,1,1.0,5,Lumera,bold,Lumera,2
+sunscreen__fictional__price__r9,sunscreen,fictional,price,9,Lumera,3,1,1,1.0,1,Lumera,bold,Lumera,3
+sunscreen__fictional__fabricated_claim__r9,sunscreen,fictional,fabricated_claim,9,Lumera,4,1,1,1.0,1,Lumera,bold,Lumera,4
+vpn__incumbent__control__r9,vpn,incumbent,control,9,NordVPN,2,0,1,2.0,5,ExpressVPN,bold,ExpressVPN,1
+vpn__small__control__r9,vpn,small,control,9,Windscribe,1,0,1,1.0,5,ExpressVPN,bold,Windscribe,2
+vpn__fictional__control__r9,vpn,fictional,control,9,Veilnet VPN,5,0,1,5.0,5,Surfshark,bold,Surfshark,1
+vpn__fictional__statistics__r9,vpn,fictional,statistics,9,Veilnet VPN,4,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,4
+vpn__fictional__cited_test__r9,vpn,fictional,cited_test,9,Veilnet VPN,5,1,1,5.0,5,Veilnet VPN,bold,Proton VPN,5
+vpn__fictional__expert_quote__r9,vpn,fictional,expert_quote,9,Veilnet VPN,5,1,1,5.0,5,Veilnet VPN,bold,Proton VPN,5
+vpn__fictional__authority__r9,vpn,fictional,authority,9,Veilnet VPN,3,1,1,5.0,5,Veilnet VPN,bold,CyberGhost,3
+vpn__fictional__social_proof__r9,vpn,fictional,social_proof,9,Veilnet VPN,3,0,1,5.0,5,Proton VPN,bold,Proton VPN,1
+vpn__fictional__certificate__r9,vpn,fictional,certificate,9,Veilnet VPN,2,1,1,2.0,5,Veilnet VPN,bold,ExpressVPN,2
+vpn__fictional__superlative__r9,vpn,fictional,superlative,9,Veilnet VPN,2,1,1,2.0,5,Veilnet VPN,bold,Proton VPN,2
+vpn__fictional__emotional__r9,vpn,fictional,emotional,9,Veilnet VPN,1,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,1
+vpn__fictional__technical__r9,vpn,fictional,technical,9,Veilnet VPN,5,1,1,5.0,5,Veilnet VPN,bold,Surfshark,5
+vpn__fictional__price__r9,vpn,fictional,price,9,Veilnet VPN,5,1,1,1.0,5,Veilnet VPN,bold,Veilnet VPN,5
+vpn__fictional__fabricated_claim__r9,vpn,fictional,fabricated_claim,9,Veilnet VPN,5,1,1,1.0,1,Veilnet VPN,bold,Veilnet VPN,5
