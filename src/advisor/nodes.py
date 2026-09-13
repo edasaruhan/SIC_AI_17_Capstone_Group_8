@@ -22,7 +22,7 @@ from brand_demo.workflow import Receipts
 from evidence_eval.io import read_json
 from modeling.brands import BrandRegistry, comparison_key
 
-from . import advise, candidates, features, measure, model, render, signals
+from . import advise, candidates, domains, features, measure, model, render, signals
 from .state import AdvisorState, Observation
 
 CORPUS = Path("data/processed/evidence_v2")
@@ -50,7 +50,9 @@ QUERY_PROMPT = (
     "soracağı {n} farklı soru yaz. Her soru, doğal cevabı belirli şirket, marka, ürün veya "
     "hizmet adlarını önermek ya da karşılaştırmak olan bir marka tavsiyesi sorusu olsun "
     "(hangisi, en iyisi, önerir misin gibi). Genel bilgi, nasıl yapılır veya kişisel "
-    "tasarruf/sağlık tavsiyesi sorma. Sorularda hiçbir marka adı geçmesin. Biçim olarak şu "
+    "tasarruf/sağlık tavsiyesi sorma. Sorular yalnız bu kategoriyi doğrudan sunan firmalar "
+    "arasında seçim yaptırsın; başka bir kategoriye (ör. yatırım uygulaması, hisse senedi) "
+    "kaymasın. Sorularda hiçbir marka adı geçmesin. Biçim olarak şu "
     "gerçek sorulara benzesin:\n{examples}\n"
     'Yalnız JSON döndür: {{"queries": ["...", "..."]}}'
 )
@@ -180,8 +182,18 @@ def make_search(runtime: Runtime, budget: int):
 
 
 def _corpus(pages: list[dict]) -> list[str]:
+    """One line per result, domain first: a vendor page often names its brand only there."""
     return [
-        f"{result.get('title', '')} — {result.get('snippet', '')}"
+        f"{domains.host(result.get('link', ''))} — {result.get('title', '')} — "
+        f"{result.get('snippet', '')}"
+        for page in pages
+        for result in page.get("results", [])
+    ]
+
+
+def _labels(pages: list[dict]) -> list[str]:
+    return [
+        domains.host_label(result.get("link", ""))
         for page in pages
         for result in page.get("results", [])
     ]
@@ -193,15 +205,16 @@ def make_discover(runtime: Runtime, budget: int):
     async def discover(state: AdvisorState) -> dict:
         brand, sector = state["brand"], state["sector"]
         texts = _corpus(state.get("search", []))
+        labels = _labels(state.get("search", []))
         corpus = "\n".join(texts)
         runtime.charge("discover", budget)
         result = await runtime.receipts.call(
             "discover",
             SERVICE,
             candidates.extraction_payload(sector, texts, MODEL),
-            validator=lambda r: candidates.parse_extraction(r["text"], corpus),
+            validator=lambda r: candidates.parse_extraction(r["text"], corpus, labels),
         )
-        extracted = candidates.parse_extraction(result["text"], corpus)
+        extracted = candidates.parse_extraction(result["text"], corpus, labels)
         own = {comparison_key(brand), *(comparison_key(a) for a in runtime.brand_aliases)}
         rivals = [name for name in extracted if comparison_key(name) not in own]
         corrected = candidates.apply_corrections(rivals, runtime.add_rivals, runtime.drop_rivals)

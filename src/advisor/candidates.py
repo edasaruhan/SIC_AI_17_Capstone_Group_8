@@ -23,13 +23,18 @@ from collections.abc import Iterable
 from modeling.brands import BrandRegistry, _build, comparison_key, load_registry
 from modeling.pairs import text_key
 
+from . import domains
+
 CURATED = ("vpn", "hosting", "travel", "editors", "cosmetics")
 MAX_CANDIDATES = 25
 EXTRACT_PROMPT = (
-    "Aşağıdaki arama sonuçları '{sector}' kategorisiyle ilgili. Metinde adı geçen ticari "
-    "marka, ürün veya hizmet adlarını çıkar. Genel kavramları (ör. 'VPN', 'hosting'), "
-    "yayıncı veya site adlarını, kişi adlarını çıkarma. Metinde geçmeyen hiçbir adı "
-    'ekleme. Yalnız JSON döndür: {{"brands": ["...", "..."]}}\n\n{text}'
+    "Aşağıdaki arama sonuçları '{sector}' kategorisiyle ilgili; her satır 'alan adı — "
+    "başlık — özet' biçimindedir. Yalnız bu kategoride tüketiciye doğrudan ürün veya "
+    "hizmet sunan şirket ve markaları çıkar; alan adında görünen markaları da dahil et. "
+    "Şunları çıkarma: genel kavramlar ve piyasa adları, hisse senedi veya borsa şirketleri, "
+    "holdingler, uygulama mağazaları, karşılaştırma/haber/forum siteleri, kişi adları. Bir "
+    "markanın alt ürünü veya uygulaması yerine ana markayı yaz. Metinde geçmeyen hiçbir "
+    'adı ekleme. Yalnız JSON döndür: {{"brands": ["...", "..."]}}\n\n{text}'
 )
 
 
@@ -63,13 +68,19 @@ def occurs(name: str, corpus_key: str) -> bool:
     return bool(key) and f" {key} " in corpus_key
 
 
-def parse_extraction(text: str, corpus: str) -> list[str]:
-    """Names the model returned that really occur in the text, deduplicated."""
+def parse_extraction(text: str, corpus: str, labels: Iterable[str] = ()) -> list[str]:
+    """Names the model returned that really occur in the text or as a result's domain.
+
+    A bank whose page ranks under its own domain may never be named in the title
+    (qnb.com.tr: "İhtiyaç Kredisi Hesaplama"), so a domain label counts as occurrence.
+    """
     corpus_key = text_key(corpus)
+    hosts = [label for label in labels if label]
     seen: dict[str, str] = {}
     for raw in _json_body(text)["brands"]:
         name = " ".join(str(raw).split())
-        if 2 <= len(name) <= 60 and occurs(name, corpus_key):
+        in_domain = any(domains.names_match_label(name, label) for label in hosts)
+        if 2 <= len(name) <= 60 and (occurs(name, corpus_key) or in_domain):
             seen.setdefault(comparison_key(name), name)
     return list(seen.values())[:MAX_CANDIDATES]
 

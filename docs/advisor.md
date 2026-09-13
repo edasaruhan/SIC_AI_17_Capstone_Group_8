@@ -114,8 +114,17 @@ değildir.
   Geçersiz bir çıkarım veya sorgu üretimi doğrulayıcıdan geçemez ve önbelleğe girmez.
 - **Aynı asistan.** Canlı çağrılar Gemini 3.5 Flash Lite ile yapılır, etkiler de bu
   asistanda ölçüldü.
-- **Rakip siteleri outreach hedefi değildir.** Kaynak taksonomisindeki resmî alan
-  adları elenir.
+- **Rakip siteleri ve platformlar outreach hedefi değildir.** Kaynak taksonomisi resmî
+  alan adlarını yalnız araştırmanın beş sektörü için bilir; diğer sektörlerde alan adının
+  isim kısmı koşunun aday markalarıyla eşleştirilir. Türkçe harfler ASCII'ye katlanır:
+  `isbank.com.tr` "İş Bankası"na, `qnb.com.tr` "QNB"ye bağlanır. Uygulama mağazaları ve
+  sosyal ağlar da elenir. Karşılaştırma siteleri (ör. hangikredi.com) bağımsız hedef
+  olarak kalır; kontrollü testin ölçtüğü tam olarak bu tür bir sayfadır.
+- **Aday çıkarımı kategoriye sınırlıdır ve alan adını görür.** Çıkarım modeline her
+  sonuç "alan adı — başlık — özet" olarak verilir. Bir bankanın sayfası başlıkta adını
+  hiç anmayabilir; alan adında görünen marka da aday sayılır. Hisse senetleri, holdingler,
+  piyasa adları ve karşılaştırma siteleri rakip olarak çıkarılmaz; alt ürün yerine ana
+  marka yazılır.
 - **Etik filtre.** Her öneri `visibility.ethics.screen`'den geçer.
 - **`uv.lock` değişmez.** `langgraph` yalnız `graph.py` içinde kullanılır ve çalışma
   anında `uv run --with langgraph` ile kurulur. Diğer bütün modüller normal test

@@ -522,3 +522,70 @@ def test_analyse_refuses_to_diagnose_when_no_market_surfaced():
     out = asyncio.run(nodes.make_analyse(runtime)(state))
     assert out["diagnosis"] == "thin"
     assert any("Teşhis konmadı" in note for note in out["notes"])
+
+
+# --- domains: whose site is this, in any sector ------------------------------------
+
+
+def test_host_label_handles_country_second_level_domains():
+    from advisor import domains
+
+    assert domains.host_label("https://www.isbank.com.tr/kredi") == "isbank"
+    assert domains.host_label("https://support.nordvpn.com/x") == "nordvpn"
+    assert domains.host_label("https://www.hangikredi.com/") == "hangikredi"
+
+
+def test_turkish_brand_names_match_their_ascii_domains():
+    from advisor import domains
+
+    assert domains.owned_by("https://www.isbank.com.tr/", ["Akbank", "İş Bankası"]) == "İş Bankası"
+    assert (
+        domains.owned_by("https://www.ziraatbank.com.tr/", ["Ziraat Bankası"]) == "Ziraat Bankası"
+    )
+    assert domains.owned_by("https://www.qnb.com.tr/", ["QNB"]) == "QNB"
+    assert domains.owned_by("https://www.hangikredi.com/", ["Akbank", "İş Bankası"]) is None
+
+
+def test_outreach_skips_platforms_and_rival_sites_in_an_uncurated_sector():
+    registry = candidates.build_registry("Garanti BBVA", [], ["İş Bankası", "Akbank"], "bankacılık")
+    search = [
+        {
+            "query": "hangi banka",
+            "results": [
+                {
+                    "title": "Akbank uygulaması",
+                    "snippet": "Akbank mobil.",
+                    "link": "https://play.google.com/store/apps/details?id=akbank",
+                    "position": 1,
+                },
+                {
+                    "title": "İş Bankası kredi",
+                    "snippet": "İş Bankası faiz oranları.",
+                    "link": "https://www.isbank.com.tr/kredi",
+                    "position": 2,
+                },
+                {
+                    "title": "Kredi karşılaştırma",
+                    "snippet": "Akbank ve İş Bankası oranları.",
+                    "link": "https://www.hangikredi.com/kredi",
+                    "position": 3,
+                },
+            ],
+        }
+    ]
+    targets = measure.outreach_targets(search, "Garanti BBVA", ["İş Bankası", "Akbank"], registry)
+    assert [t["domain"] for t in targets] == ["www.hangikredi.com"]
+
+
+def test_extraction_accepts_a_brand_seen_only_as_a_domain():
+    corpus = "qnb.com.tr — İhtiyaç Kredisi Hesaplama — Faiz oranları."
+    reply = json.dumps({"brands": ["QNB", "UydurmaBank"]})
+    assert candidates.parse_extraction(reply, corpus, ["qnb"]) == ["QNB"]
+
+
+def test_query_prompt_keeps_questions_inside_the_sector(monkeypatch):
+    from advisor import nodes
+
+    monkeypatch.setattr(nodes, "style_examples", lambda language, limit=3: ["örnek?"])
+    prompt = nodes.query_payload("bankacılık", "tr", 3)["messages"][0]["content"]
+    assert "başka bir kategoriye" in prompt

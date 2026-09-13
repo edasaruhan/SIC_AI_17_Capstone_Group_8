@@ -19,6 +19,7 @@ from urllib.parse import urlparse
 from evidence_eval.evidence import spans
 from modeling.brands import BrandRegistry
 
+from . import domains
 from .state import Observation
 
 # Read-only: this file is part of the evidence manifest's hash contract.
@@ -31,7 +32,7 @@ def vendor_hosts() -> frozenset[str]:
     if not SOURCE_DOMAINS.exists():
         return frozenset()
     official = json.loads(SOURCE_DOMAINS.read_text(encoding="utf-8")).get("official", {})
-    return frozenset(domain.casefold() for domains in official.values() for domain in domains)
+    return frozenset(host.casefold() for hosts in official.values() for host in hosts)
 
 
 def is_vendor_site(link: str) -> bool:
@@ -130,9 +131,11 @@ def outreach_targets(
 ) -> list[dict]:
     """Independent pages that already name your rivals and do not name you.
 
-    Vendor sites are excluded: a rival's own homepage names the rival, but no brand can
-    ask to be listed there. This is the concrete form of the recommendation the
-    controlled test measured: inclusion in an independent comparison of the competition.
+    Vendor sites are excluded -- a rival's own homepage names the rival, but no brand can
+    ask to be listed there -- whether the taxonomy knows the domain or it only matches a
+    candidate's name. Platforms (app stores, social networks) are excluded too. This is
+    the concrete form of the recommendation the controlled test measured: inclusion in an
+    independent comparison of the competition.
     """
     rows = []
     for page in search:
@@ -146,6 +149,8 @@ def outreach_targets(
                 and brand not in named
                 and not _own_domain(brand, link)
                 and not is_vendor_site(link)
+                and not domains.is_platform(link)
+                and domains.owned_by(link, registry.brands) is None
             ):
                 rows.append(
                     {
