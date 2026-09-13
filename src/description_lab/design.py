@@ -39,6 +39,32 @@ from evidence_eval.io import digest
 MODEL = "gemini-3.5-flash-lite"
 TEMPERATURE = 0.7
 MAX_TOKENS = 2048
+
+
+@dataclass(frozen=True)
+class Assistant:
+    """One assistant under test. ``extra`` is sent as-is and only when non-empty, so the
+    first assistant's payloads and plan id stay byte-identical to the receipts already
+    paid for."""
+
+    key: str
+    model: str
+    max_tokens: int
+    extra: tuple[tuple[str, str], ...] = ()
+    label: str = ""
+
+
+ASSISTANTS = {
+    "gemini": Assistant("gemini", MODEL, MAX_TOKENS, label="Gemini 3.5 Flash Lite"),
+    # A reasoning model: its hidden reasoning counts towards max_tokens.
+    "cerebras": Assistant(
+        "cerebras",
+        "gpt-oss-120b",
+        6144,
+        (("reasoning_effort", "low"),),
+        label="gpt-oss-120b (Cerebras)",
+    ),
+}
 REPS = 10
 IDENTITIES = ("incumbent", "small", "fictional")
 VARIANTS = (
@@ -200,20 +226,22 @@ VPN = Category(
 CATEGORIES = {category.key: category for category in (SUNSCREEN, VPN)}
 
 
-def plan_id() -> str:
+def plan_id(assistant: str = "gemini") -> str:
     """Digest of everything that shapes a paid payload; repetitions are not part of it."""
-    return digest(
-        {
-            "model": MODEL,
-            "temperature": TEMPERATURE,
-            "max_tokens": MAX_TOKENS,
-            "system": SYSTEM,
-            "variants": VARIANTS,
-            "identities": IDENTITIES,
-            "positions": POSITION_DESIGN,
-            "categories": [asdict(category) for category in CATEGORIES.values()],
-        }
-    )[:16]
+    chosen = ASSISTANTS[assistant]
+    data = {
+        "model": chosen.model,
+        "temperature": TEMPERATURE,
+        "max_tokens": chosen.max_tokens,
+        "system": SYSTEM,
+        "variants": VARIANTS,
+        "identities": IDENTITIES,
+        "positions": POSITION_DESIGN,
+        "categories": [asdict(category) for category in CATEGORIES.values()],
+    }
+    if chosen.extra:
+        data["extra"] = dict(chosen.extra)
+    return digest(data)[:16]
 
 
 def cells() -> list[tuple[str, str, str]]:
@@ -235,11 +263,13 @@ def card(category: Category, brand: str, variant: str) -> dict:
     }
 
 
-def payload(question: str, cards: list[dict]) -> dict:
+def payload(question: str, cards: list[dict], assistant: str = "gemini") -> dict:
+    chosen = ASSISTANTS[assistant]
     return {
-        "model": MODEL,
+        "model": chosen.model,
         "temperature": TEMPERATURE,
-        "max_tokens": MAX_TOKENS,
+        "max_tokens": chosen.max_tokens,
+        **dict(chosen.extra),
         "messages": [
             {"role": "system", "content": SYSTEM},
             {
@@ -250,7 +280,9 @@ def payload(question: str, cards: list[dict]) -> dict:
     }
 
 
-def job(category_key: str, identity: str, variant: str, rep: int) -> dict:
+def job(
+    category_key: str, identity: str, variant: str, rep: int, assistant: str = "gemini"
+) -> dict:
     category = CATEGORIES[category_key]
     target = category.brand(identity)
     key = f"{category_key}__{identity}__{variant}__r{rep}"
@@ -269,15 +301,15 @@ def job(category_key: str, identity: str, variant: str, rep: int) -> dict:
         "target": target,
         "position": position,
         "brands": [target, *category.competitors],
-        "payload": payload(category.questions[rep % 2], order),
+        "payload": payload(category.questions[rep % 2], order, assistant),
     }
 
 
-def plan_jobs(reps: int = REPS) -> list[dict]:
+def plan_jobs(reps: int = REPS, assistant: str = "gemini") -> list[dict]:
     """Every call, repetition-first so an interruption leaves the cells balanced."""
-    return [job(*cell, rep) for rep in range(reps) for cell in cells()]
+    return [job(*cell, rep, assistant) for rep in range(reps) for cell in cells()]
 
 
-def pilot_jobs() -> list[dict]:
+def pilot_jobs(assistant: str = "gemini") -> list[dict]:
     """A subset of the full plan's keys, so the pilot's receipts are reused by the run."""
-    return [entry for entry in plan_jobs(1) if entry["variant"] in PILOT_VARIANTS]
+    return [entry for entry in plan_jobs(1, assistant) if entry["variant"] in PILOT_VARIANTS]

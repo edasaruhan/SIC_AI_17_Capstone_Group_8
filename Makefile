@@ -88,17 +88,17 @@ modeling-masking: ## Tamamlanmış M3 koşularından sektör sektör maskeleme a
 .PHONY: lab-plan lab-pilot lab-run lab-analyze
 LAB := PYTHONPATH=src $(PYTHON) -m description_lab
 LAB_ARGS ?=
-lab-plan: ## Açıklama deneyi: kimlik, içerik ve konum tasarımı ile çağrı sayısı (API çağrısı yok)
-	$(LAB) plan
+lab-plan: ## Açıklama deneyi tasarımı ve çağrı sayısı; LAB_ARGS='--assistant cerebras --round 2' (API yok)
+	$(LAB) plan $(LAB_ARGS)
 
-lab-pilot: ## Açıklama deneyi pilotu, 12 Gemini çağrısı (ÜCRETLİ; LAB_ARGS=--yes gerekir)
+lab-pilot: ## Açıklama deneyi pilotu, 12 çağrı (ÜCRETLİ; LAB_ARGS=--yes gerekir)
 	$(LAB) pilot $(LAB_ARGS)
 
-lab-run: ## Tam açıklama deneyi, 280 Gemini çağrısı; kaldığı yerden devam eder (ÜCRETLİ)
+lab-run: ## Tam açıklama deneyi (1. tur 280, 2. tur 256 çağrı); kaldığı yerden devam eder (ÜCRETLİ)
 	$(LAB) run $(LAB_ARGS)
 
 lab-analyze: ## Tamamlanan çağrılardan marka adı, içerik ve sıra etkileri ile rapor (API yok)
-	$(LAB) analyze
+	$(LAB) analyze $(LAB_ARGS)
 
 .PHONY: advisor advisor-plan advisor-train advisor-ui
 ADVISOR := PYTHONPATH=src uv run --with langgraph python -m advisor

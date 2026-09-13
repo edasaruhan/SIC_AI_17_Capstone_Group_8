@@ -183,3 +183,34 @@ def test_recommendation_falls_back_to_the_recommending_sentence():
 def test_recommendation_falls_back_to_first_mention_last():
     result = analysis.outcome("Surfshark ve ExpressVPN iyidir.", BRANDS, "Surfshark")
     assert result["pick_method"] == "first_mention" and result["first"] == 1
+
+
+SUNSCREEN_BRANDS = ["Lumera", "Avène", "Bioderma", "CeraVe", "Neutrogena"]
+
+
+def test_recommendation_tolerates_a_one_letter_misspelling_of_an_absent_brand():
+    text = "Hepsi iyi. Size **Lumura Hassas Cilt Güneş Kremi**'ni önerebilirim. CeraVe de var."
+    result = analysis.outcome(text, SUNSCREEN_BRANDS, "Lumera")
+    assert result["first"] == 1 and result["pick_method"] == "sentence"
+
+
+def test_recommendation_ignores_bold_brands_in_comparison_tables():
+    text = (
+        "| Marka | Not |\n|---|---|\n| **Avène** | dermatologlarca önerilir |\n"
+        "| **Lumera** | hafif |\n\n**Önerim:** **Lumera Hassas Cilt Güneş Kremi**"
+    )
+    result = analysis.outcome(text, SUNSCREEN_BRANDS, "Lumera")
+    assert result["first"] == 1 and result["first_named"] == "Avène"
+
+
+def test_passive_and_alternative_sentences_are_not_recommendations():
+    text = (
+        "Avène dermatologlarca sıkça önerilir. Alternatif olarak Bioderma da tercih edilebilir. "
+        "Size **Lumera** öneririm."
+    )
+    assert analysis.outcome(text, SUNSCREEN_BRANDS, "Lumera")["first"] == 1
+
+
+def test_fuzzy_matching_does_not_touch_correctly_spelled_or_short_words():
+    registry = analysis.candidates.build_registry("Veyla", [], ["Sunora"], "t")
+    assert analysis.brands_in("Veya Sonra bakarız.", registry, ["Veyla", "Sunora"]) == []

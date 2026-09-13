@@ -3,12 +3,17 @@
 Outcomes come from name matching over the five brands shown in the call, never from a
 model's judgement. The pilot showed that the first brand named is a poor proxy here: with
 identical cards the assistant often restates the whole list before recommending one
-product. The recommended brand is therefore read in order of evidence:
+product; a second assistant bolds every brand in comparison tables. The recommended
+brand is therefore read, outside table rows, in order of evidence:
 
-1. the first bold span (``**...**``) that names exactly one brand -- the assistant bolds
-   the product it recommends;
-2. otherwise the first sentence with "öner" or "tercih" that names exactly one brand;
+1. the first sentence that recommends ("öneririm", "önerim", "tercih edin" -- not the
+   passive "önerilir" or "önerdiği") and names exactly one brand, skipping sentences
+   that offer alternatives;
+2. otherwise the first bold span (``**...**``) that names exactly one brand;
 3. otherwise the first brand named, flagged as such in ``pick_method``.
+
+A brand that never appears spelled correctly may be matched with one wrong letter
+(``brands_in``): one assistant wrote "Lumura" for "Lumera".
 
 Whether the target is named at all and its rank by first mention are kept as well.
 
@@ -22,12 +27,15 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Sequence
+from difflib import SequenceMatcher
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from advisor import candidates, measure
+from evidence_eval.evidence import spans
 from evidence_eval.io import read_json
 from modeling.features import select
 
@@ -59,28 +67,60 @@ CATEGORY_TR = {"sunscreen": "Güneş kremi", "vpn": "VPN", "ALL": "Tümü"}
 
 BOLD = re.compile(r"\*\*(.+?)\*\*", re.S)
 SENTENCE = re.compile(r"[^.!?\n]+")
-RECOMMEND = re.compile(r"öner|tercih", re.I)
+RECOMMEND = re.compile(r"öner(?!il|diğ)|tercih", re.I)
+ALTERNATIVE = re.compile(r"alternatif", re.I)
+WORD = re.compile(r"\w+")
+FUZZY = 0.83
 
 
-def recommended(text: str, registry) -> tuple[str | None, str]:
+def _close(word: str, target: str) -> bool:
+    word, target = word.casefold(), target.casefold()
+    return (
+        min(len(word), len(target)) >= 5
+        and word[:1] == target[:1]
+        and SequenceMatcher(None, word, target).ratio() >= FUZZY
+    )
+
+
+def brands_in(text: str, registry, absent: Sequence[str] = ()) -> list[str]:
+    """Brands named in a text, in order. ``absent`` brands -- never spelled correctly in
+    the whole answer -- also match a word one letter away from one of their words of
+    five letters or more."""
+    first: dict[str, int] = {}
+    for start, _, brand in spans(text, registry):
+        first.setdefault(brand, start)
+    for brand in absent:
+        if brand in first:
+            continue
+        for match in WORD.finditer(text):
+            if any(_close(match.group(), part) for part in WORD.findall(brand)):
+                first[brand] = match.start()
+                break
+    return sorted(first, key=lambda brand: first[brand])
+
+
+def recommended(text: str, registry, brands: Sequence[str] = ()) -> tuple[str | None, str]:
     """The brand the answer recommends, and which rule found it."""
-    for span in BOLD.findall(text):
-        named = measure.named_brands(span, registry)
-        if len(named) == 1:
-            return named[0], "bold"
-    for sentence in SENTENCE.findall(text):
-        if RECOMMEND.search(sentence):
-            named = measure.named_brands(sentence, registry)
+    named_anywhere = measure.named_brands(text, registry)
+    absent = [brand for brand in brands if brand not in named_anywhere]
+    prose = "\n".join(line for line in text.splitlines() if "|" not in line)
+    for sentence in SENTENCE.findall(prose):
+        if RECOMMEND.search(sentence) and not ALTERNATIVE.search(sentence):
+            named = brands_in(sentence, registry, absent)
             if len(named) == 1:
                 return named[0], "sentence"
-    named = measure.named_brands(text, registry)
+    for span in BOLD.findall(prose):
+        named = brands_in(span, registry, absent)
+        if len(named) == 1:
+            return named[0], "bold"
+    named = brands_in(text, registry, absent)
     return (named[0], "first_mention") if named else (None, "none")
 
 
 def outcome(text: str, brands: list[str], target: str) -> dict:
     registry = candidates.build_registry(brands[0], [], brands[1:], "description-lab")
     named = measure.named_brands(text, registry)
-    picked, method = recommended(text, registry)
+    picked, method = recommended(text, registry, brands)
     return {
         "first": int(picked == target),
         "mentioned": int(target in named),
@@ -273,14 +313,16 @@ def render(
     position: pd.DataFrame,
     *,
     planned: int,
+    assistant: str = "gemini",
 ) -> str:
+    chosen = design.ASSISTANTS[assistant]
     lines = [
-        "# Açıklama deneyi: yapay zekâ bir ürünü neye göre öneriyor?",
+        f"# Açıklama deneyi: yapay zekâ bir ürünü neye göre öneriyor? — {chosen.label}",
         "",
         "Bu sayfa `python -m description_lab analyze` ile üretilir; elle düzenlemeyin.",
         "Tasarım ve önceden sabitlenen kurallar `src/description_lab/design.py` başındadır.",
         "",
-        f"- Asistan: `{design.MODEL}`, sıcaklık {design.TEMPERATURE}.",
+        f"- Asistan: `{chosen.model}`, sıcaklık {design.TEMPERATURE}.",
         f"- Tamamlanan çağrı: {len(table)}/{planned}.",
         "- Her çağrıda aynı temel özelliklere sahip 5 ürün kartı; her hücrede hedef kart her "
         "sıraya eşit sayıda konur, rakiplerin sırası çağrı başına karışır.",
@@ -311,7 +353,8 @@ def render(
         *_pick_lines(table),
         "## Sınırlılıklar",
         "",
-        "- Tek asistan (Gemini 3.5 Flash Lite); önerinin 'en az iki model' koşulu karşılanmadı.",
+        "- Tek asistan sayfası; öteki asistanın sonucu kendi klasöründedir. İki asistan aynı "
+        "yönü göstermedikçe sonuç modele özgü sayılır.",
         "- Kategori başına tek ürün seti ve iki soru kalıbı; sonuç başka ürün setlerine kendiliğinden "
         "genellenmez.",
         "- Kol başına az tekrar; güven aralıkları geniştir, sıfırı içeren farklarda yön çağrılmaz.",
