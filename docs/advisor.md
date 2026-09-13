@@ -142,3 +142,34 @@ değildir.
   koşu 10 sonuç kullanır.
 - "İlk anılan marka", birincil önerinin yaklaşık bir vekilidir.
 - Varsayılan koşu az sorgu ve tekrarla çalışır; oranlar yön gösterir.
+
+## Örnek: modelin hiç görmediği bir sektör
+
+`Garanti BBVA`, bankacılık, Türkçe, 13 Eylül 2026. Bankacılık araştırmanın beş sektöründen
+biri değil; sorgular, rakipler ve outreach hedefleri tamamen koşu sırasında kuruldu.
+
+| | Değer |
+|---|---|
+| Aday markalar | 16, hepsi banka (QNB, Yapı Kredi, DenizBank, Enpara, ING, Ziraat Bankası, Türkiye İş Bankası…) |
+| Arama sonuçlarında görünme | %100, ortanca sıra 6 |
+| Arama açıkken / kapalıyken anılma | %33 / %50 |
+| Teşhis | Aramada görünüyorsun ama alt sıralarda |
+| Öğrenilmiş sinyal | 16 aday içinde tahmini anılmada 1.; geride kalınan sinyal: en üstte çıkan aday olmak |
+| Outreach hedefleri | enuygunfinans.com, hangikredi.com |
+
+Bu sonuca üç başarısız koşudan geçilerek varıldı, ve her biri bir tasarım hatası gösterdi:
+
+1. **Kesilen yanıt.** 1024 tokenlık sınır uzun banka cevaplarını kesti; tek bir reddedilen
+   yanıt bütün koşuyu düşürdü. → Sınır 2048 oldu, tekil hatalar makbuza yazılıp koşu devam
+   ediyor.
+2. **Pazar bulamayan sorgular.** Üretilen sorular "nasıl tasarruf ederim" türündendi; hiçbir
+   banka anılmadı ve danışman markayı yanlışlıkla "aramada yok" sandı. → Sorgular marka
+   önerisi soruyor, korpustaki gerçek sorular örnek veriliyor; pazar yoksa teşhis konmuyor.
+3. **Kategori dışına kayma ve kirli liste.** Bir sorgu borsa uygulamalarına kaydı (Apple,
+   Tesla); çıkarım QNB ve Yapı Kredi'yi kaçırdı çünkü alan adını görmüyordu; outreach
+   listesine uygulama mağazaları ve bir rakibin kendi sitesi girdi. → Sorgu ve çıkarım
+   kategoriye sınırlandı, alan adı çıkarıma verildi, `domains.py` rakip sitelerini ve
+   platformları her sektörde eliyor.
+
+Kayıtlı beş sektör aynı kodu kullanır. Bu düzeltmelerden sonra onlar için ayrıca ücretli
+bir koşu yapılmadı; ölçüm, aday listesi ve özellik üretimi çevrimdışı testlerle sınanıyor.
