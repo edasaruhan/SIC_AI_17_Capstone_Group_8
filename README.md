@@ -47,7 +47,8 @@ tahmin ve sınırları: [Nihai deneysel model paketi](docs/final-model-training.
   markaları sonuçlardan çıkarır (kullanıcı düzeltebilir), markayı rakiplerine göre
   skorlar, üç durumdan hangisinde olduğunu teşhis eder (aramada yok / alt sıralarda /
   anılıyor ama asla ilk değil) ve kontrollü testte ölçülmüş etkisiyle öneri verir.
-  Ücretli, bütçe sınırlı, makbuzlu. Belge: [`docs/advisor.md`](docs/advisor.md).
+  Ücretli, bütçe sınırlı, makbuzlu. Arayüz: `make advisor-ui` (adım adım canlı akış,
+  rakip düzeltme). Belge: [`docs/advisor.md`](docs/advisor.md).
 - **Veri kartı**: [`docs/veri-karti.md`](docs/veri-karti.md) — Türkçe veri setinin
   tasarımı, alanları, lisansı (CC BY 4.0) ve sınırlılıkları.
 - **Tekrarlanabilirlik**: [`docs/tekrarlanabilirlik.md`](docs/tekrarlanabilirlik.md) —

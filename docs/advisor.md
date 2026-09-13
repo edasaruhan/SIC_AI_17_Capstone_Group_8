@@ -13,6 +13,28 @@ make advisor-plan BRAND="Garanti BBVA" DOMAIN="bankacılık" LANGUAGE=tr   # üc
 make advisor      BRAND="Garanti BBVA" DOMAIN="bankacılık" LANGUAGE=tr   # ÜCRETLİ
 ```
 
+## Arayüz
+
+```bash
+make advisor-ui
+```
+
+Streamlit sayfası LangGraph akışını sürer; akışın kendisi değişmez. Soldan marka, sektör
+ve dil girilir. Sayfa ücretli çağrı tahminini ve bütçeyi gösterir, analiz daha önce
+yapıldıysa önbellekten okunacağını söyler, onay kutusu işaretlenmeden başlatmaz. Koşu
+sırasında grafiğin her düğümü bittikçe listelenir (sorular → arama → rakipler → yapay
+zekâya sorma → ölçüm ve teşhis → öneriler → rapor). Sonuçta teşhis, görünme, anılma ve
+rakiplere göre sıra metrik olarak, ardından rapor gösterilir; rapor indirilebilir.
+
+"Karşılaştırılan markaları düzelt" bölümünde yanlış rakipler kaldırılır, eksikler
+eklenir ve "Düzeltmeyle yeniden hesapla" ile yeniden çalıştırılır. Düzeltme hiçbir ücretli
+isteği değiştirmediği için koşu önbellekten okunur.
+
+Arayüz ve komut satırı aynı `service.py` modülünü kullanır: koşu kimliği, çağrı
+tahmini, bütçe ve kayıt ikisinde birebir aynıdır.
+
+## Komut satırı
+
 Rakip listesi yanlışsa düzeltip yeniden çalıştırın; önbellekteki çağrılar yeniden
 ödenmez:
 

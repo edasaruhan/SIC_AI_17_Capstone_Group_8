@@ -5,10 +5,11 @@
 
 Any sector works. Competitors are extracted from the search results; correct them with
 ``--add-rival`` / ``--drop-rival`` and rerun -- cached calls are not paid for again.
-Train the transferable model once first: ``make advisor-train``.
+Train the transferable model once first: ``make advisor-train``. For the interface:
+``make advisor-ui``.
 
 A run writes its receipts under ``data/processed/advisor/<run id>/steps`` and its
-report beside them.
+report beside them. The run itself lives in ``service.py``, shared with the interface.
 """
 
 from __future__ import annotations
@@ -18,43 +19,8 @@ import asyncio
 import sys
 from pathlib import Path
 
-import httpx
-
-from brand_demo.workflow import Receipts
-from evidence_eval.io import digest, write_json, write_text
-
-from . import candidates, features, model, nodes
-from .clients import AdvisorClient, require_keys
-
-OUTPUT = Path("data/processed/advisor")
-
-
-def plan_id(args: argparse.Namespace) -> str:
-    """Corrections change the candidate set, so they change the run identity."""
-    return digest(
-        {
-            "brand": args.brand,
-            "aliases": sorted(args.brand_alias),
-            "sector": args.sector,
-            "language": args.language,
-            "queries": args.queries,
-            "reps": args.reps,
-            "model": nodes.MODEL,
-            # Every setting that shapes a paid payload belongs to the run identity, or a
-            # changed setting collides with cached receipts in the same folder.
-            "temperature": nodes.TEMPERATURE,
-            "max_tokens": nodes.MAX_TOKENS,
-            "prompts": digest(
-                [nodes.QUERY_PROMPT, nodes.SYSTEM, nodes.SYSTEM_OFFLINE, candidates.EXTRACT_PROMPT]
-            ),
-        }
-    )[:16]
-
-
-def estimated_calls(args: argparse.Namespace) -> int:
-    recorded = nodes.recorded_queries(args.sector, args.language, args.queries)
-    generation = 0 if recorded else 1
-    return generation + args.queries * (1 + 2 * args.reps) + 1  # +1 candidate extraction
+from . import model, service
+from .clients import require_keys
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -73,14 +39,27 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reps", type=int, default=2)
     parser.add_argument("--max-calls", type=int, default=20)
     parser.add_argument("--concurrency", type=int, default=2)
-    parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--output", type=Path, default=service.OUTPUT)
     parser.add_argument("--yes", action="store_true", help="Ücretli çağrıları onayla")
     parser.add_argument("--retry-failed", action="store_true")
     args = parser.parse_args(argv)
 
-    calls = estimated_calls(args)
-    folder = args.output / plan_id(args)
-    print(f"plan={folder.name} sektör={args.sector!r} tahmini çağrı={calls}")
+    options = service.Options(
+        brand=args.brand,
+        sector=args.sector,
+        language=args.language,
+        brand_aliases=tuple(args.brand_alias),
+        add_rivals=tuple(args.add_rival),
+        drop_rivals=tuple(args.drop_rival),
+        queries=args.queries,
+        reps=args.reps,
+        max_calls=args.max_calls,
+        concurrency=args.concurrency,
+        retry_failed=args.retry_failed,
+        output=args.output,
+    )
+    calls = service.estimated_calls(options)
+    print(f"plan={service.run_id(options)} sektör={args.sector!r} tahmini çağrı={calls}")
     try:
         boosters = model.load()
     except (FileNotFoundError, ValueError) as exc:
@@ -94,57 +73,9 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     require_keys()
-    folder.mkdir(parents=True, exist_ok=True)
-
-    async def run() -> dict:
-        from .graph import build
-
-        async with httpx.AsyncClient(timeout=httpx.Timeout(180, connect=20)) as http:
-            runtime = nodes.Runtime(
-                receipts=Receipts(folder, AdvisorClient(http), args.retry_failed),
-                boosters=boosters,
-                rules=features.load_rules(),
-                brand_aliases=args.brand_alias,
-                add_rivals=args.add_rival,
-                drop_rivals=args.drop_rival,
-                reps=args.reps,
-                n_queries=args.queries,
-                concurrency=args.concurrency,
-            )
-            graph = build(runtime, args.max_calls)
-            return await graph.ainvoke(
-                {
-                    "brand": args.brand,
-                    "sector": args.sector,
-                    "language": args.language,
-                    "max_calls": args.max_calls,
-                }
-            )
-
-    state = asyncio.run(run())
-    write_text(folder / "report.md", state["report"])
-    write_json(
-        folder / "run.json",
-        {
-            key: state.get(key)
-            for key in (
-                "brand",
-                "sector",
-                "language",
-                "curated",
-                "queries",
-                "candidates",
-                "diagnosis",
-                "measures",
-                "scores",
-                "signals",
-                "notes",
-            )
-        }
-        | {"model": nodes.MODEL, "corrections": {"add": args.add_rival, "drop": args.drop_rival}},
-    )
-    print(state["report"])
-    print(f"\nwrote {folder}/report.md")
+    final = asyncio.run(service.run(options, boosters))
+    print(final["report"])
+    print(f"\nwrote {service.run_folder(options)}/report.md")
     return 0
 
 

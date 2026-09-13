@@ -589,3 +589,45 @@ def test_query_prompt_keeps_questions_inside_the_sector(monkeypatch):
     monkeypatch.setattr(nodes, "style_examples", lambda language, limit=3: ["örnek?"])
     prompt = nodes.query_payload("bankacılık", "tr", 3)["messages"][0]["content"]
     assert "başka bir kategoriye" in prompt
+
+
+# --- service: the one way both the CLI and the interface run the advisor ----------------
+
+
+def test_rival_corrections_reuse_the_run_folder_but_aliases_do_not():
+    from advisor import service
+
+    base = service.Options(brand="Garanti BBVA", sector="bankacılık")
+    corrected = service.Options(brand="Garanti BBVA", sector="bankacılık", add_rivals=("QNB",))
+    aliased = service.Options(brand="Garanti BBVA", sector="bankacılık", brand_aliases=("Garanti",))
+    assert service.run_id(base) == service.run_id(corrected)
+    assert service.run_id(base) != service.run_id(aliased)
+
+
+def test_estimate_counts_generation_searches_extraction_and_answers():
+    from advisor import service
+
+    options = service.Options(brand="X", sector="hiç-kayıtlı-olmayan-sektör", queries=3, reps=2)
+    assert service.estimated_calls(options) == 1 + 3 * (1 + 2 * 2) + 1
+
+
+def test_merge_appends_reducer_keys_and_replaces_the_rest():
+    from advisor import service
+
+    state = {"notes": ["a"], "search": [{"q": 1}], "diagnosis": "thin"}
+    merged = service.merge(state, {"notes": ["b"], "search": [{"q": 2}], "diagnosis": "absent"})
+    assert merged["notes"] == ["a", "b"]
+    assert merged["search"] == [{"q": 1}, {"q": 2}]
+    assert merged["diagnosis"] == "absent"
+    assert state["notes"] == ["a"]  # the caller's state is not mutated
+
+
+def test_save_writes_the_report_and_the_corrections(tmp_path):
+    from advisor import service
+
+    options = service.Options(brand="X", sector="y", drop_rivals=("Yanlış",), output=tmp_path)
+    folder = service.save(options, {"report": "# rapor", "brand": "X", "diagnosis": "thin"})
+    assert (folder / "report.md").read_text(encoding="utf-8") == "# rapor"
+    record = json.loads((folder / "run.json").read_text(encoding="utf-8"))
+    assert record["corrections"] == {"add": [], "drop": ["Yanlış"]}
+    assert record["diagnosis"] == "thin"
