@@ -16,8 +16,10 @@ Rules:
 
 * **Fabricated claims are attached only to the fictional brand.** No real company is
   shown making a false claim, not even to a model.
-* **Card order is shuffled per call** with a seed derived from the call key, and the
-  target's position is recorded, so position is randomised and measurable.
+* **The target's position is balanced, not random.** The pilot showed a strong pull
+  towards the first card when cards are identical, so each cell puts the target at every
+  position exactly twice in ten repetitions; the four rivals are shuffled per call with a
+  seed derived from the call key. Position is recorded and measured.
 * **Two phrasings of the question alternate** across repetitions.
 * **Calls are ordered repetition-first**, so a quota interruption leaves every cell
   with the same number of repetitions (the lesson of the controlled test).
@@ -54,6 +56,11 @@ VARIANTS = (
     "fabricated_claim",
 )
 PILOT_VARIANTS = ("control", "statistics", "superlative", "fabricated_claim")
+# The pilot showed that with identical cards the assistant mostly picks the first card
+# listed. A random position per call would leave ten repetitions position-unbalanced and
+# confound every cell comparison, so each cell visits every position exactly twice in
+# ten repetitions, offset per cell so position is not tied to call time either.
+POSITION_DESIGN = "balanced: (rep + cell offset) % 5 + 1; competitors shuffled per call"
 SYSTEM = (
     "Sen bir alışveriş asistanısın. Kullanıcının sorusunu verilen ürün listesine "
     "dayanarak yanıtla ve ona bir ürün öner."
@@ -203,6 +210,7 @@ def plan_id() -> str:
             "system": SYSTEM,
             "variants": VARIANTS,
             "identities": IDENTITIES,
+            "positions": POSITION_DESIGN,
             "categories": [asdict(category) for category in CATEGORIES.values()],
         }
     )[:16]
@@ -246,10 +254,12 @@ def job(category_key: str, identity: str, variant: str, rep: int) -> dict:
     category = CATEGORIES[category_key]
     target = category.brand(identity)
     key = f"{category_key}__{identity}__{variant}__r{rep}"
-    cards = [card(category, target, variant)]
-    cards += [card(category, brand, "control") for brand in category.competitors]
-    order = list(cards)
-    random.Random(int(digest(key)[:16], 16)).shuffle(order)
+    competitors = list(category.competitors)
+    random.Random(int(digest(key)[:16], 16)).shuffle(competitors)
+    offset = int(digest(f"{category_key}__{identity}__{variant}")[:8], 16) % 5
+    position = (rep + offset) % 5 + 1
+    order = [card(category, brand, "control") for brand in competitors]
+    order.insert(position - 1, card(category, target, variant))
     return {
         "key": key,
         "category": category_key,
@@ -257,7 +267,7 @@ def job(category_key: str, identity: str, variant: str, rep: int) -> dict:
         "variant": variant,
         "rep": rep,
         "target": target,
-        "position": order.index(cards[0]) + 1,
+        "position": position,
         "brands": [target, *category.competitors],
         "payload": payload(category.questions[rep % 2], order),
     }

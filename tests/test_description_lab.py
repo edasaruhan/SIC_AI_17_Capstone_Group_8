@@ -71,7 +71,15 @@ def test_plan_id_follows_the_design_data(monkeypatch):
 def test_outcome_reads_first_mention_and_rank():
     brands = ["Lumera", "Avène", "Bioderma", "CeraVe", "Neutrogena"]
     result = analysis.outcome("Size Avène öneririm; Lumera da iyi bir seçenek.", brands, "Lumera")
-    assert result == {"first": 0, "mentioned": 1, "rank": 2, "n_named": 2}
+    assert result == {
+        "first": 0,
+        "mentioned": 1,
+        "rank": 2,
+        "n_named": 2,
+        "first_brand": "Avène",
+        "pick_method": "first_mention",
+        "first_named": "Avène",
+    }
     missing = analysis.outcome("CeraVe iyidir.", brands, "Lumera")
     assert missing["mentioned"] == 0 and np.isnan(missing["rank"])
 
@@ -129,3 +137,49 @@ def test_render_names_the_three_questions_and_the_limits():
     )
     assert "Marka adı" in text and "Açıklama içeriği" in text and "Liste sırası" in text
     assert "Tek asistan" in text
+
+
+def test_each_cell_visits_every_position_twice_in_ten_repetitions():
+    from collections import Counter
+
+    seen: dict[tuple, Counter] = {}
+    for entry in design.plan_jobs(10):
+        cell = (entry["category"], entry["identity"], entry["variant"])
+        seen.setdefault(cell, Counter())[entry["position"]] += 1
+    assert all(counts == Counter({1: 2, 2: 2, 3: 2, 4: 2, 5: 2}) for counts in seen.values())
+
+
+def test_position_is_not_the_same_for_every_cell_in_a_repetition():
+    positions = {entry["position"] for entry in design.plan_jobs(1)}
+    assert len(positions) > 1
+
+
+def test_pick_share_counts_which_list_position_was_recommended():
+    table = pd.DataFrame({"category": ["vpn"] * 4, "picked_position": [1.0, 1.0, 3.0, np.nan]})
+    shares = analysis.pick_share(table)
+    first = shares[(shares.scope == "vpn") & (shares.position == 1)].iloc[0]
+    assert first.n == 3 and abs(first.share - 2 / 3) < 1e-9
+    assert analysis.pick_share(pd.DataFrame({"category": ["vpn"]})).empty
+
+
+BRANDS = ["Veilnet VPN", "Surfshark", "ExpressVPN", "Proton VPN", "CyberGhost"]
+
+
+def test_recommendation_skips_a_bold_list_of_every_brand():
+    text = (
+        "Listedeki **ExpressVPN, CyberGhost, Proton VPN, Surfshark** ve **Veilnet VPN** aynı.\n"
+        "Ancak size **Veilnet VPN**'i öneririm."
+    )
+    result = analysis.outcome(text, BRANDS, "Veilnet VPN")
+    assert result["first"] == 1 and result["first_named"] == "ExpressVPN"
+
+
+def test_recommendation_falls_back_to_the_recommending_sentence():
+    text = "ExpressVPN ve Surfshark aynı özellikte. Size CyberGhost önerebilirim."
+    result = analysis.outcome(text, BRANDS, "CyberGhost")
+    assert result["first"] == 1 and result["pick_method"] == "sentence"
+
+
+def test_recommendation_falls_back_to_first_mention_last():
+    result = analysis.outcome("Surfshark ve ExpressVPN iyidir.", BRANDS, "Surfshark")
+    assert result["pick_method"] == "first_mention" and result["first"] == 1

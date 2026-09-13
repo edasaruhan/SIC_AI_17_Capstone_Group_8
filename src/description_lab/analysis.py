@@ -1,10 +1,18 @@
 """Outcomes and effects of the description experiment.
 
 Outcomes come from name matching over the five brands shown in the call, never from a
-model's judgement: the first brand named (the recommendation proxy the whole project
-uses), whether the target is named at all, and its rank by first mention.
+model's judgement. The pilot showed that the first brand named is a poor proxy here: with
+identical cards the assistant often restates the whole list before recommending one
+product. The recommended brand is therefore read in order of evidence:
 
-Every call has its own randomised card order, so calls are treated as independent
+1. the first bold span (``**...**``) that names exactly one brand -- the assistant bolds
+   the product it recommends;
+2. otherwise the first sentence with "öner" or "tercih" that names exactly one brand;
+3. otherwise the first brand named, flagged as such in ``pick_method``.
+
+Whether the target is named at all and its rank by first mention are kept as well.
+
+Each cell visits every list position equally often, so calls are treated as independent
 observations and intervals come from a bootstrap over calls (seed 42, 2.5/97.5). A
 contrast is the difference between two independent groups of calls, bootstrapped as
 such. With ten repetitions per arm the intervals are wide; the report says so.
@@ -12,6 +20,8 @@ such. With ten repetitions per arm the intervals are wide; the report says so.
 
 from __future__ import annotations
 
+import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -47,14 +57,38 @@ IDENTITY_TR = {
 CATEGORY_TR = {"sunscreen": "Güneş kremi", "vpn": "VPN", "ALL": "Tümü"}
 
 
+BOLD = re.compile(r"\*\*(.+?)\*\*", re.S)
+SENTENCE = re.compile(r"[^.!?\n]+")
+RECOMMEND = re.compile(r"öner|tercih", re.I)
+
+
+def recommended(text: str, registry) -> tuple[str | None, str]:
+    """The brand the answer recommends, and which rule found it."""
+    for span in BOLD.findall(text):
+        named = measure.named_brands(span, registry)
+        if len(named) == 1:
+            return named[0], "bold"
+    for sentence in SENTENCE.findall(text):
+        if RECOMMEND.search(sentence):
+            named = measure.named_brands(sentence, registry)
+            if len(named) == 1:
+                return named[0], "sentence"
+    named = measure.named_brands(text, registry)
+    return (named[0], "first_mention") if named else (None, "none")
+
+
 def outcome(text: str, brands: list[str], target: str) -> dict:
     registry = candidates.build_registry(brands[0], [], brands[1:], "description-lab")
     named = measure.named_brands(text, registry)
+    picked, method = recommended(text, registry)
     return {
-        "first": int(bool(named) and named[0] == target),
+        "first": int(picked == target),
         "mentioned": int(target in named),
         "rank": named.index(target) + 1 if target in named else np.nan,
         "n_named": len(named),
+        "first_brand": picked,
+        "pick_method": method,
+        "first_named": named[0] if named else None,
     }
 
 
@@ -65,12 +99,18 @@ def outcomes(folder: Path, jobs: list[dict]) -> pd.DataFrame:
         step = read_json(path) if path.exists() else None
         if not step or step.get("status") != "completed":
             continue
+        listed = [
+            c["marka"] for c in json.loads(entry["payload"]["messages"][1]["content"])["urunler"]
+        ]
+        result = outcome(step["result"]["text"], entry["brands"], entry["target"])
+        picked = result["first_brand"]
         rows.append(
             {
                 key: entry[key]
                 for key in ("key", "category", "identity", "variant", "rep", "target", "position")
             }
-            | outcome(step["result"]["text"], entry["brands"], entry["target"])
+            | result
+            | {"picked_position": listed.index(picked) + 1 if picked in listed else np.nan}
         )
     return pd.DataFrame(rows)
 
@@ -150,6 +190,34 @@ def position_effects(table: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def pick_share(table: pd.DataFrame) -> pd.DataFrame:
+    """Which list position gets recommended, over every call and every card.
+
+    Uses all five cards of every call rather than only the target, so the position
+    signal rests on the whole experiment. Chance is 20%.
+    """
+    if "picked_position" not in table:
+        return pd.DataFrame()
+    rng = np.random.default_rng(SEED)
+    rows = []
+    for scope, part in _scopes(table):
+        picks = part["picked_position"].dropna().to_numpy(dtype=float)
+        for position in range(1, 6):
+            hits = (picks == position).astype(float)
+            low, high = _bootstrap_mean(hits, rng)
+            rows.append(
+                {
+                    "scope": scope,
+                    "position": position,
+                    "n": len(picks),
+                    "share": float(hits.mean()) if len(hits) else np.nan,
+                    "share_lo": low,
+                    "share_hi": high,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
 def _pts(value: float) -> str:
     return "–" if pd.isna(value) else f"{100 * value:+.1f}"
 
@@ -178,6 +246,26 @@ def _table(frame: pd.DataFrame, labels: dict[str, str], base_arm: str) -> list[s
     return lines
 
 
+def _pick_lines(table: pd.DataFrame) -> list[str]:
+    picks = pick_share(table)
+    if picks.empty:
+        return []
+    lines = [
+        "## 4. Hangi sıradaki kart öneriliyor? (bütün kartlar)",
+        "",
+        "Her çağrıda önerilen ürünün listedeki sırası. Rastgele seçimde her sıra %20 olurdu.",
+        "",
+        "| Kapsam | Sıra | Önerilme payı [95% GA] | Çağrı |",
+        "|---|---:|---|---:|",
+    ]
+    for _, r in picks.iterrows():
+        lines.append(
+            f"| {CATEGORY_TR.get(r.scope, r.scope)} | {int(r.position)} | {_pct(float(r.share))} "
+            f"[{_pct(float(r.share_lo))} · {_pct(float(r.share_hi))}] | {int(r.n)} |"
+        )
+    return [*lines, ""]
+
+
 def render(
     table: pd.DataFrame,
     identity: pd.DataFrame,
@@ -194,9 +282,13 @@ def render(
         "",
         f"- Asistan: `{design.MODEL}`, sıcaklık {design.TEMPERATURE}.",
         f"- Tamamlanan çağrı: {len(table)}/{planned}.",
-        "- Her çağrıda aynı temel özelliklere sahip 5 ürün kartı; hedef kartın sırası rastgele.",
-        "- Ölçüm: gösterilen 5 markanın ad eşleştirmesi. 'Birinci önerilme' = yanıtta ilk anılan "
-        "marka hedef mi.",
+        "- Her çağrıda aynı temel özelliklere sahip 5 ürün kartı; her hücrede hedef kart her "
+        "sıraya eşit sayıda konur, rakiplerin sırası çağrı başına karışır.",
+        "- Ölçüm: gösterilen 5 markanın ad eşleştirmesi. 'Birinci önerilme' = yanıtın önerdiği "
+        "marka hedef mi (önce kalın yazılan tek marka, yoksa 'öner/tercih' cümlesindeki tek "
+        "marka, yoksa ilk anılan).",
+        f"- Önerilen marka kuralla bulunamayıp ilk anılana düşülen çağrı: "
+        f"{int((table.get('pick_method', pd.Series(dtype=str)) == 'first_mention').sum())}.",
         "",
         "## 1. Marka adı: aynı ürün, farklı marka",
         "",
@@ -216,6 +308,7 @@ def render(
         "",
         *_table(position, {str(i): f"{i}. sıra" for i in range(1, 6)}, "5"),
         "",
+        *_pick_lines(table),
         "## Sınırlılıklar",
         "",
         "- Tek asistan (Gemini 3.5 Flash Lite); önerinin 'en az iki model' koşulu karşılanmadı.",

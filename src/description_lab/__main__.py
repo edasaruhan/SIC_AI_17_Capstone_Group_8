@@ -89,6 +89,7 @@ def main(argv: list[str] | None = None) -> int:
         identity.to_csv(REPORT / "identity_effects.csv", index=False)
         content.to_csv(REPORT / "content_effects.csv", index=False)
         position.to_csv(REPORT / "position_effects.csv", index=False)
+        analysis.pick_share(table).to_csv(REPORT / "pick_position.csv", index=False)
         (REPORT / "README.md").write_text(
             analysis.render(table, identity, content, position, planned=len(jobs)),
             encoding="utf-8",
