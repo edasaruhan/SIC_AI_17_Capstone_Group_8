@@ -1,10 +1,12 @@
 """Deterministic measurement — the part that must not be a model's opinion.
 
-Every number the advisor later quotes is produced here, by matching the curated brand
-registry against text: which brands an answer names, which one it names first, whether
-the brand appears in the retrieved results and how high. Asking an LLM "is this brand
-visible?" would be circular and unreproducible, and the concept note rejects it
-explicitly; this module is why we can refuse to.
+Every rate the advisor reports is produced here, by matching brand names against
+text: which brands an answer names, which one it names first, whether the brand
+appears in the retrieved results and how high. Asking an LLM "is this brand visible?"
+would be circular and unreproducible, and the concept note rejects it explicitly.
+
+The names come from the run's registry (``candidates.build_registry``), not from a
+fixed sector list, so measurement works in a sector nobody curated.
 """
 
 from __future__ import annotations
@@ -15,13 +17,10 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from evidence_eval.evidence import spans
-from modeling.brands import load_registry
+from modeling.brands import BrandRegistry
 
 from .state import Observation
 
-# Sectors the curated registry covers; the advisor refuses others rather than
-# inventing a brand list on the fly.
-SECTORS = ("vpn", "hosting", "travel", "editors", "cosmetics")
 # Read-only: this file is part of the evidence manifest's hash contract.
 SOURCE_DOMAINS = Path("configs/modeling/source_domains_v2.json")
 
@@ -41,26 +40,6 @@ def is_vendor_site(link: str) -> bool:
     return any(host == d or host.endswith(f".{d}") for d in vendor_hosts())
 
 
-def named_brands(text: str, sector: str) -> list[str]:
-    """Brands named in an answer, in the order they first appear."""
-    seen: dict[str, int] = {}
-    for start, _, brand in spans(text, load_registry(sector)):
-        seen.setdefault(brand, start)
-    return sorted(seen, key=lambda brand: seen[brand])
-
-
-def retrieval_presence(
-    brand: str, results: list[dict], sector: str
-) -> tuple[bool, int | None, int]:
-    """Does the brand appear in the retrieved results, how high, and in how many?"""
-    positions = []
-    for index, result in enumerate(results, 1):
-        blob = f"{result.get('title', '')}\n{result.get('snippet', '')}"
-        if brand in named_brands(blob, sector) or _own_domain(brand, result.get("link", "")):
-            positions.append(index)
-    return bool(positions), (min(positions) if positions else None), len(positions)
-
-
 def _own_domain(brand: str, link: str) -> bool:
     """A result on the brand's own site counts as presence even without a name match."""
     host = urlparse(link or "").netloc.casefold()
@@ -68,10 +47,30 @@ def _own_domain(brand: str, link: str) -> bool:
     return bool(stem) and stem in host.replace(".", "").replace("-", "")
 
 
+def named_brands(text: str, registry: BrandRegistry) -> list[str]:
+    """Brands named in a text, in the order they first appear."""
+    seen: dict[str, int] = {}
+    for start, _, brand in spans(text, registry):
+        seen.setdefault(brand, start)
+    return sorted(seen, key=lambda brand: seen[brand])
+
+
+def retrieval_presence(
+    brand: str, results: list[dict], registry: BrandRegistry
+) -> tuple[bool, int | None, int]:
+    """Does the brand appear in the retrieved results, how high, and in how many?"""
+    positions = []
+    for index, result in enumerate(results, 1):
+        blob = f"{result.get('title', '')}\n{result.get('snippet', '')}"
+        if brand in named_brands(blob, registry) or _own_domain(brand, result.get("link", "")):
+            positions.append(index)
+    return bool(positions), (min(positions) if positions else None), len(positions)
+
+
 def observe(
     *,
     brand: str,
-    sector: str,
+    registry: BrandRegistry,
     query: str,
     condition: str,
     rep: int,
@@ -79,8 +78,8 @@ def observe(
     results: list[dict],
 ) -> Observation:
     """One measurement. ``first`` is the top-recommendation proxy used throughout."""
-    named = named_brands(answer, sector)
-    present, best, count = retrieval_presence(brand, results, sector)
+    named = named_brands(answer, registry)
+    present, best, count = retrieval_presence(brand, results, registry)
     return {
         "query": query,
         "condition": condition,
@@ -127,21 +126,19 @@ def rival_brands(observations: list[Observation], brand: str, limit: int = 5) ->
 
 
 def outreach_targets(
-    search: list[dict], brand: str, rivals: list[str], sector: str, limit: int = 6
+    search: list[dict], brand: str, rivals: list[str], registry: BrandRegistry, limit: int = 6
 ) -> list[dict]:
     """Independent pages that already name your rivals and do not name you.
 
     Vendor sites are excluded: a rival's own homepage names the rival, but no brand can
-    ask to be listed there.
-
-    This is the concrete form of the one recommendation the controlled test measured:
-    inclusion in an independent comparison that already lists the competition.
+    ask to be listed there. This is the concrete form of the recommendation the
+    controlled test measured: inclusion in an independent comparison of the competition.
     """
     rows = []
     for page in search:
         for result in page.get("results", []):
             blob = f"{result.get('title', '')}\n{result.get('snippet', '')}"
-            named = set(named_brands(blob, sector))
+            named = set(named_brands(blob, registry))
             hits = sorted(named & set(rivals))
             link = result.get("link", "")
             if (
@@ -152,9 +149,9 @@ def outreach_targets(
             ):
                 rows.append(
                     {
-                        "domain": urlparse(result.get("link", "")).netloc,
+                        "domain": urlparse(link).netloc,
                         "title": result.get("title", ""),
-                        "link": result.get("link", ""),
+                        "link": link,
                         "position": result.get("position"),
                         "rivals": hits,
                         "query": page.get("query", ""),

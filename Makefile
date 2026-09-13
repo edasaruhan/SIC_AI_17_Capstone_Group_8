@@ -85,10 +85,13 @@ modeling-fairness: ## Yoğunlaşma (N_eff) ve adalet tabloları: kim anılıyor,
 modeling-masking: ## Tamamlanmış M3 koşularından sektör sektör maskeleme ablasyonu (CPU, offline)
 	PYTHONPATH=src $(PYTHON) scripts/collect_masking.py
 
-.PHONY: advisor advisor-plan
+.PHONY: advisor advisor-plan advisor-train
 ADVISOR := PYTHONPATH=src uv run --with langgraph python -m advisor
 ADVISOR_ARGS ?=
-advisor-plan: ## Canlı görünürlük teşhisi planı ve çağrı tahmini (ücretsiz, çağrı yok)
+advisor-train: ## Aktarılabilir sinyal modelini (M2-Invariant) kayıtlı tüm sektörlerde eğit ve kaydet (CPU, offline)
+	PYTHONPATH=src $(PYTHON) -m advisor.model
+
+advisor-plan: ## Herhangi bir sektör için teşhis planı ve çağrı tahmini (ücretsiz, çağrı yok)
 	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" $(ADVISOR_ARGS)
 
 advisor: ## LangGraph görünürlük danışmanı: ölç, teşhis et, öner (ÜCRETLİ; --yes gerekir)

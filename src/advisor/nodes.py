@@ -1,10 +1,14 @@
 """The graph's nodes. Paid work is bounded, receipted, and never silently retried.
 
 Each node takes the state and returns only the keys it adds, so a reader of the
-receipts can see which node produced which fact. The two paid nodes (``search`` and
-``interrogate``) go through the same ``Receipts`` wrapper the demo and the controlled
-test use: a rerun reads the cache instead of paying again, and a failure is recorded
-rather than retried behind the user's back.
+receipts can see which node produced which fact. Every paid call goes through the same
+``Receipts`` wrapper the demo and the controlled test use: a rerun reads the cache
+instead of paying again, and a failure is recorded rather than retried behind the
+user's back.
+
+Nothing here is tied to a sector. A curated sector contributes recorded queries and
+hand-checked aliases; any other sector gets generated queries and extracted candidates,
+and the learned signal carries over from the sectors it was trained on.
 """
 
 from __future__ import annotations
@@ -16,8 +20,9 @@ from pathlib import Path
 
 from brand_demo.workflow import Receipts
 from evidence_eval.io import read_json
+from modeling.brands import BrandRegistry, comparison_key
 
-from . import advise, measure, render
+from . import advise, candidates, features, measure, model, render, signals
 from .state import AdvisorState
 
 CORPUS = Path("data/processed/evidence_v2")
@@ -44,13 +49,19 @@ QUERY_PROMPT = (
 
 @dataclass
 class Runtime:
-    """Everything the nodes need that is not state: clients, budget, settings."""
+    """Everything the nodes need that is not state: clients, budget, model, corrections."""
 
     receipts: Receipts
+    boosters: dict | None = None
+    rules: dict | None = None
+    brand_aliases: list[str] = field(default_factory=list)
+    add_rivals: list[str] = field(default_factory=list)
+    drop_rivals: list[str] = field(default_factory=list)
     reps: int = 2
     n_queries: int = 3
     concurrency: int = 2
     spent: list[str] = field(default_factory=list)
+    registry: BrandRegistry | None = None
 
     def charge(self, key: str, budget: int) -> None:
         if len(self.spent) >= budget:
@@ -60,9 +71,14 @@ class Runtime:
             )
         self.spent.append(key)
 
+    def require_registry(self) -> BrandRegistry:
+        if self.registry is None:
+            raise ValueError("Aday marka listesi kurulmadan ölçüm yapılamaz (discover düğümü).")
+        return self.registry
+
 
 def recorded_queries(sector: str, language: str, limit: int) -> list[str]:
-    """Queries from the frozen corpus, so a demo run asks what we already measured."""
+    """Queries from the frozen corpus, so a curated-sector run asks what we measured."""
     path = CORPUS / f"responses_{'tr' if language == 'tr' else 'en'}.json"
     if not path.exists():
         return []
@@ -73,10 +89,19 @@ def recorded_queries(sector: str, language: str, limit: int) -> list[str]:
     return [seen[key] for key in sorted(seen)][:limit]
 
 
+def _queries_from(result: dict) -> list[str]:
+    value = json.loads(result["text"].strip().strip("`").removeprefix("json").strip())
+    queries = [str(q).strip() for q in value.get("queries", []) if str(q).strip()]
+    if not queries:
+        raise ValueError("Sorgu üretimi boş döndü")
+    return queries
+
+
 def make_plan(runtime: Runtime, budget: int):
     async def plan(state: AdvisorState) -> dict:
         sector, language = state["sector"], state["language"]
         queries = recorded_queries(sector, language, runtime.n_queries)
+        curated = sector in candidates.CURATED
         note = f"{len(queries)} sorgu donmuş korpustan alındı ({sector}/{language})."
         if not queries:
             runtime.charge("plan_queries", budget)
@@ -93,12 +118,12 @@ def make_plan(runtime: Runtime, budget: int):
                     }
                 ],
             }
-            result = await runtime.receipts.call("plan_queries", SERVICE, payload)
-            queries = [str(q) for q in json.loads(result["text"])["queries"]][: runtime.n_queries]
-            note = f"{len(queries)} sorgu asistana ürettirildi; korpusta bu kategori yok."
-        if not queries:
-            raise ValueError(f"{sector}/{language} için sorgu üretilemedi")
-        return {"queries": queries, "notes": [note]}
+            result = await runtime.receipts.call(
+                "plan_queries", SERVICE, payload, validator=_queries_from
+            )
+            queries = _queries_from(result)[: runtime.n_queries]
+            note = f"{len(queries)} sorgu asistana ürettirildi; korpusta bu sektör/dil yok."
+        return {"queries": queries, "curated": curated, "notes": [note]}
 
     return plan
 
@@ -120,6 +145,47 @@ def make_search(runtime: Runtime, budget: int):
         return {"search": list(pages), "notes": [f"{found} arama sonucu alındı."]}
 
     return search
+
+
+def _corpus(pages: list[dict]) -> list[str]:
+    return [
+        f"{result.get('title', '')} — {result.get('snippet', '')}"
+        for page in pages
+        for result in page.get("results", [])
+    ]
+
+
+def make_discover(runtime: Runtime, budget: int):
+    """Who competes here? Extracted from the results, then corrected by the user."""
+
+    async def discover(state: AdvisorState) -> dict:
+        brand, sector = state["brand"], state["sector"]
+        texts = _corpus(state.get("search", []))
+        corpus = "\n".join(texts)
+        runtime.charge("discover", budget)
+        result = await runtime.receipts.call(
+            "discover",
+            SERVICE,
+            candidates.extraction_payload(sector, texts, MODEL),
+            validator=lambda r: candidates.parse_extraction(r["text"], corpus),
+        )
+        extracted = candidates.parse_extraction(result["text"], corpus)
+        own = {comparison_key(brand), *(comparison_key(a) for a in runtime.brand_aliases)}
+        rivals = [name for name in extracted if comparison_key(name) not in own]
+        corrected = candidates.apply_corrections(rivals, runtime.add_rivals, runtime.drop_rivals)
+        runtime.registry = candidates.build_registry(
+            brand, runtime.brand_aliases, corrected, sector
+        )
+        return {
+            "candidates": runtime.registry.brands,
+            "notes": [
+                f"{len(extracted)} aday marka arama sonuçlarından çıkarıldı; kullanıcı "
+                f"düzeltmesi +{len(runtime.add_rivals)} / −{len(runtime.drop_rivals)}; "
+                f"karşılaştırılan toplam {len(runtime.registry.brands)} marka."
+            ],
+        }
+
+    return discover
 
 
 def _payload(question: str, results: list[dict] | None) -> dict:
@@ -156,7 +222,8 @@ def _payload(question: str, results: list[dict] | None) -> dict:
 
 def make_interrogate(runtime: Runtime, budget: int):
     async def interrogate(state: AdvisorState) -> dict:
-        brand, sector = state["brand"], state["sector"]
+        brand = state["brand"]
+        registry = runtime.require_registry()
         queries = state.get("queries", [])
         pages = {page["query"]: page["results"] for page in state.get("search", [])}
         gate = asyncio.Semaphore(runtime.concurrency)
@@ -175,7 +242,7 @@ def make_interrogate(runtime: Runtime, budget: int):
                 result = await runtime.receipts.call(key, SERVICE, _payload(query, results))
             return measure.observe(
                 brand=brand,
-                sector=sector,
+                registry=registry,
                 query=query,
                 condition=condition,
                 rep=rep,
@@ -192,21 +259,40 @@ def make_interrogate(runtime: Runtime, budget: int):
     return interrogate
 
 
-async def analyse(state: AdvisorState) -> dict:
-    """Pure: turn observations into rates, a diagnosis and the outreach evidence."""
-    brand, sector = state["brand"], state["sector"]
-    observations = state.get("observations", [])
-    measures = measure.rates(observations)
-    rivals = measure.rival_brands(observations, brand)
-    diagnosis = advise.diagnose(measures)
-    targets = measure.outreach_targets(state.get("search", []), brand, rivals, sector)
-    return {
-        "measures": measures,
-        "rivals": rivals,
-        "diagnosis": diagnosis,
-        "evidence": targets,
-        "notes": [f"Teşhis: {advise.DIAGNOSES[diagnosis]}."],
-    }
+def make_analyse(runtime: Runtime):
+    """Measure, score with the transferable model, diagnose. No paid calls."""
+
+    async def analyse(state: AdvisorState) -> dict:
+        brand, sector, language = state["brand"], state["sector"], state["language"]
+        registry = runtime.require_registry()
+        observations = state.get("observations", [])
+        search = state.get("search", [])
+        measures = measure.rates(observations)
+        rivals = measure.rival_brands(observations, brand)
+        diagnosis = advise.diagnose(measures)
+        targets = measure.outreach_targets(search, brand, rivals, registry)
+        scores: dict = {}
+        lagging: list[dict] = []
+        notes = [f"Teşhis: {advise.DIAGNOSES[diagnosis]}."]
+        if runtime.boosters is not None and runtime.rules is not None:
+            frame = features.live_frame(
+                search, registry, runtime.rules, sector=sector, language=language
+            )
+            scored = model.score(runtime.boosters, frame)
+            scores = signals.brand_scores(scored, brand, rivals)
+            lagging = signals.lagging_signals(scored, brand, rivals)
+            notes.append("Öğrenilmiş sinyal modeli (M2-Invariant) canlı sonuçlara uygulandı.")
+        return {
+            "measures": measures,
+            "rivals": rivals,
+            "diagnosis": diagnosis,
+            "evidence": targets,
+            "scores": scores,
+            "signals": lagging,
+            "notes": notes,
+        }
+
+    return analyse
 
 
 def route(state: AdvisorState) -> str:

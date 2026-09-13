@@ -41,11 +41,13 @@ tahmin ve sınırları: [Nihai deneysel model paketi](docs/final-model-training.
 - **Maskeleme ablasyonu**: `make modeling-masking`, tamamlanmış M3 koşularından
   sektör sektör isimli/maskeli farkı üretir (eğitim için `scripts/run_m3.py`, GPU).
   Rapor: [`reports/masking/`](reports/masking/results.md).
-- **Görünürlük danışmanı (LangGraph)**: `make advisor BRAND=... DOMAIN=... LANGUAGE=...`.
-  Canlı arama + Gemini ile markayı ölçer, üç durumdan hangisinde olduğunu teşhis eder
-  (aramada yok / alt sıralarda / anılıyor ama asla ilk değil) ve kontrollü testte
-  ölçülmüş etkisiyle öneri verir. Ücretli, bütçe sınırlı, makbuzlu.
-  Belge: [`docs/advisor.md`](docs/advisor.md).
+- **Görünürlük danışmanı (LangGraph)**: örnek veriden öğrenilen sinyali **herhangi bir
+  sektöre** uygular. `make advisor-train` ile M2-Invariant modeli kayıtlı beş sektörde
+  eğitilir; `make advisor BRAND=... DOMAIN=... LANGUAGE=...` canlı arama yapar, rakip
+  markaları sonuçlardan çıkarır (kullanıcı düzeltebilir), markayı rakiplerine göre
+  skorlar, üç durumdan hangisinde olduğunu teşhis eder (aramada yok / alt sıralarda /
+  anılıyor ama asla ilk değil) ve kontrollü testte ölçülmüş etkisiyle öneri verir.
+  Ücretli, bütçe sınırlı, makbuzlu. Belge: [`docs/advisor.md`](docs/advisor.md).
 - **Veri kartı**: [`docs/veri-karti.md`](docs/veri-karti.md) — Türkçe veri setinin
   tasarımı, alanları, lisansı (CC BY 4.0) ve sınırlılıkları.
 - **Tekrarlanabilirlik**: [`docs/tekrarlanabilirlik.md`](docs/tekrarlanabilirlik.md) —

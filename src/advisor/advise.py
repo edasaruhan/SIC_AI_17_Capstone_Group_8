@@ -158,9 +158,21 @@ def recommendations(
     return recs
 
 
-def limits(sector: str, language: str) -> list[str]:
+def limits(sector: str, language: str, curated: bool = True) -> list[str]:
     """What this report may not claim. Printed with every run, not buried."""
+    transfer = (
+        []
+        if curated
+        else [
+            f"'{sector}' sektörü kayıtlı veri setinde yok. Öğrenilmiş sinyal skoru, beş sektörde "
+            "eğitilip leave-one-domain-out testinde görmediği sektörlere taşındığı gösterilen "
+            "modelden gelir; bu sektörde ayrıca doğrulanmadı.",
+            "Rakip marka listesi bir dil modeline arama sonuçlarından çıkarttırıldı; yalnız "
+            "metinde gerçekten geçen adlar tutuldu. Eksik veya fazla ad sonuçları etkiler.",
+        ]
+    )
     return [
+        *transfer,
         "Ölçülen etkiler tek bir asistanda (Gemini 3.5 Flash Lite) ve İngilizce bağlamda, "
         "VPN/hosting/seyahat sektörlerinde ölçüldü. Sizin sektörünüzde ve dilinizde "
         f"({sector}/{language}) etkinin yönü aynı olsa da büyüklüğü ölçülmedi.",

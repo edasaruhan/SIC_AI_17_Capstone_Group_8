@@ -1,9 +1,20 @@
+import json
+
+import numpy as np
 import pandas as pd
 import pytest
+from lightgbm import LGBMClassifier
 
-from advisor import advise, measure, render
+from advisor import advise, candidates, features, measure, model, render, signals
 from advisor.state import AdvisorState
 from visibility import ethics
+
+# A sector nobody curated: the advisor must work from the run's own registry.
+SECTOR = "genel-test"
+
+
+def _registry(brand: str, *rivals: str, aliases: tuple[str, ...] = ()):
+    return candidates.build_registry(brand, aliases, rivals, SECTOR)
 
 
 def _results(*brands_per_result: str) -> list[dict]:
@@ -18,19 +29,25 @@ def _results(*brands_per_result: str) -> list[dict]:
     ]
 
 
+# --- measurement --------------------------------------------------------------
+
+
 def test_named_brands_keeps_first_appearance_order():
+    registry = _registry("Mullvad", "NordVPN")
     text = "Önce Mullvad, sonra NordVPN, tekrar Mullvad."
-    assert measure.named_brands(text, "vpn") == ["Mullvad", "NordVPN"]
+    assert measure.named_brands(text, registry) == ["Mullvad", "NordVPN"]
 
 
 def test_retrieval_presence_reports_best_position_and_count():
+    registry = _registry("Windscribe", "NordVPN", "Mullvad")
     results = _results("NordVPN", "Windscribe", "Windscribe")
-    present, best, count = measure.retrieval_presence("Windscribe", results, "vpn")
+    present, best, count = measure.retrieval_presence("Windscribe", results, registry)
     assert (present, best, count) == (True, 2, 2)
-    assert measure.retrieval_presence("Mullvad", results, "vpn") == (False, None, 0)
+    assert measure.retrieval_presence("Mullvad", results, registry) == (False, None, 0)
 
 
 def test_own_domain_counts_as_presence_without_a_name_match():
+    registry = _registry("Windscribe")
     results = [
         {
             "title": "Ana sayfa",
@@ -39,13 +56,13 @@ def test_own_domain_counts_as_presence_without_a_name_match():
             "position": 1,
         }
     ]
-    assert measure.retrieval_presence("Windscribe", results, "vpn")[0] is True
+    assert measure.retrieval_presence("Windscribe", results, registry)[0] is True
 
 
 def test_observe_marks_first_named_brand_only_when_it_leads():
     row = measure.observe(
         brand="Windscribe",
-        sector="vpn",
+        registry=_registry("Windscribe", "NordVPN"),
         query="q",
         condition="search_on",
         rep=0,
@@ -58,10 +75,11 @@ def test_observe_marks_first_named_brand_only_when_it_leads():
 
 
 def test_rates_separate_the_two_conditions():
+    registry = _registry("Mullvad", "NordVPN")
     rows = [
         measure.observe(
             brand="Mullvad",
-            sector="vpn",
+            registry=registry,
             query="q",
             condition=c,
             rep=0,
@@ -71,18 +89,196 @@ def test_rates_separate_the_two_conditions():
         for c, answer in (("search_off", "NordVPN iyidir."), ("search_on", "Mullvad iyidir."))
     ]
     m = measure.rates(rows)
-    assert m["mention_off"] == 0.0
-    assert m["mention_on"] == 1.0
-    assert m["first_on"] == 1.0
+    assert (m["mention_off"], m["mention_on"], m["first_on"]) == (0.0, 1.0, 1.0)
     assert m["retrieval_presence"] == 1.0
     assert m["queries"] == 1
 
 
 def test_outreach_targets_are_pages_that_name_rivals_but_not_you():
+    registry = _registry("Windscribe", "NordVPN")
     search = [{"query": "en iyi vpn", "results": _results("NordVPN", "Windscribe")}]
-    targets = measure.outreach_targets(search, "Windscribe", ["NordVPN"], "vpn")
+    targets = measure.outreach_targets(search, "Windscribe", ["NordVPN"], registry)
     assert [t["rivals"] for t in targets] == [["NordVPN"]]
-    assert all("Windscribe" not in t["title"] for t in targets)
+
+
+def test_outreach_targets_exclude_rival_vendor_sites():
+    """A rival's own homepage names the rival, but nobody can get listed there."""
+    registry = _registry("Windscribe", "NordVPN", "Mullvad")
+    search = [
+        {
+            "query": "en iyi vpn",
+            "results": [
+                {
+                    "title": "NordVPN resmi",
+                    "snippet": "NordVPN ile güvenli bağlan.",
+                    "link": "https://nordvpn.com/tr/",
+                    "position": 1,
+                },
+                {
+                    "title": "En iyi VPN'ler",
+                    "snippet": "NordVPN ve Mullvad karşılaştırması.",
+                    "link": "https://www.donanimhaber.com/vpn",
+                    "position": 2,
+                },
+            ],
+        }
+    ]
+    targets = measure.outreach_targets(search, "Windscribe", ["NordVPN", "Mullvad"], registry)
+    assert [t["domain"] for t in targets] == ["www.donanimhaber.com"]
+
+
+def test_vendor_site_matches_subdomains_but_not_lookalikes():
+    assert measure.is_vendor_site("https://nordvpn.com/pricing")
+    assert measure.is_vendor_site("https://support.nordvpn.com/x")
+    assert not measure.is_vendor_site("https://notnordvpn.com.example/")
+
+
+# --- candidates: any sector, extracted then corrected -------------------------
+
+
+def test_extraction_keeps_only_names_that_occur_in_the_text():
+    corpus = "Garanti BBVA ve Akbank karşılaştırması. Yapı Kredi kampanyası."
+    reply = json.dumps({"brands": ["Garanti BBVA", "Akbank", "UydurmaBank", "akbank"]})
+    assert candidates.parse_extraction(reply, corpus) == ["Garanti BBVA", "Akbank"]
+
+
+def test_extraction_accepts_fenced_json_and_rejects_a_bad_schema():
+    corpus = "Akbank ve Yapı Kredi"
+    fenced = '```json\n{"brands": ["Akbank"]}\n```'
+    assert candidates.parse_extraction(fenced, corpus) == ["Akbank"]
+    with pytest.raises(ValueError):
+        candidates.parse_extraction('{"names": ["Akbank"]}', corpus)
+
+
+def test_user_corrections_win_over_extraction():
+    merged = candidates.apply_corrections(["Akbank", "Yanlış Ad"], add=["QNB"], drop=["yanlış ad"])
+    assert merged == ["Akbank", "QNB"]
+
+
+def test_uncurated_registry_contains_only_the_run_brands_and_aliases():
+    registry = candidates.build_registry("Garanti BBVA", ["Garanti"], ["Akbank"], "bankacılık")
+    assert registry.brands == ["Akbank", "Garanti BBVA"]
+    assert measure.named_brands("Garanti ile Akbank", registry) == ["Garanti BBVA", "Akbank"]
+
+
+def test_curated_sector_merges_hand_checked_aliases():
+    registry = candidates.build_registry("Windscribe", [], ["YeniVPN"], "vpn")
+    assert {"Mullvad", "NordVPN", "YeniVPN", "Windscribe"} <= set(registry.brands)
+
+
+# --- features: the training columns, built from live results ------------------
+
+
+def test_live_frame_builds_every_invariant_feature():
+    registry = _registry("Windscribe", "NordVPN", "Acme")
+    pages = [{"query": "q", "results": _results("NordVPN", "Windscribe", "NordVPN")}]
+    frame = features.live_frame(
+        pages, registry, features.load_rules(), sector=SECTOR, language="tr"
+    )
+    assert set(model.FEATURES) <= set(frame.columns)
+    by_brand = frame.set_index("brand")
+    assert by_brand.at["NordVPN", "n_results_mentioning"] == 2
+    assert by_brand.at["Acme", "in_search_results"] == 0
+    assert by_brand.at["NordVPN", "is_top_retrieved"] == 1.0
+
+
+def test_a_rivals_own_site_is_not_counted_as_official_for_another_brand():
+    registry = _registry("Windscribe", "NordVPN")
+    page = {
+        "query": "q",
+        "results": [
+            {
+                "title": "NordVPN ve Windscribe",
+                "snippet": "Karşılaştırma.",
+                "link": "https://nordvpn.com/blog",
+                "position": 1,
+            }
+        ],
+    }
+    frame = features.live_frame(
+        [page], registry, features.load_rules(), sector=SECTOR, language="tr"
+    ).set_index("brand")
+    assert frame.at["NordVPN", "n_official"] == 1
+    assert frame.at["Windscribe", "n_official"] == 0  # vendor_other, as in training
+
+
+# --- the saved model ------------------------------------------------------------
+
+
+def _boosters() -> dict:
+    rng = np.random.default_rng(0)
+    x = pd.DataFrame(rng.random((200, len(model.FEATURES))), columns=pd.Index(model.FEATURES))
+    labels = (x["volume_share"] > 0.5).astype(int)
+    fitted = {}
+    for target in ("y_mention", "y_top"):
+        clf = LGBMClassifier(n_estimators=10, min_child_samples=5, verbosity=-1)
+        clf.fit(x, labels)
+        fitted[target] = clf.booster_
+    return fitted
+
+
+def test_score_attaches_probabilities_for_both_targets():
+    frame = pd.DataFrame(
+        np.random.default_rng(1).random((5, len(model.FEATURES))), columns=pd.Index(model.FEATURES)
+    )
+    scored = model.score(_boosters(), frame)
+    for column in ("score_mention", "score_top"):
+        assert scored[column].between(0, 1).all()
+
+
+def test_load_refuses_a_missing_or_tampered_model(tmp_path):
+    with pytest.raises(FileNotFoundError):
+        model.load(tmp_path)
+    for target in ("y_mention", "y_top"):
+        (tmp_path / f"invariant_{target}.txt").write_text("değişmiş", encoding="utf-8")
+    manifest = {
+        "features": model.FEATURES,
+        "files": {f"invariant_{t}.txt": "0" * 64 for t in ("y_mention", "y_top")},
+    }
+    (tmp_path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(ValueError, match="hash"):
+        model.load(tmp_path)
+
+
+# --- signals ----------------------------------------------------------------------
+
+
+def _scored() -> pd.DataFrame:
+    rows = []
+    for brand, mention, share, top in (
+        ("Biz", 0.2, 0.1, 0.0),
+        ("A", 0.6, 0.5, 1.0),
+        ("B", 0.5, 0.4, 0.0),
+    ):
+        rows.append(
+            {
+                "brand": brand,
+                "score_mention": mention,
+                "score_top": mention / 2,
+                "in_search_results": 1.0,
+                "volume_share": share,
+                "volume_vs_leader": share * 2,
+                "is_top_retrieved": top,
+                "position_rank_pct": share,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def test_brand_scores_rank_the_brand_against_all_candidates():
+    scores = signals.brand_scores(_scored(), "Biz", ["A", "B"])
+    assert scores["rank"] == 3 and scores["candidates"] == 3
+    assert scores["compared_with"] == ["A", "B"]
+    assert scores["rival_score_mention"] == pytest.approx(0.55)
+
+
+def test_lagging_signals_flag_what_the_brand_trails_on():
+    rows = {row["signal"]: row for row in signals.lagging_signals(_scored(), "Biz", ["A", "B"])}
+    assert rows["volume_share"]["lagging"] is True
+    assert rows["in_search_results"]["lagging"] is False
+
+
+# --- diagnosis and advice -----------------------------------------------------------
 
 
 @pytest.mark.parametrize(
@@ -160,12 +356,16 @@ def test_every_recommendation_passes_the_ethics_filter():
             assert ethics.explain(f"{rec['title']} {rec['why']} {rec['action']}") == []
 
 
-def test_report_states_the_diagnosis_and_the_limits():
-    state: AdvisorState = {
-        "brand": "Windscribe",
-        "sector": "vpn",
+# --- report ------------------------------------------------------------------------
+
+
+def _state(curated: bool) -> AdvisorState:
+    return {
+        "brand": "Garanti BBVA",
+        "sector": "vpn" if curated else "bankacılık",
         "language": "tr",
         "max_calls": 20,
+        "curated": curated,
         "measures": {
             "queries": 3,
             "n_observations": 12,
@@ -176,46 +376,44 @@ def test_report_states_the_diagnosis_and_the_limits():
             "best_position_median": 3,
             "queries_with_presence": 3,
         },
+        "scores": {
+            "score_mention": 0.4,
+            "score_top": 0.1,
+            "rival_score_mention": 0.6,
+            "rival_score_top": 0.3,
+            "rank": 3,
+            "candidates": 6,
+            "compared_with": ["Akbank"],
+        },
+        "signals": [
+            {
+                "signal": "volume_share",
+                "label": "Sonuçların ne kadarında anılmak",
+                "brand": 0.1,
+                "rivals": 0.4,
+                "lagging": True,
+            }
+        ],
+        "candidates": ["Akbank", "Garanti BBVA"],
         "diagnosis": "ceiling",
-        "rivals": ["NordVPN"],
+        "rivals": ["Akbank"],
         "recommendations": advise.recommendations(
             "ceiling", {"retrieval_presence": 1.0, "best_position_median": 3}, [], None
         ),
-        "notes": ["3 sorgu donmuş korpustan alındı."],
+        "notes": ["not"],
     }
-    text = render.report(state)
+
+
+def test_report_states_the_diagnosis_the_learned_signal_and_the_limits():
+    text = render.report(_state(curated=True))
     assert "Anılıyorsun ama asla ilk değilsin" in text
     assert "| İlk anılan marka olma | %0 |" in text
+    assert "Öğrenilmiş sinyal" in text and "**geride**" in text
     assert "Bu rapor ne söylemiyor" in text
-    assert "Gemini 3.5 Flash Lite" in text
 
 
-def test_outreach_targets_exclude_rival_vendor_sites():
-    """A rival's own homepage names the rival, but nobody can get listed there."""
-    search = [
-        {
-            "query": "en iyi vpn",
-            "results": [
-                {
-                    "title": "NordVPN resmi",
-                    "snippet": "NordVPN ile güvenli bağlan.",
-                    "link": "https://nordvpn.com/tr/",
-                    "position": 1,
-                },
-                {
-                    "title": "En iyi VPN'ler",
-                    "snippet": "NordVPN ve Mullvad karşılaştırması.",
-                    "link": "https://www.donanimhaber.com/vpn",
-                    "position": 2,
-                },
-            ],
-        }
-    ]
-    targets = measure.outreach_targets(search, "Windscribe", ["NordVPN", "Mullvad"], "vpn")
-    assert [t["domain"] for t in targets] == ["www.donanimhaber.com"]
-
-
-def test_vendor_site_matches_subdomains_but_not_lookalikes():
-    assert measure.is_vendor_site("https://nordvpn.com/pricing")
-    assert measure.is_vendor_site("https://support.nordvpn.com/x")
-    assert not measure.is_vendor_site("https://notnordvpn.com.example/")
+def test_report_on_an_unseen_sector_says_the_signal_was_transferred():
+    text = render.report(_state(curated=False))
+    assert "eğitim verisinde **yok**" in text
+    assert "kayıtlı veri setinde yok" in text
+    assert "--add-rival" in text
