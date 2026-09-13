@@ -23,13 +23,15 @@ from evidence_eval.io import read_json
 from modeling.brands import BrandRegistry, comparison_key
 
 from . import advise, candidates, features, measure, model, render, signals
-from .state import AdvisorState
+from .state import AdvisorState, Observation
 
 CORPUS = Path("data/processed/evidence_v2")
 MODEL = "gemini-3.5-flash-lite"
 SERVICE = "gemini"
 TEMPERATURE = 0.7
-MAX_TOKENS = 1024
+# The controlled test's setting. 1024 truncated long answers, and a truncated answer is
+# refused by the client rather than measured.
+MAX_TOKENS = 2048
 RESULTS_KEPT = 10
 SYSTEM = (
     "You are a helpful assistant. Answer the user's question using the web search "
@@ -45,6 +47,10 @@ QUERY_PROMPT = (
     "{sector} kategorisinde {language} dilinde {n} farklı tavsiye sorusu yaz. "
     'Yalnız JSON döndür: {{"queries": ["...", "..."]}}'
 )
+
+
+class BudgetExceeded(ValueError):
+    """Raised before a paid call that would exceed ``--max-calls``; always aborts the run."""
 
 
 @dataclass
@@ -65,7 +71,7 @@ class Runtime:
 
     def charge(self, key: str, budget: int) -> None:
         if len(self.spent) >= budget:
-            raise ValueError(
+            raise BudgetExceeded(
                 f"Bütçe sınırı aşıldı ({budget} çağrı); kalan adımlar çalıştırılmadı. "
                 "--max-calls ile artırabilirsiniz."
             )
@@ -250,11 +256,27 @@ def make_interrogate(runtime: Runtime, budget: int):
                 results=pages.get(query, []),
             )
 
-        observations = await asyncio.gather(*(one(*job) for job in jobs))
-        return {
-            "observations": list(observations),
-            "notes": [f"{len(observations)} asistan yanıtı ölçüldü."],
-        }
+        # One refused answer must not discard the rest: the failure is already recorded
+        # in its receipt, as the controlled test's collector records it.
+        outcomes = await asyncio.gather(*(one(*job) for job in jobs), return_exceptions=True)
+        observations: list[Observation] = []
+        failed = 0
+        for outcome in outcomes:
+            if isinstance(outcome, BudgetExceeded) or not isinstance(outcome, Exception | dict):
+                raise outcome  # budget, cancellation and interrupts always abort
+            if isinstance(outcome, Exception):
+                failed += 1
+            else:
+                observations.append(outcome)
+        if not observations:
+            raise ValueError("Hiçbir asistan yanıtı alınamadı; ölçüm yapılamaz.")
+        notes = [f"{len(observations)} asistan yanıtı ölçüldü."]
+        if failed:
+            notes.append(
+                f"{failed} yanıt alınamadı (kesilmiş veya hatalı) ve ölçüme katılmadı; makbuzda "
+                "hata olarak kayıtlı, --retry-failed ile yeniden denenebilir."
+            )
+        return {"observations": observations, "notes": notes}
 
     return interrogate
 

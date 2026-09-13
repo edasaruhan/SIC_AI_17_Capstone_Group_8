@@ -40,6 +40,10 @@ def plan_id(args: argparse.Namespace) -> str:
             "queries": args.queries,
             "reps": args.reps,
             "model": nodes.MODEL,
+            # Every setting that shapes a paid payload belongs to the run identity, or a
+            # changed setting collides with cached receipts in the same folder.
+            "temperature": nodes.TEMPERATURE,
+            "max_tokens": nodes.MAX_TOKENS,
         }
     )[:16]
 

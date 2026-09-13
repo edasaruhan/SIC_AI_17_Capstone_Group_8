@@ -417,3 +417,52 @@ def test_report_on_an_unseen_sector_says_the_signal_was_transferred():
     assert "eğitim verisinde **yok**" in text
     assert "kayıtlı veri setinde yok" in text
     assert "--add-rival" in text
+
+
+# --- resilience ----------------------------------------------------------------
+
+
+class _Receipts:
+    """Stand-in for the receipt wrapper: one answer is refused, the rest succeed."""
+
+    def __init__(self, failing: str | None = None):
+        self.failing = failing
+
+    async def call(self, key, service, payload, validator=None):
+        if key == self.failing:
+            raise ValueError("gemini yanıtı eksik/geçersiz/kesilmiş")
+        return {"text": "Windscribe iyi bir seçenek, NordVPN de var."}
+
+
+def _interrogate_state() -> AdvisorState:
+    return {
+        "brand": "Windscribe",
+        "sector": SECTOR,
+        "language": "tr",
+        "max_calls": 10,
+        "queries": ["q"],
+        "search": [{"query": "q", "results": _results("Windscribe")}],
+    }
+
+
+def test_interrogate_keeps_the_answers_it_got_when_one_is_refused():
+    import asyncio
+
+    from advisor import nodes
+
+    runtime = nodes.Runtime(receipts=_Receipts("ask_0_search_on_r0"), reps=1)  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN")
+    out = asyncio.run(nodes.make_interrogate(runtime, 10)(_interrogate_state()))
+    assert len(out["observations"]) == 1
+    assert any("alınamadı" in note for note in out["notes"])
+
+
+def test_interrogate_still_aborts_when_the_budget_runs_out():
+    import asyncio
+
+    from advisor import nodes
+
+    runtime = nodes.Runtime(receipts=_Receipts(), reps=1)  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN")
+    with pytest.raises(nodes.BudgetExceeded):
+        asyncio.run(nodes.make_interrogate(runtime, 1)(_interrogate_state()))
