@@ -15,7 +15,7 @@ BIAS_EVAL := PYTHONPATH=src $(PYTHON) -m bias_eval
 ENV_RUN := set -a; [ ! -f .env ] || . ./.env; set +a;
 TRAINING_SCRIPTS := scripts/audit_listwise_run.py scripts/run_english_listwise.py scripts/verify_final_models.py
 REVIEW_SCRIPTS := scripts/ai_review_report.py scripts/run_generalization.py scripts/run_fairness.py scripts/collect_masking.py
-DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval src/final_model src/brand_demo src/visibility src/advisor tests $(TRAINING_SCRIPTS) $(REVIEW_SCRIPTS)
+DATASET_PYTHON_PATHS := src/bias_eval src/evidence_eval src/final_model src/brand_demo src/visibility src/advisor src/description_lab tests $(TRAINING_SCRIPTS) $(REVIEW_SCRIPTS)
 
 help: ## Kullanılabilir komutları göster
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "%-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -84,6 +84,21 @@ modeling-fairness: ## Yoğunlaşma (N_eff) ve adalet tabloları: kim anılıyor,
 
 modeling-masking: ## Tamamlanmış M3 koşularından sektör sektör maskeleme ablasyonu (CPU, offline)
 	PYTHONPATH=src $(PYTHON) scripts/collect_masking.py
+
+.PHONY: lab-plan lab-pilot lab-run lab-analyze
+LAB := PYTHONPATH=src $(PYTHON) -m description_lab
+LAB_ARGS ?=
+lab-plan: ## Açıklama deneyi: kimlik, içerik ve konum tasarımı ile çağrı sayısı (API çağrısı yok)
+	$(LAB) plan
+
+lab-pilot: ## Açıklama deneyi pilotu, 12 Gemini çağrısı (ÜCRETLİ; LAB_ARGS=--yes gerekir)
+	$(LAB) pilot $(LAB_ARGS)
+
+lab-run: ## Tam açıklama deneyi, 280 Gemini çağrısı; kaldığı yerden devam eder (ÜCRETLİ)
+	$(LAB) run $(LAB_ARGS)
+
+lab-analyze: ## Tamamlanan çağrılardan marka adı, içerik ve sıra etkileri ile rapor (API yok)
+	$(LAB) analyze
 
 .PHONY: advisor advisor-plan advisor-train advisor-ui
 ADVISOR := PYTHONPATH=src uv run --with langgraph python -m advisor
