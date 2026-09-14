@@ -22,11 +22,12 @@ from __future__ import annotations
 
 import json
 import unicodedata
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
 
-from evidence_eval.io import digest
+from evidence_eval.io import digest, read_json
 
 from . import domains, site
 
@@ -226,17 +227,45 @@ def description(profile: dict) -> str:
     return " ".join(s for p in profile.get("products", []) for s in p.get("sentences", []))
 
 
-async def source_text(value: str, receipts: Any, http: httpx.AsyncClient) -> dict:
-    """The text the profile is read from: the site, or what a search says about the name."""
+def _set_aside(receipts: Any, key: str) -> dict | None:
+    """Move a kept receipt out of the way so the next call asks again. The old file goes to
+    ``replaced/`` with a time stamp, so what was answered before stays on record. Returns
+    the old result when there was a completed one."""
+    folder = getattr(receipts, "folder", None)
+    if folder is None:
+        return None
+    path = folder / "steps" / f"{key}.json"
+    if not path.exists():
+        return None
+    old = read_json(path)
+    target = folder / "replaced" / f"{key}-{datetime.now(UTC):%Y%m%dT%H%M%S}.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    path.replace(target)
+    return old.get("result") if old.get("status") == "completed" else None
+
+
+async def source_text(
+    value: str, receipts: Any, http: httpx.AsyncClient, *, refresh: bool = False
+) -> dict:
+    """The text the profile is read from: the site, or what a search says about the name.
+
+    Both are kept, so the same input answers at once the second time. ``refresh`` reads the
+    site and repeats the search instead; ``changed`` then says whether the text moved.
+    """
     url = site.as_url(value)
     if url:
-        read = await site.read_site(url, http)
-        return {"text": read.text(), "website": read.url, "source": "site"}
-    result = await receipts.call(
-        f"profile_search_{digest(value)[:10]}",
-        "serper",
-        {"q": value, "num": 10, "gl": "tr", "hl": "tr"},
-    )
+        read = await site.read_site(url, http, refresh=refresh)
+        return {
+            "text": read.text(),
+            "website": read.url,
+            "source": "site",
+            "read_at": read.fetched_at or None,
+            "changed": read.changed,
+        }
+    key = f"profile_search_{digest(value)[:10]}"
+    before = _set_aside(receipts, key) if refresh else None
+    result = await receipts.call(key, "serper", {"q": value, "num": 10, "gl": "tr", "hl": "tr"})
+    searched_changed = None if before is None else before != result
     organic = result.get("organic", []) or []
     stem = fold(value)
     own = next(
@@ -244,17 +273,33 @@ async def source_text(value: str, receipts: Any, http: httpx.AsyncClient) -> dic
     )
     if own:
         try:
-            read = await site.read_site(own["link"], http)
+            read = await site.read_site(own["link"], http, refresh=refresh)
         except (ValueError, httpx.HTTPError):
             read = None
         if read is not None and read.text().strip():
-            return {"text": read.text(), "website": read.url, "source": "site"}
+            return {
+                "text": read.text(),
+                "website": read.url,
+                "source": "site",
+                "read_at": read.fetched_at or None,
+                "changed": read.changed,
+            }
     text = "\n".join(f"{r.get('title', '')}. {r.get('snippet', '')}" for r in organic)
-    return {"text": text, "website": None, "source": "search"}
+    return {
+        "text": text,
+        "website": None,
+        "source": "search",
+        "read_at": None,
+        "changed": searched_changed,
+    }
 
 
-async def build_profile(value: str, receipts: Any, http: httpx.AsyncClient) -> dict:
-    found = await source_text(value, receipts, http)
+async def build_profile(
+    value: str, receipts: Any, http: httpx.AsyncClient, *, refresh: bool = False
+) -> dict:
+    """The profile. The model call follows the text, so a reread site whose text did not
+    change costs no new call and yields the same profile."""
+    found = await source_text(value, receipts, http, refresh=refresh)
     text = found["text"]
     if not text.strip():
         raise ValueError("Markayı anlatan bir metin bulunamadı; web sitesini girmeyi deneyin.")
@@ -268,6 +313,8 @@ async def build_profile(value: str, receipts: Any, http: httpx.AsyncClient) -> d
     return parse_profile(result["text"], text) | {
         "website": found["website"],
         "source": found["source"],
+        "read_at": found.get("read_at"),
+        "changed": found.get("changed"),
     }
 
 

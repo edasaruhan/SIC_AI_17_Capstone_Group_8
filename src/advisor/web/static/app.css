@@ -130,6 +130,8 @@ mark.rival { background: linear-gradient(transparent 12%, var(--mark-rival) 12%,
 .panel { background: var(--surface); border-radius: 16px; padding: 24px; box-shadow: 0 1px 0 var(--rule); }
 .panel > * + * { margin-top: 18px; }
 .row3 { display: grid; grid-template-columns: 1.3fr 1.3fr 0.7fr; gap: 12px; }
+.source { display: flex; gap: 14px; align-items: flex-start; justify-content: space-between; }
+.source .btn { flex: none; white-space: nowrap; }
 .product { border-top: 1px solid var(--rule); padding-top: 14px; }
 .product:first-of-type { border-top: 0; padding-top: 0; }
 .product .cat { color: var(--muted); font-size: 14px; }

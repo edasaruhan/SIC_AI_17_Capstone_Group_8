@@ -65,6 +65,7 @@ _boosters: dict | None = None
 
 class ProfileIn(BaseModel):
     value: str = Field(min_length=2, max_length=300)
+    refresh: bool = False
     discovery: int = Field(3, ge=1, le=6)
     named: int = Field(2, ge=0, le=4)
 
@@ -141,13 +142,21 @@ async def build_profile(body: ProfileIn) -> dict:
     async with httpx.AsyncClient(timeout=httpx.Timeout(60, connect=15)) as http:
         receipts = Receipts(folder, _client(http), retry_failed=True)
         try:
-            found = await profile.build_profile(body.value.strip(), receipts, http)
+            found = await profile.build_profile(
+                body.value.strip(), receipts, http, refresh=body.refresh
+            )
+            # When and whether the source was read describe this request, not the brand;
+            # they stay out of the question payload so its receipt still matches.
+            reading = {key: found.pop(key, None) for key in ("read_at", "changed")}
             questions = await profile.plan_queries(
                 found, receipts, n_discovery=body.discovery, n_named=body.named
             )
         except (ValueError, httpx.HTTPError) as exc:
             raise HTTPException(422, str(exc)) from exc
-    return {"profile": found | {"description": profile.description(found)}, "queries": questions}
+    return {
+        "profile": found | reading | {"description": profile.description(found)},
+        "queries": questions,
+    }
 
 
 @app.post("/api/queries")

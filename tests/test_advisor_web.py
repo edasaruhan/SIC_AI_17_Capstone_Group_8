@@ -397,3 +397,51 @@ def test_downloads_are_named_after_the_brand_whatever_its_letters():
     header.encode("latin-1")
     assert 'filename="Turk-Telekom-gorunurluk-raporu.pdf"' in header
     assert "filename*=UTF-8''T%C3%BCrk%20Telekom" in header
+
+
+def test_a_kept_site_is_read_from_the_cache_until_a_reread_is_asked_for(tmp_path, monkeypatch):
+    served = ["<html><body><p>Sarı Güç yağı söker.</p></body></html>"]
+    fetched = []
+
+    async def fake_fetch(http, url):
+        fetched.append(url)
+        return served[-1], url
+
+    monkeypatch.setattr(site, "fetch_html", fake_fetch)
+    url = "https://www.asperox.com.tr/"
+    first = asyncio.run(site.read_site(url, None, cache=tmp_path))  # type: ignore[arg-type]
+    again = asyncio.run(site.read_site(url, None, cache=tmp_path))  # type: ignore[arg-type]
+    assert len(fetched) == 1 and again.fetched_at == first.fetched_at and first.changed is None
+    same = asyncio.run(site.read_site(url, None, cache=tmp_path, refresh=True))  # type: ignore[arg-type]
+    assert len(fetched) == 2 and same.changed is False
+    served.append("<html><body><p>Yeni formül limon kokulu.</p></body></html>")
+    moved = asyncio.run(site.read_site(url, None, cache=tmp_path, refresh=True))  # type: ignore[arg-type]
+    assert moved.changed is True and "limon" in moved.text()
+    kept = asyncio.run(site.read_site(url, None, cache=tmp_path))  # type: ignore[arg-type]
+    assert len(fetched) == 3 and "limon" in kept.text()
+
+
+def test_a_repeated_search_sets_the_old_receipt_aside_instead_of_deleting_it(tmp_path):
+    from brand_demo.workflow import Receipts
+
+    answers = [
+        {"organic": [{"title": "Asperox", "snippet": "yağ çözücü", "link": "https://x.com/"}]}
+    ]
+    calls = []
+
+    async def client(service_name, payload):
+        calls.append(service_name)
+        return answers[-1]
+
+    receipts = Receipts(tmp_path, client, retry_failed=False)
+    first = asyncio.run(profile.source_text("Asperox", receipts, None))  # type: ignore[arg-type]
+    asyncio.run(profile.source_text("Asperox", receipts, None))  # type: ignore[arg-type]
+    assert calls == ["serper"] and first["changed"] is None
+    same = asyncio.run(profile.source_text("Asperox", receipts, None, refresh=True))  # type: ignore[arg-type]
+    assert calls == ["serper", "serper"] and same["changed"] is False
+    assert len(list((tmp_path / "replaced").glob("profile_search_*.json"))) == 1
+    answers.append(
+        {"organic": [{"title": "Asperox", "snippet": "yeni ürün", "link": "https://x.com/"}]}
+    )
+    moved = asyncio.run(profile.source_text("Asperox", receipts, None, refresh=True))  # type: ignore[arg-type]
+    assert moved["changed"] is True and "yeni ürün" in moved["text"]

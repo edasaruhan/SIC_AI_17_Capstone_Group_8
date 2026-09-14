@@ -16,6 +16,7 @@ import ipaddress
 import re
 import socket
 from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -193,6 +194,10 @@ class Page:
 class Site:
     url: str
     pages: list[Page]
+    # When the pages were fetched, and -- after a forced reread -- whether the text differs
+    # from the copy it replaced (None when there was nothing to compare).
+    fetched_at: str = ""
+    changed: bool | None = None
 
     def text(self, limit: int = MAX_TEXT) -> str:
         parts = []
@@ -271,13 +276,28 @@ async def fetch_html(http: httpx.AsyncClient, url: str) -> tuple[str, str]:
     raise ValueError("Site çok fazla yönlendirme yaptı.")
 
 
+def _cached(data: dict) -> Site:
+    return Site(
+        url=data["url"],
+        pages=[Page(**page) for page in data["pages"]],
+        fetched_at=data.get("fetched_at", ""),
+    )
+
+
 async def read_site(
-    url: str, http: httpx.AsyncClient, *, cache: Path = CACHE, pages: int = 3
+    url: str,
+    http: httpx.AsyncClient,
+    *,
+    cache: Path = CACHE,
+    pages: int = 3,
+    refresh: bool = False,
 ) -> Site:
+    """The site from the cache, or fetched and cached. ``refresh`` fetches it again even
+    when a copy is kept -- a site changes, and the cache never expires on its own."""
     path = cache / f"{digest(url)[:16]}.json"
-    if path.exists():
-        data = read_json(path)
-        return Site(url=data["url"], pages=[Page(**page) for page in data["pages"]])
+    old = read_json(path) if path.exists() else None
+    if old and not refresh:
+        return _cached(old)
     html, final = await fetch_html(http, url)
     home, links = parse(html, final)
     extra: list[Page] = []
@@ -287,6 +307,19 @@ async def read_site(
         except (ValueError, httpx.HTTPError):
             continue
         extra.append(parse(page_html, page_url)[0])
-    site = Site(url=final, pages=[home, *extra])
-    write_json(path, {"url": site.url, "pages": [asdict(page) for page in site.pages]})
+    fresh = Site(url=final, pages=[home, *extra])
+    site = Site(
+        url=fresh.url,
+        pages=fresh.pages,
+        fetched_at=datetime.now(UTC).isoformat(timespec="seconds"),
+        changed=None if old is None else fresh.text() != _cached(old).text(),
+    )
+    write_json(
+        path,
+        {
+            "url": site.url,
+            "pages": [asdict(page) for page in site.pages],
+            "fetched_at": site.fetched_at,
+        },
+    )
     return site

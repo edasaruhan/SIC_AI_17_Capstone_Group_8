@@ -249,6 +249,42 @@ function analyzeView() {
   return startView();
 }
 
+async function loadProfile(refresh) {
+  // refresh: read the site and search again instead of using the kept copy.
+  if (state.value.trim().length < 2 || state.busy) return;
+  state.busy = refresh ? "refresh" : "start";
+  state.error = null;
+  state.notice = null;
+  render();
+  try {
+    const data = await api("/api/profile", { value: state.value.trim(), refresh });
+    state.profile = data.profile;
+    state.queries = data.queries;
+    state.stage = "profile";
+    state.estimate = null;
+    if (refresh) {
+      const source = data.profile.website ? "Site" : "Arama";
+      state.notice =
+        data.profile.changed === false
+          ? `${source} yeniden okundu; metin değişmemiş, profil ve sorular aynı kaldı.`
+          : `${source} yeniden okundu; profil ve sorular güncel metinden çıkarıldı.`;
+    }
+  } catch (error) {
+    state.error = error.message;
+  } finally {
+    state.busy = false;
+    render();
+    if (state.stage === "profile") refreshEstimate();
+  }
+}
+
+function readAt(iso) {
+  const when = new Date(iso);
+  return Number.isNaN(when.getTime())
+    ? ""
+    : when.toLocaleString("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+}
+
 function startView() {
   const input = h("input", {
     class: "input",
@@ -260,25 +296,9 @@ function startView() {
     "aria-label": "Web sitesi ya da marka adı",
     oninput: (e) => (state.value = e.target.value),
   });
-  const submit = async (event) => {
+  const submit = (event) => {
     event.preventDefault();
-    if (state.value.trim().length < 2 || state.busy) return;
-    state.busy = true;
-    state.error = null;
-    render();
-    try {
-      const data = await api("/api/profile", { value: state.value.trim() });
-      state.profile = data.profile;
-      state.queries = data.queries;
-      state.stage = "profile";
-      state.estimate = null;
-    } catch (error) {
-      state.error = error.message;
-    } finally {
-      state.busy = false;
-      render();
-      if (state.stage === "profile") refreshEstimate();
-    }
+    loadProfile(false);
   };
   return h(
     "section",
@@ -296,10 +316,10 @@ function startView() {
         "form",
         { class: "ask", onsubmit: submit },
         input,
-        h("button", { class: "btn", type: "submit", disabled: state.busy || null }, state.busy ? "Site okunuyor…" : "Markayı tanı")
+        h("button", { class: "btn", type: "submit", disabled: state.busy || null }, state.busy === "start" ? "Site okunuyor…" : "Markayı tanı")
       ),
       state.error ? h("p", { class: "alert", role: "alert" }, state.error) : null,
-      h("p", { class: "hint" }, "Bu adımda siteniz okunur ve marka profili çıkarılır: iki yapay zekâ çağrısı. Analiz, siz soruları onaylayınca başlar.")
+      h("p", { class: "hint" }, "Bu adımda siteniz okunur ve marka profili çıkarılır: iki yapay zekâ çağrısı. Daha önce okunan bir site kayıttan gelir, ücret çıkmaz. Analiz, siz soruları onaylayınca başlar.")
     ),
     specimen()
   );
@@ -485,11 +505,28 @@ function profileView() {
         { class: "panel" },
         h("h2", {}, "Markanı böyle tanıdık"),
         h(
-          "p",
-          { class: "hint" },
-          p.website ? `Kaynak: ${p.website}` : "Web sitesi bulunamadı; profil arama sonuçlarından çıkarıldı.",
-          " Yanlış olanı düzeltin."
+          "div",
+          { class: "source" },
+          h(
+            "p",
+            { class: "hint" },
+            p.website ? `Kaynak: ${p.website}` : "Web sitesi bulunamadı; profil arama sonuçlarından çıkarıldı.",
+            p.read_at && readAt(p.read_at) ? `, ${readAt(p.read_at)} tarihinde okundu.` : ".",
+            " Yanlış olanı düzeltin."
+          ),
+          h(
+            "button",
+            {
+              class: "btn quiet small",
+              type: "button",
+              title: "Kayıttaki kopya yerine siteyi şimdi okur. Profilde yaptığın düzeltmeler silinir.",
+              disabled: state.busy || null,
+              onclick: () => loadProfile(true),
+            },
+            state.busy === "refresh" ? "Okunuyor…" : p.website ? "Siteyi yeniden oku" : "Yeniden ara"
+          )
         ),
+        state.notice ? h("p", { class: "alert info", role: "status" }, state.notice) : null,
         h("div", { class: "row3" }, text("brand", "Marka"), text("sector", "Sektör"),
           h("label", { class: "field" }, h("span", {}, "Dil"),
             h("select", { class: "select", onchange: (e) => { p.language = e.target.value; refreshEstimate(); } },

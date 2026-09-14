@@ -25,7 +25,11 @@ Tarayıcıda http://localhost:8600 açılır (FastAPI arka uç, tek sayfalık ö
 1. **Marka.** Site okunur (ana sayfa ve en fazla üç ürün sayfası, yalnız herkese açık
    adresler). Ad girildiyse önce aranır ve markanın kendi sitesi bulunur. Gemini markayı,
    diğer yazılışlarını, sektörü, dili ve ürünleri çıkarır; ürün cümleleri siteden birebir
-   alıntı olmak zorundadır.
+   alıntı olmak zorundadır. Okunan site (`data/processed/advisor_sites/`) ve çağrılar
+   (`data/processed/advisor_profiles/`) saklanır; aynı giriş ikinci kez anında ve ücretsiz
+   gelir. Önbelleğin süresi dolmaz: profil ekranındaki **Siteyi yeniden oku** siteyi ve
+   aramayı şimdi tekrarlar, eski arama makbuzunu silmeden `replaced/` altına koyar. Metin
+   değişmediyse profil çağrısı yine kayıttan gelir.
 2. **Sorular.** Profilden iki tür soru yazılır: markayı anmayan keşif soruları (görünürlük
    bunlarla ölçülür) ve markayı ile ürününü anan sorular (asistan seni mi rakibini mi
    öneriyor). Kullanıcı profili ve soruları düzeltir; çağrı tahmini canlı güncellenir.
