@@ -154,6 +154,14 @@ sunum-report-pdf: ## Sunum raporunu PDF'e bas (offline; uv.lock değişmez)
 	  HTML('docs/sunum-raporu.html').write_pdf('$(SUNUM_REPORT_PDF)')"
 	@echo "$(SUNUM_REPORT_PDF)"
 
+.PHONY: sunum-slides-pdf
+SUNUM_SLIDES_PDF ?= output/pdf/Capstone_Sunum_Slaytlari.pdf
+sunum-slides-pdf: ## Sunum slaytlarını 16:9 PDF'e bas (offline; uv.lock değişmez)
+	@mkdir -p $(dir $(SUNUM_SLIDES_PDF))
+	uv run --with weasyprint python -c "from weasyprint import HTML; \
+	  HTML('docs/sunum-slaytlari.html').write_pdf('$(SUNUM_SLIDES_PDF)')"
+	@echo "$(SUNUM_SLIDES_PDF)"
+
 modeling-m3-smoke: ## Açık revision ve çalışan GPU ile küçük listwise eğitim kontrolü
 	$(EVIDENCE) m3-smoke $(M3_ARGS)
 
