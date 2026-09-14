@@ -256,3 +256,10 @@ def test_collect_records_the_real_service(tmp_path):
         and receipt["service"] == "cerebras"
         and receipt["result"]["text"] == "cerebras:1"
     )
+
+
+def test_cerebras_client_waits_out_a_transient_server_error(monkeypatch):
+    result, seen, slept = _cerebras(
+        [httpx.Response(503), httpx.Response(200, json=_completion())], monkeypatch
+    )
+    assert isinstance(result, list) and len(seen) == 2 and slept[0] == 1.0

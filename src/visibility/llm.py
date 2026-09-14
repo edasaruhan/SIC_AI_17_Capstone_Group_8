@@ -18,6 +18,8 @@ import httpx
 API_BASE = "https://generativelanguage.googleapis.com/v1beta/openai"
 KEY_ENV = "GEMINI_API_KEY"
 RATE_LIMIT_WAITS = (20.0, 40.0, 60.0)
+# Server-side hiccups: the request was not processed, so waiting and asking again is safe.
+TRANSIENT = frozenset({500, 502, 503, 504})
 
 
 def load_key(name: str = KEY_ENV, path: Path = Path(".env")) -> None:
@@ -37,10 +39,17 @@ def load_key(name: str = KEY_ENV, path: Path = Path(".env")) -> None:
 def _failure(response: httpx.Response) -> ValueError:
     retry = response.headers.get("retry-after", "")
     wait = retry if retry.isdigit() else "bilinmiyor"
-    return ValueError(
-        f"gemini HTTP {response.status_code}; Retry-After={wait}. "
-        "Kota/anahtar/paneli kontrol edin; otomatik tekrar yok."
-    )
+    code = response.status_code
+    if code in TRANSIENT:
+        reason = (
+            "Gemini geçici olarak yoğun ya da kullanılamıyor; birkaç kez beklenip denendi. "
+            "Biraz sonra yeniden deneyin, tamamlanan çağrılar yeniden ödenmez."
+        )
+    elif code == 429:
+        reason = "Kota ya da hız sınırı doldu; beklenip denendi. Kotayı kontrol edin."
+    else:
+        reason = "Anahtar, izin ya da istek sorunu; otomatik tekrar yok."
+    return ValueError(f"gemini HTTP {code}; Retry-After={wait}. {reason}")
 
 
 class GeminiClient:
@@ -66,7 +75,8 @@ class GeminiClient:
                     "gemini bağlantı/timeout hatası; otomatik tekrar yok. "
                     "İstek ücretlendirilmiş olabilir."
                 ) from exc
-            if response.status_code == 429 and attempt < len(self.waits):
+            retryable = response.status_code == 429 or response.status_code in TRANSIENT
+            if retryable and attempt < len(self.waits):
                 retry = response.headers.get("retry-after", "")
                 await asyncio.sleep(float(retry) if retry.isdigit() else self.waits[attempt])
                 continue

@@ -25,6 +25,8 @@ KEY_ENV = "CEREBRAS_API_KEY"
 MIN_INTERVAL = 25.0
 RATE_LIMIT_WAITS = (30.0, 60.0, 120.0)
 STOP_AFTER_CONSECUTIVE_FAILURES = 5
+# Server-side hiccups: the request was not processed, so waiting and asking again is safe.
+TRANSIENT = frozenset({500, 502, 503, 504})
 
 
 def _seconds(value: str) -> float | None:
@@ -76,7 +78,8 @@ class CerebrasClient:
             except httpx.TransportError as exc:
                 raise ValueError("cerebras bağlantı/timeout hatası; otomatik tekrar yok.") from exc
             retry = _seconds(response.headers.get("retry-after", ""))
-            if response.status_code == 429 and attempt < len(self.waits):
+            retryable = response.status_code == 429 or response.status_code in TRANSIENT
+            if retryable and attempt < len(self.waits):
                 await self.sleep(retry if retry is not None else self.waits[attempt])
                 continue
             if response.status_code != 200:

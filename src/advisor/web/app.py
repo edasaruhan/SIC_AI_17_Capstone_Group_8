@@ -112,6 +112,9 @@ def options_from(plan: PlanIn) -> service.Options:
         queries=len(plan.discovery),
         reps=plan.reps,
         max_calls=plan.max_calls,
+        # A step that failed before (a 503, say) is asked again instead of blocking the run;
+        # the receipts still cap every step at three attempts.
+        retry_failed=True,
         description=plan.description.strip(),
         audit_ai=plan.audit_ai,
         assistants=(
@@ -219,7 +222,10 @@ async def _execute(job: str, options: service.Options) -> None:
         run["status"] = "done"
     except Exception as exc:  # noqa: BLE001 - the page shows every failure
         run["status"] = "error"
-        run["error"] = str(exc) or type(exc).__name__
+        run["error"] = (
+            f"{str(exc) or type(exc).__name__} Analizi yeniden başlatırsanız tamamlanan adımlar "
+            "yeniden ödenmez; kaldığı yerden devam eder."
+        )
 
 
 @app.post("/api/runs")

@@ -75,3 +75,16 @@ def test_missing_key_and_unknown_service_are_rejected(monkeypatch, tmp_path) -> 
 
     with pytest.raises(ValueError, match="Unknown service"):
         asyncio.run(run())
+
+
+def test_transient_server_errors_are_waited_out(monkeypatch) -> None:
+    result, seen = _call(
+        [httpx.Response(503), httpx.Response(200, json=_completion())], monkeypatch
+    )
+    assert isinstance(result, dict) and result["text"] == "Use Mullvad." and len(seen) == 2
+
+
+def test_a_persistent_503_says_it_is_temporary_not_a_quota_problem(monkeypatch) -> None:
+    result, seen = _call([httpx.Response(503)] * 3, monkeypatch)
+    assert isinstance(result, ValueError) and "HTTP 503" in str(result)
+    assert "geçici" in str(result) and "Kota" not in str(result) and len(seen) == 3
