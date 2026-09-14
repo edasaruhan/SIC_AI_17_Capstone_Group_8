@@ -74,8 +74,9 @@ LANGUAGE_NAME = {"tr": "Türkçe", "en": "İngilizce"}
 MIN_RIVALS = 2
 # Rivals whose search snippets are audited next to the brand's.
 AUDIT_RIVALS = 4
-# Characters of each answer kept in the state, for the report and the interface.
-ANSWER_KEPT = 1600
+# Characters of each answer kept in the state, for the report and the interface. High
+# enough that an answer with a comparison table arrives whole.
+ANSWER_KEPT = 12000
 
 
 class BudgetExceeded(ValueError):

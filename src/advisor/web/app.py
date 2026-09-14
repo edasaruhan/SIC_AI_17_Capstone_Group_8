@@ -14,19 +14,23 @@ has seen the call estimate.
 from __future__ import annotations
 
 import asyncio
+import re
+import unicodedata
 import uuid
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import FileResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from advisor import assistants, audit, model, profile, service
 from advisor.advise import DIAGNOSES
 from advisor.render import DIAGNOSIS_NOTE
+from advisor.web import pdf
 from brand_demo.workflow import Receipts
 from evidence_eval.io import digest
 
@@ -240,7 +244,14 @@ async def start_run(plan: PlanIn) -> dict:
         *(["CEREBRAS_API_KEY"] if "cerebras" in options.assistants else []),
     )
     job = uuid.uuid4().hex[:12]
-    RUNS[job] = {"status": "running", "steps": [], "result": None, "error": None, "calls": calls}
+    RUNS[job] = {
+        "status": "running",
+        "steps": [],
+        "result": None,
+        "error": None,
+        "calls": calls,
+        "aliases": list(options.brand_aliases),
+    }
     RUNS[job]["task"] = asyncio.create_task(_execute(job, options))
     return {"id": job, "calls": calls}
 
@@ -258,16 +269,46 @@ def run_status(job: str) -> dict:
     }
 
 
-@app.get("/api/runs/{job}/report.md")
-def run_report(job: str) -> PlainTextResponse:
+def attachment(name: str) -> dict[str, str]:
+    """A download header that survives any brand name: headers are Latin-1 only."""
+    plain = unicodedata.normalize("NFKD", name.translate(str.maketrans("ıİ", "iI")))
+    plain = re.sub(r"[^A-Za-z0-9._-]+", "-", plain.encode("ascii", "ignore").decode()).strip("-")
+    return {
+        "Content-Disposition": f"attachment; filename=\"{plain or 'rapor'}\"; "
+        f"filename*=UTF-8''{quote(name)}"
+    }
+
+
+def _finished(job: str) -> dict:
     run = RUNS.get(job)
     if run is None or not run.get("result"):
         raise HTTPException(404, "Rapor henüz hazır değil.")
-    name = f"{run['result']['brand']}-gorunurluk.md".replace(" ", "-")
+    return run
+
+
+@app.get("/api/runs/{job}/report.md")
+def run_report(job: str) -> PlainTextResponse:
+    run = _finished(job)
     return PlainTextResponse(
         run["result"]["report"] or "",
         media_type="text/markdown; charset=utf-8",
-        headers={"Content-Disposition": f'attachment; filename="{name}"'},
+        headers=attachment(f"{run['result']['brand']} görünürlük raporu.md"),
+    )
+
+
+@app.get("/api/runs/{job}/report.pdf")
+async def run_report_pdf(job: str) -> Response:
+    run = _finished(job)
+    try:
+        data = await asyncio.to_thread(pdf.report_pdf, run["result"], run.get("aliases") or [])
+    except ImportError as exc:
+        raise HTTPException(
+            503, "PDF için weasyprint gerekli; uygulamayı make advisor-ui ile başlatın."
+        ) from exc
+    return Response(
+        data,
+        media_type="application/pdf",
+        headers=attachment(f"{run['result']['brand']} görünürlük raporu.pdf"),
     )
 
 

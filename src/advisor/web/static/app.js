@@ -101,21 +101,72 @@ function marked(text, own, rivals) {
 }
 
 function inline(text, own = [], rivals = []) {
-  // **bold** becomes <strong>; any other markdown mark is dropped. Still text nodes only.
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part) =>
-    part.length > 4 && part.startsWith("**") && part.endsWith("**")
-      ? h("strong", {}, marked(part.slice(2, -2), own, rivals))
-      : marked(part.replace(/\*\*|__|`/g, ""), own, rivals)
+  // **bold** becomes <strong> and <br> a line break; any other markdown mark is dropped.
+  // Still text nodes only.
+  return text.split(/<br\s*\/?>/i).map((chunk, index) => [
+    index ? h("br", {}) : null,
+    chunk.split(/(\*\*[^*]+\*\*)/g).map((part) =>
+      part.length > 4 && part.startsWith("**") && part.endsWith("**")
+        ? h("strong", {}, marked(part.slice(2, -2), own, rivals))
+        : marked(part.replace(/\*\*|__|`/g, ""), own, rivals)
+    ),
+  ]);
+}
+
+const RULE_ROW = /^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?$/;
+
+function cells(line) {
+  let row = line.trim();
+  if (row.startsWith("|")) row = row.slice(1);
+  if (row.endsWith("|")) row = row.slice(0, -1);
+  return row.split("|").map((cell) => cell.trim());
+}
+
+function mdTable(rows, own, rivals) {
+  // Same reading as the PDF (advisor/web/pdf.py): a rule row under the first row makes it the header.
+  const parsed = rows.map((row) => ({ rule: RULE_ROW.test(row), cells: cells(row) }));
+  const hasHead = parsed.length > 1 && parsed[1].rule;
+  const body = parsed.filter((row) => !row.rule).map((row) => row.cells);
+  if (!body.length) return null;
+  const width = Math.max(...body.map((row) => row.length));
+  const row = (values, tag) =>
+    h("tr", {}, [...values, ...Array(width - values.length).fill("")].map((value) => h(tag, {}, inline(value, own, rivals))));
+  return h(
+    "div",
+    { class: "table-wrap" },
+    h("table", { class: "md-table" }, hasHead ? h("thead", {}, row(body[0], "th")) : null, h("tbody", {}, (hasHead ? body.slice(1) : body).map((values) => row(values, "td"))))
   );
 }
 
 function prose(text, own = [], rivals = []) {
   // Headings, bullets and numbered items from an assistant's markdown, as plain elements.
+  // Quote marks ("> ") carry no meaning in an answer card; the text under them does.
+  const lines = text.replace(/\r/g, "").split("\n").map((raw) => raw.trim().replace(/^>\s?/, "").trim());
+  const nextFilled = (i) => {
+    while (i < lines.length && !lines[i]) i++;
+    return lines[i] || "";
+  };
   const blocks = [];
   let list = null;
-  for (const raw of text.split("\n")) {
-    const line = raw.trim();
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     if (!line) {
+      list = null;
+      continue;
+    }
+    if (line.startsWith("|")) {
+      // Models often leave a blank line between a table's rows; it is still one table.
+      list = null;
+      const rows = [];
+      while (i < lines.length && (lines[i].startsWith("|") || (!lines[i] && nextFilled(i).startsWith("|")))) {
+        if (lines[i]) rows.push(lines[i]);
+        i++;
+      }
+      i--;
+      blocks.push(mdTable(rows, own, rivals));
+      continue;
+    }
+    if (/^[-*_]{3,}$/.test(line)) {
       list = null;
       continue;
     }
@@ -138,10 +189,18 @@ function prose(text, own = [], rivals = []) {
   return blocks;
 }
 
-function clip(text, limit) {
-  if (text.length <= limit) return text;
-  const cut = text.slice(0, limit);
-  return `${cut.slice(0, Math.max(cut.lastIndexOf(" "), limit - 40))}…`;
+function answerBody(text, own, rivals) {
+  // Long answers open folded; nothing is cut, the rest is one click away.
+  const body = h("div", { class: "a" }, prose(text, own, rivals));
+  if (text.length < 900) return body;
+  body.classList.add("folded");
+  const more = h("button", { class: "linkish more", type: "button", "aria-expanded": "false", text: "Yanıtın tamamını göster" });
+  more.onclick = () => {
+    const open = !body.classList.toggle("folded");
+    more.setAttribute("aria-expanded", String(open));
+    more.textContent = open ? "Kısalt" : "Yanıtın tamamını göster";
+  };
+  return [body, more];
 }
 
 function render() {
@@ -547,7 +606,7 @@ function answersSection(r) {
             { class: "answer" },
             h("p", { class: "q" }, a.query),
             h("p", { class: "meta" }, a.mentioned ? (a.first ? "Seni ilk sırada andı" : "Seni andı, ama ilk sırada değil") : "Seni anmadı"),
-            h("div", { class: "a" }, prose(clip(a.answer || "", 900), own, (a.named_brands || []).filter((b) => b !== r.brand)))
+            answerBody(a.answer || "", own, (a.named_brands || []).filter((b) => b !== r.brand))
           )
         )
     );
@@ -736,7 +795,7 @@ function namedSection(r) {
             { class: "answer" },
             h("p", { class: "q" }, a.query),
             h("p", { class: "meta" }, a.picked ? (a.picked === r.brand ? "Seni önerdi" : `${a.picked} önerdi`) : "Net bir öneri yok"),
-            h("div", { class: "a" }, prose(clip(a.answer || "", 700), own, (a.named_brands || []).filter((b) => b !== r.brand)))
+            answerBody(a.answer || "", own, (a.named_brands || []).filter((b) => b !== r.brand))
           )
         )
     )
@@ -801,7 +860,8 @@ function resultView() {
     h(
       "div",
       { class: "actions" },
-      h("a", { class: "btn", href: `/api/runs/${state.job}/report.md` }, "Raporu indir"),
+      h("a", { class: "btn", href: `/api/runs/${state.job}/report.pdf` }, "Raporu PDF olarak indir"),
+      h("a", { class: "btn quiet", href: `/api/runs/${state.job}/report.md` }, "Markdown olarak indir"),
       h("button", { class: "btn quiet", type: "button", text: "Soruları değiştir", onclick: () => { state.stage = "profile"; render(); } }),
       h("button", { class: "btn quiet", type: "button", text: "Başka bir marka", onclick: () => { state.stage = "start"; state.result = null; render(); } })
     )

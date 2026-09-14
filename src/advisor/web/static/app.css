@@ -67,7 +67,7 @@ p { margin: 0; }
 /* ---------- controls ---------- */
 .btn {
   display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 10px;
-  padding: 12px 18px; font-weight: 700; cursor: pointer; background: var(--ink); color: #fff;
+  padding: 12px 18px; font-weight: 700; cursor: pointer; background: var(--ink); color: #fff; text-decoration: none;
   transition: transform 120ms ease, background 120ms ease;
 }
 .btn:hover { background: #1d2c5c; }
@@ -174,7 +174,13 @@ mark.rival { background: linear-gradient(transparent 12%, var(--mark-rival) 12%,
 .answer { background: var(--surface); border-radius: 14px; padding: 18px 20px; box-shadow: 0 1px 0 var(--rule); }
 .answer .q { font-weight: 700; font-size: 15.5px; }
 .answer .meta { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
-.answer .a { font-family: var(--serif); font-size: 17px; line-height: 1.6; margin-top: 10px; max-width: 76ch; }
+.answer .a { font-family: var(--serif); font-size: 17px; line-height: 1.6; margin-top: 10px; }
+.answer .a > p, .answer .a > ul { max-width: 76ch; }
+.answer .a.folded { max-height: 22em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 72%, transparent); mask-image: linear-gradient(#000 72%, transparent); }
+.answer .more { margin-top: 8px; }
+.answer .md-table { font-family: var(--sans); font-size: 14px; line-height: 1.45; margin-top: 4px; }
+.answer .md-table th { font-size: 13px; vertical-align: bottom; }
+.answer .md-table td { min-width: 9ch; }
 .answer .a > * + * { margin-top: 8px; }
 .answer .md-h { font-family: var(--sans); font-weight: 700; font-size: 15px; color: var(--ink); margin-top: 12px; }
 .answer .md-list { margin: 0; padding-left: 20px; }

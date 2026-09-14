@@ -304,3 +304,96 @@ def test_web_api_serves_the_page_the_audit_and_an_estimate():
     assert estimate["calls"] == 1 + 1 + 1 * 2 * 2 + 1
     assert client.get("/api/runs/yok").status_code == 404
     assert len(client.get("/api/evidence").json()["types"]) == len(audit.WINS)
+
+
+def test_answer_tables_become_tables_even_with_blank_lines_between_rows():
+    from advisor.web import pdf
+
+    answer = (
+        "İşte öneriler:\n\n| Marka / Ürün | Özellikleri |\n\n|--------------|-------------|\n"
+        "| **Asperox** Sarı Güç | Yağı söker<br>Limon kokulu |\n| Cif | <script>x</script> |\n"
+    )
+    html = pdf.markdown(answer, own=["Asperox"], rivals=["Cif"])
+    assert html.count("<table") == 1 and "|" not in html and "---" not in html
+    assert "<th>Marka / Ürün</th>" in html and html.count("<tr>") == 3
+    assert '<strong><mark class="own">Asperox</mark></strong> Sarı Güç' in html
+    assert "Yağı söker<br>Limon kokulu" in html and "&lt;script&gt;" in html
+
+
+def test_brand_marks_fold_turkish_capitals_without_shifting_the_text():
+    from advisor.web import pdf
+
+    assert pdf.marked("İŞ BANKASI ve Işık", own=["iş bankası"]) == (
+        '<mark class="own">İŞ BANKASI</mark> ve Işık'
+    )
+
+
+def test_pdf_report_carries_every_section_and_escapes_answers():
+    from datetime import date
+
+    from advisor.web import pdf
+
+    result = {
+        "brand": "Asperox",
+        "sector": "temizlik ürünleri",
+        "language": "tr",
+        "curated": False,
+        "diagnosis_title": "Aramada görünmüyorsun",
+        "diagnosis_note": "Sorun **bulunabilirlik**.",
+        "measures": {"retrieval_presence": 0.0, "mention_on": 0.25, "first_on": 0.0},
+        "scores": {"rank": 1, "candidates": 7, "compared_with": ["Cif"]},
+        "recommendations": [
+            {
+                "title": "Karşılaştırma sayfalarına gir",
+                "why": "w",
+                "action": "a",
+                "verdict": "v",
+                "targets": [
+                    {
+                        "domain": "ornek.com",
+                        "link": "https://ornek.com/x",
+                        "rivals": ["Cif"],
+                        "position": 2,
+                    }
+                ],
+            }
+        ],
+        "answers": [
+            {
+                "query": "Hangi yağ çözücü?",
+                "assistant": "gemini",
+                "kind": "discovery",
+                "mentioned": True,
+                "first": False,
+                "named_brands": ["Cif", "Asperox"],
+                "answer": "| A | B |\n|---|---|\n| Cif | <b>kalın</b> |",
+            }
+        ],
+        "assistant_labels": {"gemini": "Gemini 3.5 Flash Lite"},
+        "notes": ["40 asistan yanıtı ölçüldü."],
+        "candidates": ["Asperox", "Cif"],
+    }
+    html = pdf.report_html(result, aliases=["Asperox Sarı Güç"], made=date(2026, 9, 15))
+    for text in (
+        "Aramada görünmüyorsun",
+        "Listeye girmek için",
+        "Yanıtlarda kimler var",
+        "Ek: Asistanlar ne dedi",
+        "Bu rapor ne söylemiyor",
+        "15 Eylül 2026",
+        'href="https://ornek.com/x"',
+        "<strong>bulunabilirlik</strong>",
+        "Seni andı",
+    ):
+        assert text in html
+    assert "<b>kalın</b>" not in html and "&lt;b&gt;kalın&lt;/b&gt;" in html
+
+
+def test_downloads_are_named_after_the_brand_whatever_its_letters():
+    pytest.importorskip("fastapi")
+    from advisor.web import app as web
+
+    header = web.attachment("Türk Telekom görünürlük raporu.pdf")["Content-Disposition"]
+    header.encode("latin-1")
+    assert 'filename="Turk-Telekom-gorunurluk-raporu.pdf"' in header
+    assert "filename*=UTF-8''T%C3%BCrk%20Telekom" in header

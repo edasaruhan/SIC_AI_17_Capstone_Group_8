@@ -32,7 +32,11 @@ Tarayıcıda http://localhost:8600 açılır (FastAPI arka uç, tek sayfalık ö
 3. **Analiz.** Akışın her düğümü bittikçe listelenir.
 4. **Sonuç.** Teşhis, dört ölçü, asistan yanıtları (markan sarı, rakipler gri işaretli),
    ölçülmüş etkisiyle öneriler, sitedeki ürün cümlelerinin türüne göre renklendirildiği
-   açıklama incelemesi, markanı anan soruların sonucu, rakipler ve indirilebilir rapor.
+   açıklama incelemesi, markanı anan soruların sonucu ve rakipler. Asistan yanıtları
+   kısaltılmaz; tablolar tablo olarak gösterilir, uzun yanıtlar katlanır.
+5. **Rapor.** Sonuç sayfanın görünümüyle PDF olarak indirilir (`/api/runs/<iş>/report.pdf`,
+   weasyprint): önce teşhis ve öneriler, ekte bütün asistan yanıtlarının tam metni.
+   Markdown sürümü de indirilebilir.
 
 Açıklama denetimi ayrı bir sayfada da kullanılabilir. Model ve site metni sayfaya yalnız
 düz metin olarak yazılır.

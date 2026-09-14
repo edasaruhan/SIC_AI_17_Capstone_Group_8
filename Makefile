@@ -114,7 +114,7 @@ advisor-audit: ## Ürün açıklamasını deneyde ölçülen kurallarla denetle;
 	PYTHONPATH=src $(PYTHON) -m advisor.audit $(AUDIT_ARGS)
 
 advisor-ui: ## Danışmanın web uygulaması: http://localhost:8600 (ücretli çağrılar onay ister)
-	PYTHONPATH=src uv run --with fastapi --with uvicorn --with langgraph uvicorn advisor.web.app:app --port 8600
+	PYTHONPATH=src uv run --with fastapi --with uvicorn --with langgraph --with weasyprint uvicorn advisor.web.app:app --port 8600
 
 advisor: ## LangGraph görünürlük danışmanı: ölç, teşhis et, öner (ÜCRETLİ; --yes gerekir)
 	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" --yes $(ADVISOR_ARGS)
