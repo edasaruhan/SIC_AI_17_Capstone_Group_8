@@ -23,17 +23,26 @@ share, and writes advice that passes the ethics filter. The cues were checked ag
 every sentence the experiment used. Detection is a heuristic: it tells a copywriter
 where to look, it does not decide whether a claim is true.
 
+Rules only know the sentences of the two tested categories. In any other sector the
+sentence types come from Gemini instead (``classify``): one call, every decision tied to
+a sentence quoted verbatim from the text, and the rule for fabricated claims still
+applied on top, so a risk the model misses is not lost.
+
     PYTHONPATH=src python -m advisor.audit --file aciklama.txt --rival-file rakip.txt
+    PYTHONPATH=src python -m advisor.audit --file aciklama.txt --ai --yes   # 1 çağrı
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
+from evidence_eval.io import digest
 from visibility import ethics
 
 ASSISTANTS = ("Gemini 3.5 Flash Lite", "gpt-oss-120b (Cerebras)")
@@ -291,9 +300,17 @@ def _advice(found: dict[str, list[str]], rival_found: list[dict[str, list[str]]]
     return ethics.screen_actions(advice)
 
 
-def audit(text: str, rivals: tuple[str, ...] | list[str] = ()) -> dict:
-    found = detect(text)
-    rival_found = [detect(rival) for rival in rivals]
+def audit(
+    text: str,
+    rivals: tuple[str, ...] | list[str] = (),
+    *,
+    found: dict[str, list[str]] | None = None,
+    rival_found: list[dict[str, list[str]]] | None = None,
+    method: str = "rules",
+) -> dict:
+    """Audit a description. ``found`` replaces rule detection when a classifier ran."""
+    found = detect(text) if found is None else found
+    rival_found = [detect(rival) for rival in rivals] if rival_found is None else rival_found
     findings = [
         Finding(
             key,
@@ -303,10 +320,229 @@ def audit(text: str, rivals: tuple[str, ...] | list[str] = ()) -> dict:
         for key in WINS
         if key in found
     ]
-    return {"findings": findings, "advice": _advice(found, rival_found), "rivals": len(rivals)}
+    return {
+        "findings": findings,
+        "advice": _advice(found, rival_found),
+        "rivals": len(rival_found),
+        "method": method,
+    }
+
+
+# --- classification by a model, for sectors the rules were never written for ---------
+
+MAX_TEXT_CHARS = 3000
+AUDIT_MODEL = "gemini-3.5-flash-lite"
+AUDIT_OUTPUT = Path("data/processed/advisor_audit")
+CLASSIFY_PROMPT = (
+    "Aşağıda bir veya birden çok ürün ya da hizmet metni var. Her metni cümlelere ayır ve "
+    "bilgi taşıyan her cümleyi aşağıdaki türlerden birine koy. Sektör fark etmez; türün "
+    "tanımına bak.\n"
+    "- technical: ürünün veya hizmetin kendine özgü somut özelliği: bileşen, malzeme, "
+    'teknoloji, ölçülebilir değer, kapasite, süre, hizmet koşulu (ör. "niasinamid içerir", '
+    '"WireGuard protokolü", "5 dakikada başvuru", "7/24 canlı destek").\n'
+    "- price: fiyat, ücret, aidat, komisyon, faiz, indirim, taksit, kampanya, ücretsiz deneme "
+    "gibi parasal avantaj.\n"
+    '- statistics: ölçülmüş bir sonuç ya da oran (ör. "katılımcıların %92\'si", "%99,9 '
+    'çalışma süresi").\n'
+    "- cited_test: bağımsız bir test, denetim veya laboratuvar raporuna atıf.\n"
+    "- social_proof: kullanıcı sayısı, puan, yorum sayısı.\n"
+    "- certificate: sertifika, lisans, belge, resmî onay.\n"
+    '- authority: "uzmanlarca geliştirildi", "askeri düzey", "klinik standart" gibi '
+    "otorite ifadesi.\n"
+    "- expert_quote: bir uzmana, doktora veya meslek sahibine atfedilen görüş.\n"
+    '- superlative: "en iyi", "bir numara", "lider" gibi üstünlük iddiası.\n'
+    "- emotional: duygu, his, huzur gibi duygusal dil.\n"
+    "- fabricated_claim: kaynağı verilmeden ünlü bir kuruma ya da klinik çalışmaya "
+    'dayandırılan veya mutlak sonuç vaat eden iddia (ör. "Harvard çalışmasında riski %98 '
+    'azalttığı kanıtlanmıştır").\n'
+    "Bir cümle birden fazla türe uyuyorsa en belirleyici olanı seç. Bilgi taşımayan cümleleri "
+    'atla. "sentence" alanına cümleyi metinden hiç değiştirmeden aynen kopyala.\n\n'
+    "Metinler:\n{texts}\n\n"
+    'Yalnız JSON döndür: {{"texts": {{"<etiket>": [{{"sentence": "...", "type": "..."}}]}}}}'
+)
+METHOD_NOTE = {
+    "rules": (
+        "Cümle türleri anahtar ifadelerle bulundu. Kurallar deneyin iki kategorisindeki "
+        "(güneş kremi, VPN) cümlelerle kuruldu; başka bir sektörde bazı türleri kaçırabilir. "
+        "Yapay zekâ sınıflandırması sektörden bağımsız çalışır."
+    ),
+    "ai": (
+        "Cümle türleri Gemini 3.5 Flash Lite ile sınıflandırıldı; her karar açıklamadan birebir "
+        "alıntıya dayanır, metinde geçmeyen cümle sayılmaz. Kaynaksız iddia kuralı ayrıca "
+        "uygulandı. Türler deneyin iki kategorisinden daha geniş yorumlanır; kazanma payları o "
+        "iki kategoride ölçüldü."
+    ),
+}
+
+
+def _norm(text: str) -> str:
+    return " ".join(_fold(text).split())
+
+
+def classification_payload(texts: dict[str, str]) -> dict:
+    block = "\n\n".join(
+        f"[{label}]\n{text.strip()[:MAX_TEXT_CHARS]}" for label, text in texts.items()
+    )
+    return {
+        "model": AUDIT_MODEL,
+        "temperature": 0.0,
+        "max_tokens": 4096,
+        "messages": [{"role": "user", "content": CLASSIFY_PROMPT.format(texts=block)}],
+    }
+
+
+def parse_classification(reply: str, texts: dict[str, str]) -> dict[str, dict[str, list[str]]]:
+    """Sentence types per text. A sentence absent from its text or an unknown type is dropped."""
+    cleaned = reply.strip().strip("`").strip().removeprefix("json").strip()
+    try:
+        value = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        raise ValueError("Sınıflandırma yanıtı JSON değil") from exc
+    groups = value.get("texts") if isinstance(value, dict) else None
+    if not isinstance(groups, dict):
+        raise ValueError("Sınıflandırma yanıtının şeması geçersiz")
+    out: dict[str, dict[str, list[str]]] = {}
+    for label, text in texts.items():
+        source = _norm(text[:MAX_TEXT_CHARS])
+        found: dict[str, list[str]] = {}
+        items = groups.get(label) or []
+        for item in items if isinstance(items, list) else []:
+            if not isinstance(item, dict):
+                continue
+            sentence = str(item.get("sentence", "")).strip()
+            kind = str(item.get("type", "")).strip()
+            if kind in WINS and sentence and _norm(sentence) in source:
+                found.setdefault(kind, []).append(sentence)
+        out[label] = found
+    return out
+
+
+def with_rule_risk(found: dict[str, list[str]], text: str) -> dict[str, list[str]]:
+    """Add the rule's fabricated-claim sentences; a risky sentence counts only as a risk."""
+    risky = [*found.get("fabricated_claim", [])]
+    for sentence in detect(text).get("fabricated_claim", []):
+        if not any(_norm(sentence) == _norm(known) for known in risky):
+            risky.append(sentence)
+    if not risky:
+        return found
+    marks = [_norm(sentence) for sentence in risky]
+    merged: dict[str, list[str]] = {"fabricated_claim": risky}
+    for key, sentences in found.items():
+        if key == "fabricated_claim":
+            continue
+        kept = [
+            s for s in sentences if not any(_norm(s) in mark or mark in _norm(s) for mark in marks)
+        ]
+        if kept:
+            merged[key] = kept
+    return merged
+
+
+async def classify(
+    texts: dict[str, str], receipts: Any, *, service: str = "gemini"
+) -> dict[str, dict[str, list[str]]]:
+    """One receipted call for every text. The key follows the payload, so a changed text is
+    a new step, never a clash with an old receipt."""
+    payload = classification_payload(texts)
+    result = await receipts.call(
+        f"audit_{digest(payload)[:12]}",
+        service,
+        payload,
+        validator=lambda r: parse_classification(r["text"], texts),
+    )
+    parsed = parse_classification(result["text"], texts)
+    return {label: with_rule_risk(parsed[label], texts[label]) for label in texts}
+
+
+def audit_with_ai(
+    text: str,
+    rivals: tuple[str, ...] | list[str] = (),
+    *,
+    output: Path = AUDIT_OUTPUT,
+    retry_failed: bool = False,
+) -> dict:
+    """The standalone tool's paid path: classify with Gemini, then audit. One call, cached."""
+    import asyncio
+
+    import httpx
+
+    from brand_demo.workflow import Receipts
+    from visibility.llm import GeminiClient, load_key
+
+    load_key()
+    texts = {"brand": text, **{f"rival_{i}": r for i, r in enumerate(rivals, 1)}}
+
+    async def run() -> dict[str, dict[str, list[str]]]:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(120, connect=20)) as http:
+            return await classify(texts, Receipts(output, GeminiClient(http), retry_failed))
+
+    classified = asyncio.run(run())
+    return audit(
+        text,
+        rivals,
+        found=classified["brand"],
+        rival_found=[classified[f"rival_{i}"] for i in range(1, len(rivals) + 1)],
+        method="ai",
+    )
+
+
+# --- output -------------------------------------------------------------------------
+
+
+def as_record(result: dict) -> dict:
+    """The audit as plain JSON, for the graph state, the saved run and the interface."""
+    rows = []
+    for finding in result["findings"]:
+        gemini, cerebras = shares(finding.key)
+        rows.append(
+            {
+                "key": finding.key,
+                "label": LABELS[finding.key],
+                "verdict": verdict(finding.key),
+                "gemini": gemini,
+                "cerebras": cerebras,
+                "sentences": list(finding.sentences),
+                "in_rivals": finding.in_rivals,
+            }
+        )
+    return {
+        "findings": rows,
+        "advice": result["advice"],
+        "rivals": result["rivals"],
+        "method": result.get("method", "rules"),
+    }
+
+
+def section(record: dict, *, heading: str = "##") -> list[str]:
+    """Findings, advice and method as Markdown lines, shared by both reports."""
+    lines = [f"{heading} Açıklamada bulunan cümle türleri", ""]
+    rows = record["findings"]
+    if rows:
+        header, rule = "| Cümle türü | Değerlendirme | Gemini | Cerebras |", "|---|---|---:|---:|"
+        if record["rivals"]:
+            header, rule = header + " Rakiplerde |", rule + "---:|"
+        lines += [header + " Açıklamadan örnek |", rule + "---|"]
+        for row in rows:
+            line = (
+                f"| {row['label']} | {VERDICT_TR[row['verdict']]} | "
+                f"{_pct(row['gemini'])} | {_pct(row['cerebras'])} |"
+            )
+            if record["rivals"]:
+                line += f" {row['in_rivals']}/{record['rivals']} |"
+            lines.append(line + f" {row['sentences'][0].replace('|', '/')[:120]} |")
+    else:
+        lines.append("Deneyde ölçülen cümle türlerinin hiçbiri bulunamadı.")
+    lines += ["", f"{heading} Öneriler", ""]
+    lines += [
+        f"{index}. **{item['suggestion']}** {item['basis']}"
+        for index, item in enumerate(record["advice"], 1)
+    ]
+    lines += ["", f"*{METHOD_NOTE.get(record.get('method', 'rules'), '')}*"]
+    return lines
 
 
 def render(result: dict) -> str:
+    record = as_record(result)
     lines = [
         "# Ürün açıklaması denetimi",
         "",
@@ -314,38 +550,11 @@ def render(result: dict) -> str:
         "açıklama deneyine dayanır: her kartta farklı bir cümle olduğunda o cümle türünün "
         "önerilen ürün olma payı. Rastgele seçimde pay %20'dir.",
         "",
-        "## Açıklamada bulunan cümle türleri",
-        "",
-    ]
-    findings: list[Finding] = result["findings"]
-    if findings:
-        header = "| Cümle türü | Değerlendirme | Gemini | Cerebras |"
-        rule = "|---|---|---:|---:|"
-        if result["rivals"]:
-            header += " Rakiplerde |"
-            rule += "---:|"
-        lines += [header + " Açıklamadan örnek |", rule + "---|"]
-        for finding in findings:
-            gemini, cerebras = shares(finding.key)
-            row = (
-                f"| {LABELS[finding.key]} | {VERDICT_TR[verdict(finding.key)]} | "
-                f"{_pct(gemini)} | {_pct(cerebras)} |"
-            )
-            if result["rivals"]:
-                row += f" {finding.in_rivals}/{result['rivals']} |"
-            example = finding.sentences[0].replace("|", "/")
-            lines.append(row + f" {example[:120]} |")
-    else:
-        lines.append("Deneyde ölçülen cümle türlerinin hiçbiri bulunamadı.")
-    lines += ["", "## Öneriler", ""]
-    for index, item in enumerate(result["advice"], 1):
-        lines.append(f"{index}. **{item['suggestion']}** {item['basis']}")
-    lines += [
+        *section(record),
         "",
         "## Bu denetim neyi söylemez",
         "",
-        "- Kural tabanlıdır: cümle türünü anahtar ifadelerle bulur, bir iddianın doğru olup "
-        "olmadığını sınamaz.",
+        "- Bir iddianın doğru olup olmadığını sınamaz; yalnız cümlenin türünü bulur.",
         "- Etkiler iki asistan, iki kategori (güneş kremi, VPN) ve her tür için tek bir cümle "
         "metniyle ölçüldü; başka asistan ve kategorilere kendiliğinden genellenmez.",
         "- Ölçülen şey, asistanın verilen ürün listesinden hangisini önerdiğidir; asistanın "
@@ -361,10 +570,18 @@ def main(argv: list[str] | None = None) -> int:
     source.add_argument("--file", type=Path, help="Ürün açıklamasını içeren metin dosyası")
     parser.add_argument("--rival", action="append", default=[], help="Rakip açıklaması")
     parser.add_argument("--rival-file", action="append", type=Path, default=[])
+    parser.add_argument(
+        "--ai", action="store_true", help="Cümle türlerini Gemini ile bul (1 çağrı)"
+    )
+    parser.add_argument("--yes", action="store_true", help="Ücretli çağrıyı onayla")
     args = parser.parse_args(argv)
     text = args.text if args.text is not None else args.file.read_text(encoding="utf-8")
     rivals = [*args.rival, *(path.read_text(encoding="utf-8") for path in args.rival_file)]
-    print(render(audit(text, rivals)))
+    if args.ai and not args.yes:
+        print("Yapay zekâ sınıflandırması 1 ücretli çağrıdır; --yes gerekli.")
+        return 1
+    result = audit_with_ai(text, rivals) if args.ai else audit(text, rivals)
+    print(render(result))
     return 0
 
 

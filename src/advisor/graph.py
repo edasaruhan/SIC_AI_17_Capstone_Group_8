@@ -6,11 +6,13 @@ results themselves, so any sector works. Then measure and score with the signal
 learned on the recorded sectors. Then branch, because the situations a brand can be
 in have different answers and only some of them are fixable with content.
 
-    plan → search → discover → interrogate → analyse ─┬─ absent   ─┐
-                                                      ├─ low_rank ─┤
-                                                      ├─ ceiling  ─┼→ report
-                                                      ├─ leader   ─┤
-                                                      └─ thin     ─┘
+    plan → search → discover → interrogate → analyse → describe ─┬─ absent   ─┐
+                                                                 ├─ low_rank ─┤
+                                                                 ├─ ceiling  ─┼→ report
+                                                                 ├─ leader   ─┤
+                                                                 └─ thin     ─┘
+
+``describe`` audits the brand's description: what decides being picked once listed.
 """
 
 from __future__ import annotations
@@ -37,6 +39,7 @@ def build(runtime: nodes.Runtime, budget: int):
     builder.add_node("discover", nodes.make_discover(runtime, budget))
     builder.add_node("interrogate", nodes.make_interrogate(runtime, budget))
     builder.add_node("analyse", nodes.make_analyse(runtime))
+    builder.add_node("describe", nodes.make_describe(runtime, budget))
     for name, node in BRANCHES.items():
         builder.add_node(f"advise_{name}", node)
     builder.add_node("report", nodes.report)
@@ -46,8 +49,9 @@ def build(runtime: nodes.Runtime, budget: int):
     builder.add_edge("search", "discover")
     builder.add_edge("discover", "interrogate")
     builder.add_edge("interrogate", "analyse")
+    builder.add_edge("analyse", "describe")
     builder.add_conditional_edges(
-        "analyse", nodes.route, {name: f"advise_{name}" for name in BRANCHES}
+        "describe", nodes.route, {name: f"advise_{name}" for name in BRANCHES}
     )
     for name in BRANCHES:
         builder.add_edge(f"advise_{name}", "report")

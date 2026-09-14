@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 
 import pytest
@@ -91,3 +92,88 @@ def test_render_and_cli(capsys):
     assert "neyi söylemez" in rendered
     assert audit.main(["--text", text]) == 0
     assert "Öneriler" in capsys.readouterr().out
+
+
+BANK = "Yıllık aidat yok. Alışverişlerde %2 bonus kazanırsın. Başvuru 5 dakikada tamamlanır."
+
+
+def test_parse_classification_keeps_only_verbatim_sentences_and_known_types():
+    reply = json.dumps(
+        {
+            "texts": {
+                "brand": [
+                    {"sentence": "Yıllık aidat yok", "type": "price"},
+                    {"sentence": "Başvuru 5 dakikada tamamlanır.", "type": "technical"},
+                    {"sentence": "Kart en iyisidir.", "type": "superlative"},
+                    {"sentence": "Alışverişlerde %2 bonus kazanırsın.", "type": "nonsense"},
+                ]
+            }
+        }
+    )
+    parsed = audit.parse_classification(f"```json\n{reply}\n```", {"brand": BANK})
+    assert parsed["brand"] == {
+        "price": ["Yıllık aidat yok"],
+        "technical": ["Başvuru 5 dakikada tamamlanır."],
+    }
+
+
+def test_parse_classification_rejects_what_is_not_the_schema():
+    with pytest.raises(ValueError):
+        audit.parse_classification("aidat yok", {"brand": BANK})
+    with pytest.raises(ValueError):
+        audit.parse_classification(json.dumps({"brands": []}), {"brand": BANK})
+
+
+def test_ai_findings_give_the_right_advice_where_rules_do_not():
+    by_rules = audit.audit(BANK)
+    assert [item["kind"] for item in by_rules["advice"]].count("add") == 2
+    found = {"price": ["Yıllık aidat yok."], "technical": ["Başvuru 5 dakikada tamamlanır."]}
+    by_ai = audit.audit(BANK, found=found, method="ai")
+    assert "add" not in [item["kind"] for item in by_ai["advice"]]
+    assert by_ai["method"] == "ai"
+
+
+def test_the_rule_risk_survives_a_classifier_that_misses_it():
+    claim = design.SUNSCREEN.text("fabricated_claim")
+    text = f"{BANK} {claim}"
+    merged = audit.with_rule_risk({"statistics": [claim], "price": ["Yıllık aidat yok."]}, text)
+    assert merged["fabricated_claim"] == [claim] and "statistics" not in merged
+    assert merged["price"] == ["Yıllık aidat yok."]
+
+
+def test_classify_goes_through_the_receipts_and_keys_by_payload():
+    import asyncio
+
+    seen = []
+
+    class Receipts:
+        async def call(self, key, service, payload, validator=None):
+            seen.append((key, service))
+            result = {
+                "text": json.dumps(
+                    {"texts": {"brand": [{"sentence": "Yıllık aidat yok.", "type": "price"}]}}
+                )
+            }
+            assert validator is not None
+            validator(result)
+            return result
+
+    classified = asyncio.run(audit.classify({"brand": BANK}, Receipts()))
+    assert classified == {"brand": {"price": ["Yıllık aidat yok."]}}
+    assert seen[0][1] == "gemini" and seen[0][0].startswith("audit_")
+    other = audit.classification_payload({"brand": BANK + " Ek cümle."})
+    assert audit.classification_payload({"brand": BANK}) != other
+
+
+def test_record_and_section_name_the_method():
+    record = audit.as_record(audit.audit(BANK, found={"price": ["Yıllık aidat yok."]}, method="ai"))
+    assert record["findings"][0] == {
+        "key": "price",
+        "label": "Fiyat avantajı",
+        "verdict": "strong",
+        "gemini": 21 / 60,
+        "cerebras": 30 / 60,
+        "sentences": ["Yıllık aidat yok."],
+        "in_rivals": None,
+    }
+    assert "Gemini 3.5 Flash Lite ile sınıflandırıldı" in "\n".join(audit.section(record))

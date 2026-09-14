@@ -119,7 +119,7 @@
 </div>
 
 <p>
-  Proje 67 commit, 343 otomatik test ve her pull request'te çalışan bir CI hattıyla geliştirildi.
+  Proje 67 commit, 357 otomatik test ve her pull request'te çalışan bir CI hattıyla geliştirildi.
   Ücretli her çağrı bir makbuz dosyasına yazıldı; kesintiden sonra kaldığı yerden devam ediyor ve
   aynı çağrı iki kez ödenmiyor. Temiz bir klonda kurulum ve bütün testler anahtar, GPU veya veri
   indirmeden geçiyor.
@@ -516,14 +516,14 @@
 <h3>9.1 Görünürlük danışmanı (LangGraph)</h3>
 <p>
   Herhangi bir marka ve herhangi bir sektör verilir. Akış canlı arama yapar, rakip markaları arama
-  sonuçlarından çıkarır, asistana soruyu arama kapalı ve açık sorar, markayı rakiplerine göre M2-Invariant
+  sonuçlarından çıkarır, asistana soruyu arama kapalı ve açık sorar (istenirse aynı soruları gpt-oss-120b'ye de sorar; teşhis Gemini'ye göre konur), markayı rakiplerine göre M2-Invariant
   ile skorlar, teşhis koyar ve o teşhise özgü öneriyi kontrollü testte ölçülmüş etkisiyle verir.
 </p>
-<div class="flow">plan → search → discover → interrogate → analyse ─┬─ absent   ─┐
-                                                  ├─ low_rank ─┤
-                                                  ├─ ceiling  ─┼→ report
-                                                  ├─ leader   ─┤
-                                                  └─ thin     ─┘</div>
+<div class="flow">plan → search → discover → interrogate → analyse → describe ─┬─ absent   ─┐
+                                                             ├─ low_rank ─┤
+                                                             ├─ ceiling  ─┼→ report
+                                                             ├─ leader   ─┤
+                                                             └─ thin     ─┘</div>
 <div class="tblock">
   <div class="tcap">Tablo 15 — Teşhis dalları</div>
   <table>
@@ -546,13 +546,12 @@
   belgelendi.
 </p>
 
-<h3>9.2 Açıklama denetimi (ücretsiz)</h3>
+<h3>9.2 Açıklama denetimi</h3>
 <p>
   Açıklama deneyinin sonucunu ürüne çeviren kural tabanlı araç. Kullanıcı ürün açıklamasını (ve isterse
   rakip açıklamalarını) yapıştırır; araç açıklamadaki cümle türlerini bulur, her birinin iki asistanda
   ölçülmüş kazanma payını gösterir ve öneri verir: somut ürün bilgisi yoksa ekle, rakiplerde de varsa
-  farklılaş, "en iyi" yerine ölçülebilir özellik yaz, kaynaksız kurum iddiasını kaldır. API çağrısı ve model
-  gerekmez. Deneyde kullanılan her cümlenin kendi türüyle tanındığı ve sayıların raporlarla aynı olduğu
+  farklılaş, "en iyi" yerine ölçülebilir özellik yaz, kaynaksız kurum iddiasını kaldır. Varsayılan hali ücretsizdir ve kural tabanlıdır; kurallar deneyin iki kategorisinin cümleleriyle kurulduğu için başka sektörlerde yapay zekâ sınıflandırması (tek bir Gemini çağrısı) kullanılır. Bu yolda her karar metinden birebir alıntıya dayanır ve kaynaksız iddia kuralı ayrıca uygulanır. Bir bankacılık açıklamasında kurallar "istatistik" bulup "teknik ayrıntı ekle" derken, sınıflandırma "5 dakikada başvuru"yu teknik ayrıntı, "yıllık aidat yok"u fiyat avantajı olarak doğru buldu. Denetim, danışman akışının içinde de her koşuda çalışır (<code>describe</code> düğümü). Deneyde kullanılan her cümlenin kendi türüyle tanındığı ve sayıların raporlarla aynı olduğu
   testle doğrulanır.
 </p>
 

@@ -7,6 +7,7 @@ reach the page (the recommendations) has already passed the ethics filter.
 
 from __future__ import annotations
 
+from . import assistants, audit
 from .advise import DIAGNOSES, limits
 from .state import AdvisorState
 
@@ -21,9 +22,10 @@ DIAGNOSIS_NOTE = {
         "5. sıradan 1. sıraya çıkması anılmayı %33'ten %65'e taşıdı."
     ),
     "ceiling": (
-        "Anılıyorsun, yani içerik tarafı çalışıyor. Ama hiçbir yanıtta ilk sırada "
-        "değilsin ve kontrollü testte hiçbir müdahale bunu değiştirmedi. Bu bir içerik "
-        "sorunu değil, marka tanınırlığı sorunudur."
+        "Anılıyorsun, yani bulunabilirlik çalışıyor. Ama hiçbir yanıtta ilk sırada değilsin; "
+        "arama bağlamındaki kontrollü testte hiçbir müdahale bunu değiştirmedi. Marka bir öneri "
+        "listesine girdiğinde ise seçimi açıklamadaki somut ürün bilgisi belirliyor (açıklama "
+        "deneyi); raporun açıklama denetimi bölümü bunun içindir."
     ),
     "leader": (
         "Bu sorgularda zaten öndesin. Buradaki iş kazanmak değil, konumu korumak: "
@@ -82,6 +84,50 @@ def _signal_section(state: AdvisorState) -> list[str]:
     return lines
 
 
+def _assistant_section(state: AdvisorState) -> list[str]:
+    per = state.get("assistant_measures") or {}
+    if len(per) < 2:
+        return []
+    lines = [
+        "## Asistanlar arasında",
+        "",
+        "Aynı sorular, aynı arama sonuçları. Teşhis ve etkiler Gemini'nin yanıtlarından okunur; "
+        "ikinci asistan, sonucun tek bir asistana özgü olup olmadığını gösterir.",
+        "",
+        "| Asistan | Arama kapalıyken anılma | Arama açıkken anılma | İlk anılan marka | Yanıt |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for name, m in per.items():
+        lines.append(
+            f"| {assistants.label(name)} | {pct(m.get('mention_off', 0))} | "
+            f"{pct(m.get('mention_on', 0))} | {pct(m.get('first_on', 0))} | "
+            f"{m.get('n_observations', 0)} |"
+        )
+    return [*lines, ""]
+
+
+def _description_section(state: AdvisorState) -> list[str]:
+    record = state.get("description_audit") or {}
+    if not record.get("findings") and not record.get("advice"):
+        return []
+    source = {
+        "user": "Verdiğin ürün açıklaması denetlendi.",
+        "search": "Ürün açıklaması verilmediği için arama sonuçlarında markanı anlatan özetler "
+        "denetlendi: asistanın senin hakkında gördüğü metin budur.",
+    }.get(record.get("source", ""), "")
+    rivals = record.get("rival_names") or []
+    if rivals:
+        source += f" Rakip metinleri arama özetlerinden alındı: {', '.join(rivals)}."
+    return [
+        "## Ürün açıklaması: listede seçilmek için",
+        "",
+        source,
+        "",
+        *audit.section(record, heading="###"),
+        "",
+    ]
+
+
 def report(state: AdvisorState) -> str:
     brand = state["brand"]
     m = state.get("measures", {})
@@ -91,7 +137,7 @@ def report(state: AdvisorState) -> str:
         "",
         f"Sektör: {state['sector']} · Dil: {state['language']} · "
         f"{m.get('queries', 0)} sorgu, {m.get('n_observations', 0)} asistan yanıtı "
-        "(Gemini 3.5 Flash Lite)",
+        f"({' + '.join(assistants.label(a) for a in (state.get('assistant_measures') or {'gemini': {}}))})",
         "",
         f"## Teşhis: {DIAGNOSES.get(diagnosis, diagnosis)}",
         "",
@@ -112,6 +158,7 @@ def report(state: AdvisorState) -> str:
     rivals = state.get("rivals") or []
     if rivals:
         lines += [f"Senin yerine en çok anılan markalar: {', '.join(rivals)}.", ""]
+    lines += _assistant_section(state)
     lines += _signal_section(state)
 
     lines += ["## Ne yapmalı?", ""]
@@ -137,6 +184,8 @@ def report(state: AdvisorState) -> str:
                     f"{target.get('position') or '–'} | {target['link']} |"
                 )
             lines.append("")
+
+    lines += _description_section(state)
 
     names = state.get("candidates") or []
     if names:

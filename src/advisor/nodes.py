@@ -22,7 +22,18 @@ from brand_demo.workflow import Receipts
 from evidence_eval.io import read_json
 from modeling.brands import BrandRegistry, comparison_key
 
-from . import advise, candidates, domains, features, measure, model, render, signals
+from . import (
+    advise,
+    assistants,
+    audit,
+    candidates,
+    domains,
+    features,
+    measure,
+    model,
+    render,
+    signals,
+)
 from .state import AdvisorState, Observation
 
 CORPUS = Path("data/processed/evidence_v2")
@@ -60,6 +71,8 @@ LANGUAGE_NAME = {"tr": "Türkçe", "en": "İngilizce"}
 # Fewer distinct rival brands than this across results and answers means the queries did
 # not surface a market at all; diagnosing the brand as "absent" would be a false finding.
 MIN_RIVALS = 2
+# Rivals whose search snippets are audited next to the brand's.
+AUDIT_RIVALS = 4
 
 
 class BudgetExceeded(ValueError):
@@ -81,6 +94,9 @@ class Runtime:
     concurrency: int = 2
     spent: list[str] = field(default_factory=list)
     registry: BrandRegistry | None = None
+    description: str = ""
+    audit_ai: bool = False
+    assistants: tuple[str, ...] = (assistants.PRIMARY,)
 
     def charge(self, key: str, budget: int) -> None:
         if len(self.spent) >= budget:
@@ -233,7 +249,9 @@ def make_discover(runtime: Runtime, budget: int):
     return discover
 
 
-def _payload(question: str, results: list[dict] | None) -> dict:
+def _payload(
+    question: str, results: list[dict] | None, assistant: str = assistants.PRIMARY
+) -> dict:
     if results is None:
         content = question
         system = SYSTEM_OFFLINE
@@ -254,7 +272,7 @@ def _payload(question: str, results: list[dict] | None) -> dict:
             },
             ensure_ascii=False,
         )
-    return {
+    payload = {
         "model": MODEL,
         "temperature": TEMPERATURE,
         "max_tokens": MAX_TOKENS,
@@ -263,6 +281,10 @@ def _payload(question: str, results: list[dict] | None) -> dict:
             {"role": "user", "content": content},
         ],
     }
+    if assistant == assistants.PRIMARY:
+        return payload  # byte-identical to the receipts written before a second assistant
+    spec = assistants.ASSISTANTS[assistant]
+    return payload | {"model": spec["model"], "max_tokens": spec["max_tokens"], **spec["extra"]}
 
 
 def make_interrogate(runtime: Runtime, budget: int):
@@ -271,21 +293,27 @@ def make_interrogate(runtime: Runtime, budget: int):
         registry = runtime.require_registry()
         queries = state.get("queries", [])
         pages = {page["query"]: page["results"] for page in state.get("search", [])}
-        gate = asyncio.Semaphore(runtime.concurrency)
+        # One gate per assistant: a slow, rate-limited assistant must not hold the others.
+        gates = {name: asyncio.Semaphore(runtime.concurrency) for name in runtime.assistants}
         jobs = [
-            (query, condition, rep)
+            (name, query, condition, rep)
+            for name in runtime.assistants
             for query in queries
             for condition in ("search_off", "search_on")
             for rep in range(runtime.reps)
         ]
 
-        async def one(query: str, condition: str, rep: int):
+        async def one(name: str, query: str, condition: str, rep: int):
             key = f"ask_{queries.index(query)}_{condition}_r{rep}"
+            if name != assistants.PRIMARY:
+                key = f"{key}__{name}"
             results = pages.get(query, []) if condition == "search_on" else None
-            async with gate:
+            async with gates[name]:
                 runtime.charge(key, budget)
-                result = await runtime.receipts.call(key, SERVICE, _payload(query, results))
-            return measure.observe(
+                result = await runtime.receipts.call(
+                    key, assistants.service(name), _payload(query, results, name)
+                )
+            observation = measure.observe(
                 brand=brand,
                 registry=registry,
                 query=query,
@@ -294,6 +322,8 @@ def make_interrogate(runtime: Runtime, budget: int):
                 answer=result["text"],
                 results=pages.get(query, []),
             )
+            observation["assistant"] = name
+            return observation
 
         # One refused answer must not discard the rest: the failure is already recorded
         # in its receipt, as the controlled test's collector records it.
@@ -310,6 +340,15 @@ def make_interrogate(runtime: Runtime, budget: int):
         if not observations:
             raise ValueError("Hiçbir asistan yanıtı alınamadı; ölçüm yapılamaz.")
         notes = [f"{len(observations)} asistan yanıtı ölçüldü."]
+        if len(runtime.assistants) > 1:
+            notes.append(
+                "Asistan başına: "
+                + ", ".join(
+                    f"{assistants.label(name)} {sum(o.get('assistant') == name for o in observations)}"
+                    for name in runtime.assistants
+                )
+                + "."
+            )
         if failed:
             notes.append(
                 f"{failed} yanıt alınamadı (kesilmiş veya hatalı) ve ölçüme katılmadı; makbuzda "
@@ -328,14 +367,20 @@ def make_analyse(runtime: Runtime):
         registry = runtime.require_registry()
         observations = state.get("observations", [])
         search = state.get("search", [])
-        measures = measure.rates(observations)
-        rivals = measure.rival_brands(observations, brand)
+        # Diagnosis and advice follow the primary assistant, whose effects were measured.
+        primary = [o for o in observations if _assistant_of(o) == assistants.PRIMARY]
+        measures = measure.rates(primary)
+        rivals = measure.rival_brands(primary, brand)
+        per_assistant = {
+            name: measure.rates([o for o in observations if _assistant_of(o) == name])
+            for name in dict.fromkeys(_assistant_of(o) for o in observations)
+        }
         diagnosis = advise.diagnose(measures)
         targets = measure.outreach_targets(search, brand, rivals, registry)
         scores: dict = {}
         lagging: list[dict] = []
         notes: list[str] = []
-        market = market_brands(observations, search, registry) - {brand}
+        market = market_brands(primary, search, registry) - {brand}
         if len(market) < MIN_RIVALS:
             diagnosis = "thin"
             notes.append(
@@ -353,6 +398,7 @@ def make_analyse(runtime: Runtime):
             notes.append("Öğrenilmiş sinyal modeli (M2-Invariant) canlı sonuçlara uygulandı.")
         return {
             "measures": measures,
+            "assistant_measures": per_assistant,
             "rivals": rivals,
             "diagnosis": diagnosis,
             "evidence": targets,
@@ -362,6 +408,85 @@ def make_analyse(runtime: Runtime):
         }
 
     return analyse
+
+
+def _assistant_of(observation: Observation) -> str:
+    return observation.get("assistant", assistants.PRIMARY)
+
+
+def search_texts(search: list[dict], registry: BrandRegistry, names: list[str]) -> dict[str, str]:
+    """What the retrieved results say about each brand: every snippet that names it."""
+    found: dict[str, list[str]] = {name: [] for name in names}
+    for page in search:
+        for result in page.get("results", []):
+            snippet = str(result.get("snippet", "")).strip()
+            if not snippet:
+                continue
+            named = set(measure.named_brands(f"{result.get('title', '')}\n{snippet}", registry))
+            for name in names:
+                if name in named and snippet not in found[name]:
+                    found[name].append(snippet)
+    return {name: "\n".join(parts) for name, parts in found.items() if parts}
+
+
+def make_describe(runtime: Runtime, budget: int):
+    """Audit what decides being picked once listed: the brand's description.
+
+    The user's own description when given; otherwise the search snippets that describe
+    the brand, which is what the assistant actually reads. Rival texts are their snippets.
+    Rules are free; the AI classification is one budgeted call and falls back to the rules
+    if it fails, because a missing audit must not cost the measured diagnosis.
+    """
+
+    async def describe(state: AdvisorState) -> dict:
+        brand = state["brand"]
+        registry = runtime.require_registry()
+        rivals = [r for r in state.get("rivals", []) if r != brand][:AUDIT_RIVALS]
+        texts = search_texts(state.get("search", []), registry, [brand, *rivals])
+        own = runtime.description.strip()
+        brand_text = own or texts.get(brand, "")
+        if not brand_text:
+            return {
+                "description_audit": {"source": "none"},
+                "notes": ["Markayı anlatan bir metin bulunamadı; açıklama denetimi yapılmadı."],
+            }
+        rival_names = [name for name in rivals if name in texts]
+        rival_texts = [texts[name] for name in rival_names]
+        notes: list[str] = []
+        found = rival_found = None
+        method = "rules"
+        if runtime.audit_ai:
+            runtime.charge("describe", budget)
+            labelled = {
+                "brand": brand_text,
+                **{f"rival_{i}": t for i, t in enumerate(rival_texts, 1)},
+            }
+            try:
+                classified = await audit.classify(labelled, runtime.receipts)
+            except Exception:  # noqa: BLE001 - the audit is advisory; the diagnosis stands
+                notes.append(
+                    "Yapay zekâ sınıflandırması alınamadı; anahtar ifade kuralları kullanıldı."
+                )
+            else:
+                found = classified["brand"]
+                rival_found = [classified[f"rival_{i}"] for i in range(1, len(rival_texts) + 1)]
+                method = "ai"
+        result = audit.audit(
+            brand_text, rival_texts, found=found, rival_found=rival_found, method=method
+        )
+        record = {
+            **audit.as_record(result),
+            "source": "user" if own else "search",
+            "rival_names": rival_names,
+        }
+        notes.append(
+            f"Ürün açıklaması denetlendi ({'verilen metin' if own else 'arama özetleri'}, "
+            f"{'yapay zekâ sınıflandırması' if method == 'ai' else 'anahtar ifade kuralları'}); "
+            f"{len(result['findings'])} cümle türü bulundu."
+        )
+        return {"description_audit": record, "notes": notes}
+
+    return describe
 
 
 def market_brands(

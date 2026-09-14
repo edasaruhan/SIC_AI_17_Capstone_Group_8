@@ -8,7 +8,7 @@ plain JSON.
 
 from __future__ import annotations
 
-from typing import Annotated, Any, TypedDict
+from typing import Annotated, Any, NotRequired, TypedDict
 
 
 def extend(left: list, right: list) -> list:
@@ -28,6 +28,7 @@ class Observation(TypedDict):
     in_search_results: bool
     best_position: int | None
     n_results_mentioning: int
+    assistant: NotRequired[str]  # "gemini" when absent: runs before the second assistant
 
 
 class AdvisorInput(TypedDict):
@@ -58,10 +59,12 @@ class AdvisorState(AdvisorInput, total=False):
     observations: Annotated[list[Observation], extend]
     # Analysis
     measures: dict[str, Any]
+    assistant_measures: dict[str, Any]
     scores: dict[str, Any]
     signals: list[dict]
     diagnosis: str
     evidence: list[dict]
     recommendations: list[dict]
+    description_audit: dict[str, Any]
     report: str
     notes: Annotated[list[str], extend]

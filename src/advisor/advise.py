@@ -8,9 +8,11 @@ The controlled test (``reports/intervention/``) measured three things on 1,080 c
 * and **nothing** moved the brand into the first-named position -- zero in every arm.
 
 That maps onto exactly three situations a brand can be in, and each deserves a
-different answer. Telling a brand in the third situation to "write more content" is
-what the tools on the market do; our own numbers say it will not work. Separating the
-cases is the product.
+different answer. The description experiment (``reports/description_lab/``) adds the
+other half of the third situation: once a brand is in the list an assistant chooses
+from, a concrete product fact in its description decides the pick on two assistants.
+So first place in an open answer is not a content problem, but being chosen from a
+list is. Separating the cases is the product.
 
 Thresholds below are product judgement, not measurements: they decide which advice to
 show, not how large an effect is. Effect sizes always come from the measured table.
@@ -121,19 +123,30 @@ def recommendations(
     if diagnosis in {"ceiling", "leader"}:
         recs.append(
             {
-                "title": "Birinci sıraya içerikle ulaşılmıyor — beklentiyi buna göre kur",
+                "title": (
+                    "Aramada birinciliği içerik tek başına getirmiyor; listede seçilmek için "
+                    "açıklamanı güçlendir"
+                ),
                 "why": (
-                    "Kontrollü testin 1.080 çağrısının hiçbirinde hiçbir müdahale hedef markayı "
-                    "ilk anılan marka yapmadı. Birincil öneriyi büyük ölçüde marka kimliği "
-                    "belirliyor ve bu kısa vadede içerikle değişmiyor."
+                    "Arama bağlamındaki kontrollü testte 1.080 çağrının hiçbirinde hiçbir "
+                    "müdahale hedef markayı ilk anılan marka yapmadı. Marka bir öneri "
+                    "listesindeyken sonuç farklı: açıklama deneyinde ürüne özgü somut bilgi "
+                    "taşıyan tek bir cümle, tanınmamış bir markanın önerilme oranını iki "
+                    "asistanda da %5–10'dan %85–100'e çıkardı; her kartta farklı bir cümle "
+                    "olduğunda en çok ürüne özgü teknik ayrıntı (Gemini %35, gpt-oss-120b %67) "
+                    "ve fiyat avantajı (%35 / %50) kazandı."
                 ),
                 "action": (
-                    "Bütçeyi 'bir numara olmak' hedefine değil, listeye girme ve listede "
-                    "yukarı çıkma hedefine ayır; birincilik marka yatırımının işi."
+                    "Bütçenin bir kısmını listeye girme ve yukarı çıkmaya ayır; ürün "
+                    "açıklamanda rakiplerde olmayan, doğrulanabilir teknik ayrıntıyı ve gerçek "
+                    "fiyat avantajını öne çıkar. Raporun açıklama denetimi bölümüne bak."
                 ),
                 "targets": [],
                 "test": None,
-                "verdict": "Kontrollü testte bütün kollarda sıfır etki ölçüldü.",
+                "verdict": (
+                    "Arama bağlamında birincilikte sıfır etki; ürün listesi bağlamında iki "
+                    "asistanda ölçülmüş etki (açıklama deneyi)."
+                ),
             }
         )
 

@@ -19,12 +19,17 @@ make advisor      BRAND="Garanti BBVA" DOMAIN="bankacılık" LANGUAGE=tr   # ÜC
 make advisor-ui
 ```
 
-Streamlit sayfası LangGraph akışını sürer; akışın kendisi değişmez. Soldan marka, sektör
-ve dil girilir. Sayfa ücretli çağrı tahminini ve bütçeyi gösterir, analiz daha önce
+Streamlit sayfası LangGraph akışını sürer; akışın kendisi değişmez. Üç sekme vardır:
+**Görünürlük analizi**, **Açıklama denetimi** ve **Nasıl çalışır?**. Analiz sekmesinde
+marka, sektör, dil, isteğe bağlı ürün açıklaması ve iki anahtar girilir: "gpt-oss-120b
+ile de ölç" ve "Açıklamayı yapay zekâ ile sınıflandır". Sayfa ücretli çağrı tahminini ve bütçeyi gösterir, analiz daha önce
 yapıldıysa önbellekten okunacağını söyler, onay kutusu işaretlenmeden başlatmaz. Koşu
 sırasında grafiğin her düğümü bittikçe listelenir (sorular → arama → rakipler → yapay
 zekâya sorma → ölçüm ve teşhis → öneriler → rapor). Sonuçta teşhis, görünme, anılma ve
-rakiplere göre sıra metrik olarak, ardından rapor gösterilir; rapor indirilebilir.
+rakiplere göre sıra metrik olarak gösterilir; ardından beş alt sekme gelir: ölçüm grafiği
+(iki asistan yan yana), yanıtlarda en çok anılan markalar, ürün açıklaması denetimi,
+öneriler ve indirilebilir tam rapor. `.streamlit/config.toml` temayı ayarlar ve ilk
+açılıştaki e-posta sorusunu kapatır.
 
 "Karşılaştırılan markaları düzelt" bölümünde yanlış rakipler kaldırılır, eksikler
 eklenir ve "Düzeltmeyle yeniden hesapla" ile yeniden çalıştırılır. Düzeltme hiçbir ücretli
@@ -48,17 +53,31 @@ Anahtarlar `.env` içinde: `GEMINI_API_KEY`, `SERPER_API_KEY`. Varsayılan koşu
 1 rakip çıkarımı + 12 asistan yanıtı. `--max-calls 20` bütçesini aşan bir koşu hiç
 başlamaz.
 
-## Açıklama denetimi (ücretsiz)
+## İkinci asistan
+
+`--second-assistant` (arayüzde "gpt-oss-120b ile de ölç") aynı soruları aynı arama
+sonuçlarıyla Cerebras'taki gpt-oss-120b'ye de sorar. Teşhis ve öneriler yine Gemini'nin
+yanıtlarından okunur, çünkü etkiler onda ölçüldü; rapordaki "Asistanlar arasında" tablosu
+sonucun tek asistana özgü olup olmadığını gösterir. Cerebras'ın hız sınırı nedeniyle çağrı
+başına ~25 saniye sürer. Anahtar: `CEREBRAS_API_KEY`.
+
+İkinci asistan, ürün açıklaması ve yapay zekâ sınıflandırması koşu kimliğini değiştirmez:
+çağrıları kendi adımlarına yazılır (`ask_…__cerebras`, `audit_<özet>`). Açmak aynı klasöre
+yeni makbuz ekler, eski çağrıları yeniden ödetmez.
+
+## Açıklama denetimi
 
 Görünürlük analizi "asistan markamı buluyor ve anıyor mu?" sorusunu yanıtlar. Denetim
 ikinci soruyu yanıtlar: **ürün listede olduğunda asistan onu neye göre seçiyor, ve benim
-açıklamam o bilgiyi taşıyor mu?** Çağrı yapmaz, model yüklemez.
+açıklamam o bilgiyi taşıyor mu?** Varsayılan hali çağrı yapmaz ve model yüklemez; yapay zekâ
+sınıflandırması tek bir Gemini çağrısıdır.
 
 ```bash
 make advisor-audit AUDIT_ARGS='--file aciklama.txt --rival-file rakip1.txt --rival-file rakip2.txt'
 ```
 
-Arayüzde soldaki "Araç" seçiminden **Açıklama denetimi** açılır.
+Arayüzde **Açıklama denetimi** sekmesinden açılır; görünürlük analizinde de her koşunun
+`describe` düğümü aynı denetimi yapar.
 
 Kurallar açıklama deneyinin 2. turundan gelir (`reports/description_lab/*/round2/`):
 beş kurgusal marka, her kartta farklı bir cümle, iki asistan (Gemini 3.5 Flash Lite,
@@ -88,10 +107,21 @@ Rakip açıklamaları verilirse denetim, kazandıran bilginin rakiplerde de olup
 bakar. Deneyde bütün kartlar aynı bilgiyi taşıdığında seçimi marka tanınırlığı ve liste
 sırası belirledi; herkeste olan bilgi ayırt etmez.
 
-Cümle türleri anahtar ifadelerle bulunur; deneyde kullanılan her cümlenin kendi türüyle
-tanındığı ve temel ürün özelliklerinin hiçbir türe sayılmadığı testle doğrulanır
-(`tests/test_advisor_audit.py`). Tablodaki sayıların raporlarla aynı olduğu da testtedir.
-Denetim bir iddianın doğru olup olmadığını sınamaz; her önerisi etik filtreden geçer.
+Cümle türleri iki yoldan bulunur:
+
+- **Kurallar (ücretsiz).** Anahtar ifadeler; deneyde kullanılan her cümlenin kendi türüyle
+  tanındığı ve temel ürün özelliklerinin hiçbir türe sayılmadığı testle doğrulanır. Ama
+  kurallar deneyin iki kategorisinin cümleleriyle kuruldu: bir bankacılık açıklamasındaki
+  "yıllık aidat yok" ya da "5 dakikada başvuru" onlara görünmez.
+- **Yapay zekâ sınıflandırması (1 çağrı).** Gemini her cümleyi türlerden birine koyar.
+  Her karar metinden birebir alıntıya dayanmak zorundadır; metinde geçmeyen cümle ya da
+  bilinmeyen tür atılır. Kaynaksız iddia kuralı ayrıca uygulanır, model kaçırsa bile risk
+  kaybolmaz. Çağrı hata verirse kurallara dönülür. `make advisor-audit AUDIT_ARGS='--file
+  aciklama.txt --ai --yes'`.
+
+Tablodaki sayıların raporlarla aynı olduğu testtedir. Denetim bir iddianın doğru olup
+olmadığını sınamaz; her önerisi etik filtreden geçer. Yapay zekâ sınıflandırması türleri
+deneyin iki kategorisinden geniş yorumlar; kazanma payları o iki kategoride ölçüldü.
 
 ## Örnek veriden sinyal, başka sektöre
 
@@ -119,11 +149,11 @@ değişmişse danışman modeli yüklemez.
 ## Akış
 
 ```
-plan → search → discover → interrogate → analyse ─┬─ absent   ─┐
-                                                  ├─ low_rank ─┤
-                                                  ├─ ceiling  ─┼→ report
-                                                  ├─ leader   ─┤
-                                                  └─ thin     ─┘
+plan → search → discover → interrogate → analyse → describe ─┬─ absent   ─┐
+                                                             ├─ low_rank ─┤
+                                                             ├─ ceiling  ─┼→ report
+                                                             ├─ leader   ─┤
+                                                             └─ thin     ─┘
 ```
 
 | Düğüm | Ne yapar | Ücret |
@@ -131,8 +161,9 @@ plan → search → discover → interrogate → analyse ─┬─ absent   ─�
 | `plan` | Kayıtlı sektörde sorguları korpustan alır; diğer sektörlerde asistana ürettirir | 0 veya 1 |
 | `search` | Her sorgu için Serper, 10 organik sonuç | Sorgu başına 1 |
 | `discover` | Sonuçlardan rakip marka adlarını çıkarır; kullanıcı düzeltmesini uygular | 1 |
-| `interrogate` | Gemini'ye soruyu arama kapalı ve arama sonuçlarıyla açık olarak sorar | Sorgu × 2 × tekrar |
-| `analyse` | Ölçer, modeli uygular, geride kalınan sinyalleri bulur, teşhis koyar | 0 |
+| `interrogate` | Soruyu arama kapalı ve arama sonuçlarıyla açık olarak sorar; Gemini ve istenirse gpt-oss-120b | Sorgu × 2 × tekrar × asistan |
+| `analyse` | Ölçer, modeli uygular, geride kalınan sinyalleri bulur, teşhisi Gemini'ye göre koyar, her asistanın oranlarını ayrıca tutar | 0 |
+| `describe` | Markanın açıklamasını (verilmediyse arama özetlerini) rakiplerin özetleriyle birlikte açıklama deneyinin kurallarıyla denetler | 0, yapay zekâ sınıflandırmasıyla 1 |
 | `advise_*` | Teşhise özgü öneri; etkiler `reports/intervention/effects.csv`'den | 0 |
 | `report` | Markdown rapor; her öneri etik filtreden geçmiştir | 0 |
 
@@ -156,7 +187,7 @@ kurulur:
 |---|---|---|---|
 | **absent** | Arama sonuçlarında yoksun | Rakiplerini anan bağımsız karşılaştırma sayfalarına gir | +31 puan, ölçüldü |
 | **low_rank** | Sonuçlarda varsın ama alt sıralarda | Girdiğin sayfalarda üst sıraya çık | +31 puan, ölçüldü |
-| **ceiling** | Anılıyorsun ama asla ilk değilsin | **Bunu içerikle çözemezsin**; bütçeyi listeye girmeye ayır | 1.080 çağrıda 0 |
+| **ceiling** | Anılıyorsun ama asla ilk değilsin | Aramada birinciliği içerik tek başına getirmiyor; listede seçilmek için açıklamayı güçlendir | Arama bağlamında 1.080 çağrıda 0; ürün listesinde açıklama deneyi |
 | **leader** | Zaten öndesin | Konumu koru | — |
 
 Teşhis ölçülen oranlardan konur. Öğrenilmiş sinyal skoru bunun yanında durur ve
@@ -179,8 +210,8 @@ değildir.
 - **Etki büyüklükleri uydurulmaz.** Raporda geçen her etki kontrollü testten gelir.
 - **Makbuzlar korunur.** Ücretli her çağrı `brand_demo.workflow.Receipts` ile yazılır.
   Geçersiz bir çıkarım veya sorgu üretimi doğrulayıcıdan geçemez ve önbelleğe girmez.
-- **Aynı asistan.** Canlı çağrılar Gemini 3.5 Flash Lite ile yapılır, etkiler de bu
-  asistanda ölçüldü.
+- **Birincil asistan Gemini.** Teşhis ve öneriler Gemini 3.5 Flash Lite'ın yanıtlarından
+  okunur, etkiler de bu asistanda ölçüldü; gpt-oss-120b isteğe bağlı karşılaştırmadır.
 - **Rakip siteleri ve platformlar outreach hedefi değildir.** Kaynak taksonomisi resmî
   alan adlarını yalnız araştırmanın beş sektörü için bilir; diğer sektörlerde alan adının
   isim kısmı koşunun aday markalarıyla eşleştirilir. Türkçe harfler ASCII'ye katlanır:

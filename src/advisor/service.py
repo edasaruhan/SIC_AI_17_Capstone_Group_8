@@ -23,7 +23,7 @@ import httpx
 from brand_demo.workflow import Receipts
 from evidence_eval.io import digest, write_json, write_text
 
-from . import candidates, features, nodes
+from . import assistants, candidates, features, nodes
 from . import state as schema
 from .clients import AdvisorClient
 
@@ -35,6 +35,7 @@ STEP_LABELS = {
     "discover": "Rakip markalar bulunuyor",
     "interrogate": "Yapay zekâya soruluyor",
     "analyse": "Ölçülüyor, öğrenilmiş sinyal uygulanıyor, teşhis konuyor",
+    "describe": "Ürün açıklaması denetleniyor",
     "advise_absent": "Öneriler hazırlanıyor",
     "advise_low_rank": "Öneriler hazırlanıyor",
     "advise_ceiling": "Öneriler hazırlanıyor",
@@ -51,8 +52,10 @@ RECORD_KEYS = (
     "candidates",
     "diagnosis",
     "measures",
+    "assistant_measures",
     "scores",
     "signals",
+    "description_audit",
     "notes",
 )
 
@@ -73,6 +76,9 @@ class Options:
     concurrency: int = 2
     retry_failed: bool = False
     output: Path = OUTPUT
+    description: str = ""
+    audit_ai: bool = False
+    assistants: tuple[str, ...] = (assistants.PRIMARY,)
 
 
 def run_id(options: Options) -> str:
@@ -81,6 +87,10 @@ def run_id(options: Options) -> str:
     Corrections change which names are matched, not any paid payload, so a corrected
     rerun reads every call from the cache. Every setting that shapes a payload is part
     of it, or a changed setting would collide with receipts written under the old one.
+
+    The description, the AI audit and the second assistant are not part of it either:
+    their calls carry their own step keys (a payload digest, an assistant suffix), so
+    turning them on adds receipts to the same folder and re-pays nothing.
     """
     return digest(
         {
@@ -108,7 +118,8 @@ def estimated_calls(options: Options) -> int:
     """Query generation (only without recorded queries) + searches + extraction + answers."""
     recorded = nodes.recorded_queries(options.sector, options.language, options.queries)
     generation = 0 if recorded else 1
-    return generation + options.queries * (1 + 2 * options.reps) + 1
+    answers = options.queries * 2 * options.reps * len(options.assistants)
+    return generation + options.queries + 1 + answers + (1 if options.audit_ai else 0)
 
 
 _EXTEND_KEYS = frozenset(
@@ -143,6 +154,9 @@ async def stream(options: Options, boosters: dict) -> AsyncIterator[tuple[str, d
             reps=options.reps,
             n_queries=options.queries,
             concurrency=options.concurrency,
+            description=options.description,
+            audit_ai=options.audit_ai,
+            assistants=options.assistants,
         )
         graph = build(runtime, options.max_calls)
         state: dict = {
@@ -167,6 +181,7 @@ def save(options: Options, final: dict) -> Path:
         {key: final.get(key) for key in RECORD_KEYS}
         | {
             "model": nodes.MODEL,
+            "assistants": list(options.assistants),
             "corrections": {"add": list(options.add_rivals), "drop": list(options.drop_rivals)},
         },
     )

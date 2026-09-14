@@ -324,8 +324,9 @@ def test_ceiling_brand_is_told_the_truth_about_first_place():
     recs = advise.recommendations(
         "ceiling", {"retrieval_presence": 1.0, "best_position_median": 2}, [], None
     )
-    ceiling = [r for r in recs if "Birinci sıraya" in r["title"]]
+    ceiling = [r for r in recs if "birinciliği" in r["title"]]
     assert ceiling and "sıfır etki" in ceiling[0]["verdict"]
+    assert "açıklama deneyi" in ceiling[0]["verdict"] and "teknik ayrıntı" in ceiling[0]["why"]
 
 
 def test_recommendations_quote_the_measured_effect_when_it_exists():
@@ -631,3 +632,220 @@ def test_save_writes_the_report_and_the_corrections(tmp_path):
     record = json.loads((folder / "run.json").read_text(encoding="utf-8"))
     assert record["corrections"] == {"add": [], "drop": ["Yanlış"]}
     assert record["diagnosis"] == "thin"
+
+
+# --- second assistant, description audit, stable demo run ------------------------------
+
+
+class _RecordingReceipts:
+    """Records every call; answers like an assistant, or like the audit classifier."""
+
+    def __init__(self, classification: str | None = None, fail_audit: bool = False):
+        self.calls: list[tuple[str, str, dict]] = []
+        self.classification = classification
+        self.fail_audit = fail_audit
+
+    async def call(self, key, service, payload, validator=None):
+        self.calls.append((key, service, payload))
+        if key.startswith("audit_"):
+            if self.fail_audit:
+                raise ValueError("gemini HTTP 429")
+            result = {"text": self.classification or "{}"}
+        else:
+            result = {"text": "Windscribe iyi bir seçenek, NordVPN de var."}
+        if validator:
+            validator(result)
+        return result
+
+
+def test_the_demo_run_keeps_its_folder_whatever_the_new_options():
+    from advisor import service
+
+    base = service.Options(
+        brand="Garanti BBVA", sector="bankacılık", language="tr", brand_aliases=("Garanti",)
+    )
+    assert service.run_id(base) == "bbfd57540f7d01b3"
+    richer = service.Options(
+        brand="Garanti BBVA",
+        sector="bankacılık",
+        language="tr",
+        brand_aliases=("Garanti",),
+        description="x",
+        audit_ai=True,
+        assistants=("gemini", "cerebras"),
+    )
+    assert service.run_id(richer) == "bbfd57540f7d01b3"
+
+
+def test_estimate_adds_the_second_assistant_and_the_ai_audit():
+    from advisor import service
+
+    options = service.Options(
+        brand="X",
+        sector="hiç-kayıtlı-olmayan-sektör",
+        queries=3,
+        reps=2,
+        audit_ai=True,
+        assistants=("gemini", "cerebras"),
+    )
+    assert service.estimated_calls(options) == 1 + 3 + 1 + 3 * 2 * 2 * 2 + 1
+
+
+def test_interrogate_asks_the_second_assistant_under_its_own_keys():
+    import asyncio
+
+    from advisor import nodes
+
+    receipts = _RecordingReceipts()
+    runtime = nodes.Runtime(receipts=receipts, reps=1, assistants=("gemini", "cerebras"))  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN")
+    out = asyncio.run(nodes.make_interrogate(runtime, 10)(_interrogate_state()))
+    keys = {key: (service, payload) for key, service, payload in receipts.calls}
+    assert set(keys) == {
+        "ask_0_search_off_r0",
+        "ask_0_search_on_r0",
+        "ask_0_search_off_r0__cerebras",
+        "ask_0_search_on_r0__cerebras",
+    }
+    service, payload = keys["ask_0_search_on_r0__cerebras"]
+    assert service == "cerebras" and payload["model"] == "gpt-oss-120b"
+    assert payload["reasoning_effort"] == "low"
+    gemini_service, gemini_payload = keys["ask_0_search_on_r0"]
+    assert gemini_service == "gemini" and gemini_payload == nodes._payload(
+        "q", _results("Windscribe")
+    )
+    assert "reasoning_effort" not in gemini_payload
+    assert {o["assistant"] for o in out["observations"]} == {"gemini", "cerebras"}
+
+
+def test_analyse_diagnoses_from_gemini_and_reports_each_assistant():
+    import asyncio
+
+    from advisor import nodes
+
+    runtime = nodes.Runtime(receipts=_Receipts())  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN", "Mullvad")
+    rows = []
+    for name, answer in (("gemini", "Windscribe öneririm."), ("cerebras", "NordVPN öneririm.")):
+        observation = measure.observe(
+            brand="Windscribe",
+            registry=runtime.registry,
+            query="q",
+            condition="search_on",
+            rep=0,
+            answer=answer,
+            results=_results("Windscribe", "NordVPN", "Mullvad"),
+        )
+        observation["assistant"] = name
+        rows.append(observation)
+    state: AdvisorState = {
+        "brand": "Windscribe",
+        "sector": SECTOR,
+        "language": "tr",
+        "max_calls": 10,
+        "queries": ["q"],
+        "search": [{"query": "q", "results": _results("Windscribe", "NordVPN", "Mullvad")}],
+        "observations": rows,
+    }
+    out = asyncio.run(nodes.make_analyse(runtime)(state))
+    assert out["measures"]["n_observations"] == 1 and out["measures"]["first_on"] == 1.0
+    assert out["assistant_measures"]["cerebras"]["first_on"] == 0.0
+
+
+def _describe_state() -> AdvisorState:
+    results = [
+        {
+            "title": "Windscribe inceleme",
+            "snippet": "Windscribe yıllık planda %40 indirim sunuyor. WireGuard protokolü var.",
+            "link": "https://example.com/a",
+            "position": 1,
+        },
+        {
+            "title": "NordVPN inceleme",
+            "snippet": "NordVPN 60 ülkede sunucu sunar.",
+            "link": "https://example.com/b",
+            "position": 2,
+        },
+    ]
+    return {
+        "brand": "Windscribe",
+        "sector": SECTOR,
+        "language": "tr",
+        "max_calls": 10,
+        "rivals": ["NordVPN"],
+        "search": [{"query": "q", "results": results}],
+    }
+
+
+def test_describe_audits_the_search_snippets_with_rules_for_free():
+    import asyncio
+
+    from advisor import nodes
+
+    receipts = _RecordingReceipts()
+    runtime = nodes.Runtime(receipts=receipts)  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN")
+    out = asyncio.run(nodes.make_describe(runtime, 10)(_describe_state()))
+    record = out["description_audit"]
+    assert record["source"] == "search" and record["method"] == "rules"
+    assert record["rival_names"] == ["NordVPN"]
+    assert {row["key"] for row in record["findings"]} >= {"price", "technical"}
+    assert receipts.calls == [] and runtime.spent == []
+
+
+def test_describe_uses_the_ai_classification_on_the_users_description():
+    import asyncio
+
+    from advisor import nodes
+
+    description = "Yıllık aidat yok. Başvuru 5 dakikada tamamlanır."
+    reply = json.dumps(
+        {
+            "texts": {
+                "brand": [
+                    {"sentence": "Yıllık aidat yok.", "type": "price"},
+                    {"sentence": "Başvuru 5 dakikada tamamlanır.", "type": "technical"},
+                    {"sentence": "Metinde olmayan bir cümle.", "type": "statistics"},
+                ],
+                "rival_1": [{"sentence": "NordVPN 60 ülkede sunucu sunar.", "type": "technical"}],
+            }
+        }
+    )
+    receipts = _RecordingReceipts(classification=reply)
+    runtime = nodes.Runtime(receipts=receipts, description=description, audit_ai=True)  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN")
+    out = asyncio.run(nodes.make_describe(runtime, 10)(_describe_state()))
+    record = out["description_audit"]
+    assert record["source"] == "user" and record["method"] == "ai"
+    assert {row["key"] for row in record["findings"]} == {"price", "technical"}
+    assert runtime.spent == ["describe"] and receipts.calls[0][0].startswith("audit_")
+
+
+def test_describe_falls_back_to_rules_when_the_classifier_fails():
+    import asyncio
+
+    from advisor import nodes
+
+    runtime = nodes.Runtime(receipts=_RecordingReceipts(fail_audit=True), audit_ai=True)  # type: ignore[arg-type]
+    runtime.registry = _registry("Windscribe", "NordVPN")
+    out = asyncio.run(nodes.make_describe(runtime, 10)(_describe_state()))
+    assert out["description_audit"]["method"] == "rules"
+    assert any("alınamadı" in note for note in out["notes"])
+
+
+def test_report_shows_both_assistants_and_the_description_audit():
+    from advisor import audit
+
+    state = _state(curated=True)
+    state["assistant_measures"] = {
+        "gemini": {"mention_off": 0.0, "mention_on": 0.5, "first_on": 0.0, "n_observations": 12},
+        "cerebras": {"mention_off": 0.1, "mention_on": 0.4, "first_on": 0.1, "n_observations": 12},
+    }
+    state["description_audit"] = {
+        **audit.as_record(audit.audit("Yıllık planda %40 indirim.")),
+        "source": "search",
+        "rival_names": ["Akbank"],
+    }
+    text = render.report(state)
+    assert "## Asistanlar arasında" in text and "gpt-oss-120b (Cerebras)" in text
+    assert "## Ürün açıklaması: listede seçilmek için" in text and "Fiyat avantajı" in text

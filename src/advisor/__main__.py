@@ -42,7 +42,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, default=service.OUTPUT)
     parser.add_argument("--yes", action="store_true", help="Ücretli çağrıları onayla")
     parser.add_argument("--retry-failed", action="store_true")
+    parser.add_argument("--description", default="", help="Ürün açıklaması (denetim için)")
+    parser.add_argument("--description-file", type=Path, help="Ürün açıklaması dosyası")
+    parser.add_argument(
+        "--audit-ai", action="store_true", help="Açıklamayı Gemini ile sınıflandır (+1 çağrı)"
+    )
+    parser.add_argument(
+        "--second-assistant", action="store_true", help="gpt-oss-120b (Cerebras) ile de ölç"
+    )
     args = parser.parse_args(argv)
+    description = (
+        args.description_file.read_text(encoding="utf-8")
+        if args.description_file
+        else args.description
+    )
 
     options = service.Options(
         brand=args.brand,
@@ -57,6 +70,9 @@ def main(argv: list[str] | None = None) -> int:
         concurrency=args.concurrency,
         retry_failed=args.retry_failed,
         output=args.output,
+        description=description,
+        audit_ai=args.audit_ai,
+        assistants=("gemini", "cerebras") if args.second_assistant else ("gemini",),
     )
     calls = service.estimated_calls(options)
     print(f"plan={service.run_id(options)} sektör={args.sector!r} tahmini çağrı={calls}")
@@ -72,7 +88,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Tahmini {calls} çağrı, --max-calls={args.max_calls} sınırının üstünde.")
         return 1
 
-    require_keys()
+    require_keys(options.assistants)
     final = asyncio.run(service.run(options, boosters))
     print(final["report"])
     print(f"\nwrote {service.run_folder(options)}/report.md")
