@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Capstone Sunum Raporu — Yapay Zekâ Asistanları Markaları Neye Göre Öneriyor?</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 16mm;
+    @bottom-center { content: counter(page) " / " counter(pages); font: 8.5pt "Liberation Sans", sans-serif; color: #6b6a66; }
+    @bottom-right { content: "SIC Capstone · Grup 8 · Sunum raporu"; font: 8.5pt "Liberation Sans", sans-serif; color: #9a9992; }
+  }
+  @page :first { @bottom-center { content: none } @bottom-right { content: none } }
+
+  :root {
+    --ink: #14140f; --ink-2: #3f3e38; --muted: #6b6a63; --rule: #d9d8d2;
+    --track: #edece7; --surface: #f7f6f2; --s1: #2a78d6; --s2: #eb6834;
+  }
+  html { font-size: 10.5pt; }
+  body { margin: 0; font-family: "Liberation Serif", "DejaVu Serif", Georgia, serif; color: var(--ink); line-height: 1.5; }
+  h1, h2, h3, th, .kicker, .tcap, .label, .step-n, .chip { font-family: "Liberation Sans", "DejaVu Sans", sans-serif; }
+  h1 { font-size: 24pt; line-height: 1.12; margin: 0 0 6pt; letter-spacing: -0.4pt; }
+  h2 { font-size: 13.5pt; margin: 20pt 0 7pt; padding-top: 7pt; border-top: 1.6pt solid var(--ink); break-after: avoid; }
+  h2.page { break-before: page; }
+  h3 { font-size: 10.8pt; margin: 13pt 0 4pt; break-after: avoid; }
+  p { margin: 0 0 7pt; }
+  ul, ol { margin: 0 0 8pt; padding-left: 15pt; }
+  li { margin-bottom: 3pt; }
+  code { font-family: "Liberation Mono", monospace; font-size: 8.6pt; background: var(--surface); padding: 0.5pt 2.5pt; border-radius: 2pt; }
+  .kicker { font-size: 8.5pt; letter-spacing: 1.4pt; text-transform: uppercase; color: var(--muted); margin-bottom: 8pt; }
+  .standfirst { font-size: 12pt; line-height: 1.45; color: var(--ink-2); margin: 10pt 0 14pt; }
+  .meta { font-size: 8.7pt; color: var(--muted); font-family: "Liberation Sans", sans-serif; border-top: 0.6pt solid var(--rule); padding-top: 6pt; }
+  .cover { padding-bottom: 4pt; margin-bottom: 4pt; }
+  .keybox { background: var(--surface); border-left: 2.5pt solid var(--s1); padding: 9pt 12pt; margin: 10pt 0 14pt; break-inside: avoid; }
+  .keybox.warn { border-left-color: var(--s2); }
+  .keybox h3 { margin-top: 0; }
+  .keybox ol, .keybox ul { margin: 0; }
+  .tblock { break-inside: avoid; margin: 6pt 0 11pt; }
+  .tcap { font-size: 8.5pt; color: var(--muted); padding-bottom: 3pt; }
+  table { width: 100%; border-collapse: collapse; margin: 0; font-size: 8.9pt; }
+  th { text-align: left; font-size: 8.3pt; font-weight: 700; color: var(--ink-2); border-bottom: 1pt solid var(--ink); padding: 4pt 5pt; }
+  td { padding: 4pt 5pt; border-bottom: 0.5pt solid var(--rule); vertical-align: top; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0.8pt solid var(--ink); }
+  .hi { font-weight: 700; }
+  .yes { color: #1a6b2e; font-weight: 700; }
+  .no { color: #8a2f2c; font-weight: 700; }
+  .flat { color: var(--muted); font-weight: 700; }
+  .note { font-size: 8.6pt; color: var(--muted); border-top: 0.5pt solid var(--rule); padding-top: 5pt; }
+  .grid2 { display: flex; gap: 10pt; margin: 6pt 0 12pt; break-inside: avoid; }
+  .card { flex: 1; background: var(--surface); padding: 8pt 10pt; border-radius: 3pt; }
+  .card .label { font-size: 8pt; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8pt; }
+  .card .big { font-family: "Liberation Sans", sans-serif; font-size: 17pt; font-weight: 700; margin: 2pt 0; }
+  .card p { font-size: 9pt; margin: 0; }
+  .gate { display: flex; gap: 8pt; margin: 8pt 0 12pt; break-inside: avoid; }
+  .gate div { flex: 1; border: 0.8pt solid var(--rule); border-top: 3pt solid var(--s1); padding: 7pt 9pt; }
+  .gate div:nth-child(3) { border-top-color: var(--s2); }
+  .gate h3 { margin: 0 0 3pt; font-size: 10pt; }
+  .gate p { font-size: 9pt; margin: 0; }
+  .flow { font-family: "Liberation Mono", monospace; font-size: 8.6pt; background: var(--surface); padding: 7pt 10pt; white-space: pre; break-inside: avoid; margin: 6pt 0 10pt; }
+  .qa dt { font-family: "Liberation Sans", sans-serif; font-weight: 700; font-size: 9.6pt; margin-top: 8pt; break-after: avoid; }
+  .qa dd { margin: 2pt 0 0 0; }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="kicker">Samsung Innovation Campus · Capstone · Grup 8 · Sunum raporu</div>
+  <h1>Yapay zekâ asistanları markaları neye göre öneriyor?</h1>
+  <p class="standfirst">
+    Bu rapor projeyi baştan sona anlatır: hangi soruyla başladık, veriyi nasıl topladık, hangi
+    dil modellerini ne için kullandık, kendi modellerimizi nasıl kurduk, hangi deneyleri yaptık,
+    her model ne sonuç verdi ve bugün elimizde ne var. Sunumu hazırlayan ve jüri sorularını
+    yanıtlayacak ekip için yazıldı; her sayı depodaki bir rapordan gelir.
+  </p>
+  <div class="meta">
+    Ekip: Kübra Gezici · Furkan Karlı · Murat Mert Küçük · Zeynep Sude İnal ·
+    Depo <code>edasaruhan/SIC_AI_17_Capstone_Group_8</code> · 14 Eylül 2026 ·
+    Ayrıntılı bulgular ve tam tablolar: <code>docs/ekip-bulgu-raporu.html</code>
+  </div>
+</header>
+
+<h2>1. Tek sayfada proje</h2>
+
+<div class="keybox">
+  <h3>Soru</h3>
+  <p>
+    Tüketici artık "iyi bir VPN önerir misin?" diye bir yapay zekâ asistanına soruyor. Arama
+    motoru on bağlantı gösterirdi; asistan iki üç marka adı söylüyor. Adı geçmeyen marka o
+    tüketici için yok. <strong>Asistan bu birkaç markayı neye göre seçiyor, ve küçük bir marka
+    görünür olmak için ne yapabilir?</strong>
+  </p>
+</div>
+
+<h3>Cevabımız: iki kapı ve bir varsayılan</h3>
+
+<div class="gate">
+  <div>
+    <h3>1. Listeye girmek</h3>
+    <p>Asistan aramayla bilgi topluyorsa, markanın <strong>bağımsız bir kaynakta, rakipleriyle birlikte ve üst sırada</strong> görünmesi belirleyici. Rakiplerini anan tek bir karşılaştırma sayfası anılmayı %2'den %33'e, 1. sırada %65'e çıkardı.</p>
+  </div>
+  <div>
+    <h3>2. Seçilmek</h3>
+    <p>Marka listedeyken asistan <strong>ürünün kendisine dair somut bilgiye</strong> göre seçiyor: ürüne özgü teknik ayrıntı ve fiyat avantajı iki farklı asistanda da kazandırdı. "En iyi", otorite dili, uzman alıntısı ve duygusal dil kazandırmadı.</p>
+  </div>
+  <div>
+    <h3>Varsayılan ve risk</h3>
+    <p>İçerik sessiz kaldığında <strong>tanınmış marka</strong> kazanıyor (%50–65'e karşı %5–10). Uydurma bir kurum iddiası da kazandırıyor ve asistan onu sorgulamadan kullanıcıya aktarıyor; ürünümüz bunu önermiyor, engelliyor.</p>
+  </div>
+</div>
+
+<h3>Elimizde ne var</h3>
+
+<div class="grid2">
+  <div class="card"><div class="label">Veri</div><div class="big">9.886 yanıt</div><p>9.586 İngilizce referans + 300 yanıtlık Türkçe veri seti (bizim topladığımız, HuggingFace'te CC BY 4.0)</p></div>
+  <div class="card"><div class="label">Deney</div><div class="big">2.191 çağrı</div><p>1.107 çağrılık kontrollü test (pilot dahil) + 1.084 çağrılık açıklama deneyi, iki asistanla</p></div>
+  <div class="card"><div class="label">Model</div><div class="big">6 aile</div><p>Naive tabanlar, M0–M2 (LightGBM + SHAP), M3 (BERT / BERTurk), sektörler arası M2-Invariant</p></div>
+  <div class="card"><div class="label">Ürün</div><div class="big">2 araç</div><p>LangGraph görünürlük danışmanı + ücretsiz açıklama denetimi, Streamlit arayüzünde; etik filtre kodda</p></div>
+</div>
+
+<p>
+  Proje 67 commit, 343 otomatik test ve her pull request'te çalışan bir CI hattıyla geliştirildi.
+  Ücretli her çağrı bir makbuz dosyasına yazıldı; kesintiden sonra kaldığı yerden devam ediyor ve
+  aynı çağrı iki kez ödenmiyor. Temiz bir klonda kurulum ve bütün testler anahtar, GPU veya veri
+  indirmeden geçiyor.
+</p>
+
+<h2>2. Problem ve neden önemli</h2>
+
+<p>
+  <strong>Kapıdaki bekçi değişti.</strong> Arama motorunda tüketici on bağlantıyı gezer,
+  karşılaştırır; küçük bir marka o on bağlantıdan biri olabilir ve kaldıraç SEO'dur. Bir asistan ise
+  iki üç isim söyler: ikinci sayfa, reklam alanı, "listenin altı" yoktur. Adı geçmeyen marka daha
+  aşağıda değil, <em>tamamen yoktur</em>. Seçim kuralı da belgelenmemiştir.
+</p>
+
+<p>
+  <strong>Kim etkileniyor?</strong> En çok küçük ve yerel markalar. Literatür, asistanların
+  küresel ve tanınmış markaları öne çıkardığını, ürünler aynıyken bile tanınmış markayı seçtiğini
+  gösteriyor. Mevcut ticari araçlar (Profound, Peec AI, Otterly, Adobe LLM Optimizer…) asistanlara
+  düzenli soru sorup marka anılmalarını <em>sayıyor</em>; bir markanın <em>neden</em> görünmediğini
+  açıklamıyor, Türkçe ölçüm yapmıyor ve kurumsal fiyatlı.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 1 — Projenin pazarlama çerçevesi (konsept notu)</div>
+  <table><tbody>
+    <tr><td>Hedef kullanıcı</td><td>KOBİ ve orta ölçekli markalara hizmet veren dijital pazarlama ve GEO ajansları</td></tr>
+    <tr><td>Nihai faydalanan</td><td>Küresel markaların tanınırlığına sahip olmayan küçük, yerel ve meydan okuyan markalar</td></tr>
+    <tr><td>Karar</td><td>Marka görünmüyorsa: tanınırlığa mı (çeyrekler süren yatırım) yoksa içeriğe mi (haftalar) bütçe ayrılmalı?</td></tr>
+    <tr><td>Sürdürülebilir kalkınma</td><td>SKA 8 (küçük satıcıların keşif kanalına erişimi) · SKA 10 (küresel–yerel görünürlük farkı) · SKA 12 (tarafsız sanılan önerinin ticari içerikle şekillenmesi)</td></tr>
+  </tbody></table>
+</div>
+
+<p>
+  <strong>Neden yapay zekâ?</strong> Ölçülen kanal bir yapay zekâ sistemi; onu gözlemlemenin tek yolu
+  sistematik olarak sorgulayıp çıktısını veri olarak işlemek. Kararı belirleyen sinyal de metnin
+  ince özelliklerinde (belirginlik, otorite ifadeleri, kanıt türü) yatıyor; bu doğal dil işleme ve
+  denetimli öğrenme gerektiriyor. Bir LLM'e "bu marka görünür mü?" diye sormayı bilerek reddettik:
+  döngüseldir, tekrarlanamaz ve <em>neden</em>i açıklamaz.
+</p>
+
+<h2>3. Yolculuk: ne zaman ne yaptık</h2>
+
+<div class="tblock">
+  <div class="tcap">Tablo 2 — Zaman çizelgesi (git geçmişinden)</div>
+  <table>
+  <thead><tr><th>Tarih</th><th>Aşama</th><th>Ne yapıldı</th></tr></thead>
+  <tbody>
+    <tr><td>5–17 Ağu</td><td>Sprint 0 · Ödev 1</td><td>Repo iskeleti, İngilizce referans veri setinin (3RAIN/brand-bias-evaluations) hazırlanması ve yayıncının bulgularının yeniden üretilmesi; veri araştırması, literatür ve teknoloji incelemesi teslimi</td></tr>
+    <tr><td>24 Ağu</td><td>Ödev 3</td><td>Konsept notu ve uygulama planı: model ailesi, maskeleme ablasyonu, milestone'lar (M1–M10), etik ve risk planı</td></tr>
+    <tr><td>1–3 Eyl</td><td>Sprint 1</td><td>Türkçe toplama modülü; referansla aynı şemada Türkçe üretim, Serper arama ve Cerebras hakem (judge) hattı; kesintiden devam eden ham kayıt</td></tr>
+    <tr><td>6–7 Eyl</td><td>Sprint 2</td><td>Modelleme hattı (çiftler, bölünmeler, M0–M2, M3) ve ilk bulgular; yayımlanan veriye sabitleme, kaynak izleri, çapraz eğitimli tabanlar, listwise BERT eğitimi</td></tr>
+    <tr><td>12 Eyl</td><td>Sprint 3</td><td>Kaynak taksonomisinin düzeltilmesi (evidence_v2), sektörler arası genelleme ve sinyal kararlılık matrisi, 1.080 çağrılık kontrollü test, yoğunlaşma ve adalet raporu, etik filtre, veri kartı, maskelemenin bütün sektörlere genişletilmesi, nihai model paketi, ekip bulgu raporu</td></tr>
+    <tr><td>13 Eyl</td><td>Ürün · Deney</td><td>LangGraph görünürlük danışmanı ve görmediği sektörde (bankacılık) canlı koşu; Streamlit arayüzü; açıklama deneyinin tasarımı, pilotu ve iki asistanla iki turu</td></tr>
+    <tr><td>14 Eyl</td><td>Ürün · Rapor</td><td>Açıklama denetimi aracı, rapora deney bölümü ve "öneriden bugüne" tablosu, temiz klon doğrulaması, bu sunum raporu</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<h3>Yol boyunca yön değiştirdiğimiz dört an</h3>
+<ol>
+  <li><strong>Affiliate hipotezi test edilemiyordu.</strong> İlk veri sürümünde arama sonuçlarının %88'i
+    "bilinmeyen" kaynak sayılıyordu; editoryal ve affiliate listeleri boştu. Kaynak taksonomisini
+    düzelttik (evidence_v2); bilinmeyen payı %33'e indi ve hipotez ilk kez sınanabildi.</li>
+  <li><strong>"Model marka adını ezberliyor" iddiamızı daralttık.</strong> Maskeleme önce yalnız VPN'de
+    ölçülmüştü; altı sektöre genişletince bunun evrensel değil sektöre özgü olduğunu gördük ve raporu
+    düzelttik.</li>
+  <li><strong>Gözlemsel ilişki nedensellik değildir.</strong> "Çok sonuçta anılan marka öneriliyor"
+    bulgusu tanınırlığın bir yan etkisi olabilirdi. Bu yüzden asistana gerçek arama bağlamında tek bir
+    değişiklik verip ölçen kontrollü testi kurduk.</li>
+  <li><strong>Öneriyle çeliştiğimizi fark ettik.</strong> Fikir önerisinin asıl sorusu (ürünler aynıyken
+    içerik mi marka mı kazandırıyor) hiçbir çalışmada doğrudan test edilmemişti. Açıklama deneyini bu
+    soru için tasarladık ve her başlangıç iddiasını ölçümle karşılaştırdık (bölüm 10).</li>
+</ol>
+
+<h2>4. Veri</h2>
+
+<h3>4.1 İngilizce referans veri seti</h3>
+<p>
+  <code>3RAIN/brand-bias-evaluations</code> (HuggingFace, MIT lisansı): dört asistan, dört sektör, sektör
+  başına 10 soru, iki koşul (web araması açık ve kapalı), hücre başına 30'a kadar tekrar; planlanan 9.600
+  yanıtın 9.586'sı. Her kayıtta asistanın metni, yaptığı aramalar, gelen organik sonuçlar ve bir hakem
+  modelin çıkardığı etiketler (birincil öneri, anılan markalar) var. Değeri, asistanın <em>ne gördüğünü</em>
+  ve <em>ne önerdiğini</em> yan yana vermesi: denetimli öğrenmeyi mümkün kılan bu.
+</p>
+
+<h3>4.2 Kendi topladığımız Türkçe veri seti</h3>
+
+<div class="tblock">
+  <div class="tcap">Tablo 3 — Türkçe veri setinin tasarımı (sonuçlara bakılmadan sabitlendi)</div>
+  <table><tbody>
+    <tr><td>Formül</td><td><strong>2 sektör × 5 soru × 3 model × 2 koşul × 5 tekrar = 300 yanıt</strong></td></tr>
+    <tr><td>Sektörler</td><td>VPN, kozmetik (her biri 150 yanıt)</td></tr>
+    <tr><td>Yanıt üreten modeller</td><td>Gemini 3.5 Flash Lite (Google) · MiniMax-M2.7 (MiniMax) · abliterated-model-large-v2 (abliteration.ai); her biri 100 yanıt; sıcaklık 0,7</td></tr>
+    <tr><td>Arama</td><td>Serper Google Search API, Türkiye/Türkçe, 10 organik sonuç, en fazla 5 arama turu</td></tr>
+    <tr><td>Etiketleyici (hakem)</td><td>gpt-oss-120b (Cerebras), sıcaklık 0; markaları ve birincil öneriyi yapılandırılmış olarak çıkarır</td></tr>
+    <tr><td>Yayın</td><td><code>furkankarli/turkish-brand-bias-evaluations</code>, CC BY 4.0, sürüm ve SHA-256 ile sabitlenmiş; veri kartı <code>docs/veri-karti.md</code></td></tr>
+    <tr><td>Plandan sapma</td><td>Plan 3 sektör ve ~4.300 çağrıydı. NVIDIA modelleri sağlayıcı hataları (HTTP 410/502) yüzünden 4 Eylül'de çıkarıldı; üçüncü sektör bütçe ve takvim nedeniyle toplanmadı</td></tr>
+  </tbody></table>
+</div>
+
+<h3>4.3 Veriyi modele hazırlamak</h3>
+<p>
+  Her yanıt, <strong>(yanıt, aday marka)</strong> çiftlerine açıldı: İngilizcede 280.440, Türkçede 14.700
+  satır. Etiket, o markanın birincil öneri ya da anılan marka olup olmadığı. Her aday için arama
+  sonuçlarındaki izleri çıkarıldı: kaç sonuçta anıldığı, en iyi sırası, kaynak türü (editoryal,
+  affiliate/karşılaştırma, forum, resmî site, satıcı) ve metin özellikleri. Markanın <em>tanınırlığı</em>,
+  aramanın kapalı olduğu yanıtlardaki anılma oranından hesaplandı. Eğitim ve test <strong>soru
+  grubuna göre</strong> bölündü: aynı sorunun 30 tekrarı bağımsız örnek değildir, rastgele bölmek sızıntı
+  yaratırdı. Güven aralıkları da soru düzeyinde bootstrap ile hesaplandı (seed 42).
+</p>
+
+<h2>5. Hangi dil modelini ne için kullandık</h2>
+
+<p>
+  Projede iki tür model var: <strong>davranışını ölçtüğümüz asistanlar</strong> (LLM'ler) ve
+  <strong>kendi eğittiğimiz tahmin modelleri</strong>. Hiçbir sohbet modelini sıfırdan eğitmedik; eğittiğimiz
+  modeller, bir asistanın hangi markayı önereceğini tahmin eden sıralama modelleridir.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 4 — Kullanılan dil modelleri ve rolleri</div>
+  <table>
+  <thead><tr><th>Rol</th><th>Model (sağlayıcı)</th><th class="n">Hacim</th><th>Neden bu model</th></tr></thead>
+  <tbody>
+    <tr><td>İngilizce referans yanıtları (hazır veri)</td><td>Claude Opus 4.6 · GPT-5.4 · Grok 4.20 · GLM-5</td><td class="n">9.586 yanıt</td><td>Yayıncının seçimi; biz çağırmadık, analiz ettik</td></tr>
+    <tr><td>Türkçe yanıt üretimi</td><td>Gemini 3.5 Flash Lite · MiniMax-M2.7 · abliterated-model-large-v2</td><td class="n">300 yanıt</td><td>Farklı sağlayıcılardan, bütçeye uygun, Türkçe yanıt verebilen modeller</td></tr>
+    <tr><td>Etiketleme (hakem)</td><td>gpt-oss-120b (Cerebras)</td><td class="n">300 çıkarım</td><td>Hızlı, sıcaklık 0, yapılandırılmış çıktı; referansın etiket şemasıyla uyumlu</td></tr>
+    <tr><td>Kontrollü test (arama bağlamı)</td><td>Gemini 3.5 Flash Lite</td><td class="n">1.080 + 27 pilot</td><td>Türkçe veride de kullanılan, kotası yeten asistan; ~1,17M girdi + 498K çıktı token</td></tr>
+    <tr><td>Açıklama deneyi</td><td>Gemini 3.5 Flash Lite · gpt-oss-120b (Cerebras)</td><td class="n">548 + 536</td><td>İki farklı mimari ve sağlayıcı; tek modele özgü sonucu ayırmak için. Toplam 562K girdi + 374K çıktı token</td></tr>
+    <tr><td>Görünürlük danışmanı (canlı)</td><td>Gemini 3.5 Flash Lite + Serper</td><td class="n">koşu başına ~17</td><td>Soru üretimi, rakip çıkarımı ve ölçülen yanıtlar; etkiler aynı asistanda ölçüldü</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="tblock">
+  <div class="tcap">Tablo 5 — Kendi kurduğumuz modeller</div>
+  <table>
+  <thead><tr><th>Model</th><th>Girdi</th><th>Algoritma</th><th>Amaç</th></tr></thead>
+  <tbody>
+    <tr><td>Naive tabanlar</td><td>—</td><td>Kural: en üst arama sonucunun markası · en sık kazanan marka</td><td>Geçilmesi gereken zemin</td></tr>
+    <tr><td>M0</td><td>Yalnız marka tanınırlığı</td><td>Lojistik regresyon</td><td>Tanınırlığın tek başına etkisi</td></tr>
+    <tr><td>M1</td><td>+ arama sırası, kaynak türü</td><td>LightGBM</td><td>Yapısal etkiler</td></tr>
+    <tr><td>M2</td><td>+ metin özellikleri</td><td>LightGBM + SHAP</td><td>Yorumlanabilir üretim modeli</td></tr>
+    <tr><td>M3</td><td>Soru + snippet metni (marka adları açık / maskeli)</td><td>Cross-encoder: bert-base-uncased (EN), BERTurk (TR); listwise eğitim</td><td>Maskeleme ablasyonu</td></tr>
+    <tr><td>M2-Invariant</td><td>Aynı yanıttaki rakiplere göre göreli sinyaller; marka kimliği yok</td><td>LightGBM</td><td>Görmediği sektöre taşınan model; danışmanın kullandığı</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<p class="note">
+  Plan cross-encoder için XLM-R veya DeBERTa öngörüyordu; veri ölçeği (sektör başına ~1.000 yanıt, 10
+  bağımsız soru) daha büyük modelleri aşırı öğrenmeye götüreceği için base boyutta BERT ve BERTurk
+  seçildi. M3 üretim modeli değil, ablasyon aracıdır.
+</p>
+
+<h2>6. Dil modelleri ne sonuç verdi</h2>
+
+<h3>6.1 Aynı soru, farklı asistan: pazarın ne kadarı görünüyor?</h3>
+<p>
+  Ölçü <strong>etkin marka sayısı</strong> (N_eff = 1/HHI): asistan, sektörde kaç marka varmış gibi davranıyor.
+</p>
+<div class="tblock">
+  <div class="tcap">Tablo 6 — İngilizce referans, arama açık, anılma (sektördeki marka sayısı parantezde)</div>
+  <table>
+  <thead><tr><th>Sektör</th><th class="n">Claude Opus 4.6</th><th class="n">GPT-5.4</th><th class="n">Grok 4.20</th><th class="n">GLM-5</th></tr></thead>
+  <tbody>
+    <tr><td>Kod editörleri (30)</td><td class="n hi">15,0</td><td class="n">14,6</td><td class="n">13,5</td><td class="n">13,8</td></tr>
+    <tr><td>Hosting (36)</td><td class="n hi">22,5</td><td class="n">16,3</td><td class="n">20,5</td><td class="n">20,2</td></tr>
+    <tr><td>Seyahat (27)</td><td class="n hi">14,2</td><td class="n">8,9</td><td class="n">12,4</td><td class="n">10,2</td></tr>
+    <tr><td>VPN (24)</td><td class="n hi">6,5</td><td class="n">5,7</td><td class="n">6,4</td><td class="n">5,9</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  Dört sektörün dördünde Claude en geniş, GPT-5.4 en dar alanı gösteriyor; seyahatte fark 1,6 kat. Bir
+  markanın görünürlüğü, kullanıcının hangi asistanı açtığına da bağlı. <strong>Birincil öneri</strong>
+  düzeyinde ise pazar neredeyse tek markaya iniyor: kod editörlerinde 30 markadan 1,14, İngilizce VPN'de
+  24'ten 1,32 marka; birincil önerilerin %97'si ilk üç markaya gidiyor.
+</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 7 — Türkçe veri, etkin marka sayısı: arama kapalı → açık</div>
+  <table>
+  <thead><tr><th>Model</th><th class="n">Kozmetik · anılma</th><th class="n">Kozmetik · birincil</th><th class="n">VPN · anılma</th><th class="n">VPN · birincil</th></tr></thead>
+  <tbody>
+    <tr><td>Gemini 3.5 Flash Lite</td><td class="n">29,1 → 26,1</td><td class="n">3,86 → 2,33</td><td class="n">6,2 → 5,8</td><td class="n">3,26 → 3,48</td></tr>
+    <tr><td>MiniMax-M2.7</td><td class="n hi">23,4 → 33,0</td><td class="n">1,80 → 3,60</td><td class="n">8,1 → 8,4</td><td class="n">2,00 → 2,96</td></tr>
+    <tr><td>abliterated-model-large-v2</td><td class="n hi">21,6 → 29,7</td><td class="n">3,00 → 2,28</td><td class="n">4,3 → 5,7</td><td class="n">2,03 → 3,97</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  Türkçe kozmetikte arama açıldığında MiniMax ve abliterated model pazarı belirgin biçimde genişletiyor
+  (+9,6 ve +8,2 etkin marka), Gemini ise daraltıyor (−3,0). VPN'de modeller arası fark küçük. Aynı soruya
+  aynı arama sonuçlarıyla bile modeller farklı genişlikte bir pazar gösteriyor.
+</p>
+
+<h3>6.2 Türkçe yanıtlarda kim görünüyor? (yapay zekâ ses payı)</h3>
+<div class="tblock">
+  <div class="tcap">Tablo 8 — Türkçe, arama açık: markanın anıldığı yanıt payı ve birincil öneri payı (75 yanıt)</div>
+  <table>
+  <thead><tr><th>VPN</th><th class="n">Anılma</th><th class="n">Birincil</th><th>Kozmetik</th><th class="n">Anılma</th><th class="n">Birincil</th></tr></thead>
+  <tbody>
+    <tr><td>Proton VPN</td><td class="n">%91</td><td class="n">%15</td><td>La Roche-Posay</td><td class="n">%64</td><td class="n">%15</td></tr>
+    <tr><td>NordVPN</td><td class="n">%87</td><td class="n hi">%28</td><td>CeraVe</td><td class="n">%48</td><td class="n">%4</td></tr>
+    <tr><td>ExpressVPN</td><td class="n">%73</td><td class="n">%19</td><td>L'Oréal Paris</td><td class="n">%45</td><td class="n">%1</td></tr>
+    <tr><td>Surfshark</td><td class="n">%69</td><td class="n">%5</td><td>Bioderma</td><td class="n">%45</td><td class="n">%0</td></tr>
+    <tr><td>Mullvad</td><td class="n">%33</td><td class="n">%9</td><td>Maybelline</td><td class="n">%40</td><td class="n">%1</td></tr>
+    <tr><td>Windscribe</td><td class="n">%28</td><td class="n">%0</td><td>Flormar (yerli)</td><td class="n">%36</td><td class="n">%0</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  Türkçe VPN'de dört küresel marka yanıtların üçte ikisinden fazlasında geçiyor; arama açıldığında
+  NordVPN'in birincil öneri payı %11'den %28'e çıkıyor. Kozmetikte yerli Flormar ilk altıda ama birincil
+  öneri almıyor. Türkiye menşeli 9 kozmetik markası için ölçülebilir bir dezavantaj bulunamadı
+  (aralıklar örtüşüyor) — 9 marka ve 5 soruyla bu "fark yok" demek değildir.
+</p>
+
+<h3>6.3 Gemini, kontrollü testte</h3>
+<p>
+  Kayıtlı gerçek bir arama bağlamına tek bir değişiklik eklendi ve aynı soru tekrar soruldu (3 sektör,
+  hedef olarak asistanın tanıdığı ama aramada az görünen iki marka, ayrılmış <code>.example</code> alan
+  adlarında sentetik sayfalar).
+</p>
+<div class="tblock">
+  <div class="tcap">Tablo 9 — Hedef markanın anılma oranı ve etkiler (kol başına 240 gözlem)</div>
+  <table>
+  <thead><tr><th>Değişiklik</th><th class="n">Anılma</th><th class="n">Etki [95% GA]</th></tr></thead>
+  <tbody>
+    <tr><td>Kontrol: değişiklik yok</td><td class="n">%2,1</td><td class="n">—</td></tr>
+    <tr><td>Rakiplerini anan bir karşılaştırma sayfası, 5. sırada</td><td class="n">%33,3</td><td class="n hi">+31,2 [+19,2 · +44,2]</td></tr>
+    <tr><td>Aynı sayfa 1. sırada</td><td class="n">%64,6</td><td class="n hi">+31,2 [+19,2 · +44,2]</td></tr>
+    <tr><td>Aynı sayfada üstünlük dili ("en iyi", "#1")</td><td class="n">%39,6</td><td class="n">+6,2 [−0,4 · +14,2]</td></tr>
+    <tr><td>Aynı metin ikinci bir sitede de</td><td class="n">%39,6</td><td class="n">+6,2 [−0,4 · +13,8]</td></tr>
+    <tr><td>Hedefin <em>ilk anılan</em> marka olması</td><td class="n">%0</td><td class="n">hiçbir kolda değişmedi</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  Pilotta yalnız hedef markayı öven tek markalı bir inceleme sayfası 27 çağrının hiçbirinde işe yaramadı.
+  Asistan, kendi hakkında yazılmış sayfaya değil, rakipleriyle birlikte anıldığı bağımsız sayfaya tepki
+  veriyor.
+</p>
+
+<h3>6.4 Gemini ve gpt-oss-120b, açıklama deneyinde</h3>
+<p>
+  Alışveriş asistanına aynı özellik ve fiyatta beş ürün kartı verildi (hassas cilt güneş kremi ve VPN).
+  Yalnız hedef kartın markası ya da açıklamasındaki bir cümle değişti. İkinci turda her kartta farklı bir
+  cümle vardı; bir cümle türünün <strong>kazanma payı</strong>, göründüğü çağrılarda önerilen ürün olma
+  oranıdır (şans %20).
+</p>
+<div class="tblock">
+  <div class="tcap">Tablo 10 — İki asistanın cevabı</div>
+  <table>
+  <thead><tr><th>Ölçüm</th><th class="n">Gemini 3.5 Flash Lite</th><th class="n">gpt-oss-120b</th><th>Ortak sonuç</th></tr></thead>
+  <tbody>
+    <tr><td>Aynı kartlarda: kurgusal / tanınmış marka önerilme</td><td class="n">%10 / %50</td><td class="n">%5 / %65</td><td>Sessiz içerikte tanınmış marka kazanır</td></tr>
+    <tr><td>Bilgi taşımayan dolgu cümlesi</td><td class="n">%15</td><td class="n">%0</td><td class="yes">Uzunluk değil bilgi sayılıyor</td></tr>
+    <tr><td>Turnuva: ürüne özgü teknik ayrıntı</td><td class="n hi">%35</td><td class="n hi">%67</td><td class="yes">İkisinde de kazandırıyor</td></tr>
+    <tr><td>Turnuva: fiyat avantajı</td><td class="n hi">%35</td><td class="n hi">%50</td><td class="yes">İkisinde de kazandırıyor</td></tr>
+    <tr><td>Turnuva: istatistik / bağımsız test raporu</td><td class="n">%37 / %32</td><td class="n">%22 / %3</td><td class="flat">Asistana bağlı</td></tr>
+    <tr><td>Turnuva: sosyal kanıt / otorite / sertifika</td><td class="n">%23 / %13 / %7</td><td class="n">%3 / %27 / %23</td><td class="no">Belirgin kazanç yok</td></tr>
+    <tr><td>Turnuva: "en iyi" / uzman alıntısı / duygusal dil</td><td class="n">%20 / %10 / %3</td><td class="n">%13 / %15 / %3</td><td class="no">Kazandırmıyor</td></tr>
+    <tr><td>Tanınmış markaya karşı tek bir istatistik cümlesi</td><td class="n">%100 (yerleşik %0)</td><td class="n">%90 (yerleşik %10)</td><td class="yes">İçerik tanınırlığı yenebiliyor</td></tr>
+    <tr><td>Uydurma kurum iddiası: kazanma / kullanıcıya aktarma / uyarı</td><td class="n">%45 / %79 / %0</td><td class="n">%30 / %69 / %11</td><td class="no">Kazandırıyor ve sorgulanmıyor — risk</td></tr>
+    <tr><td>Listenin ilk kartı önerilme (turnuva)</td><td class="n">%37</td><td class="n">%30</td><td>Sıra etkisi var</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  <strong>Modeller nerede ayrışıyor?</strong> Gemini üçüncü taraf kanıtını (istatistik, test raporu, puan)
+  ödüllendiriyor; gpt-oss-120b neredeyse hiç ödüllendirmiyor, ürünün kendi teknik özelliklerine çok daha
+  güçlü tepki veriyor. gpt-oss-120b duygusal dile birinci turda bile kanmadı (%15, Gemini %90) ama istemde
+  olmayan marka özelliklerini kendisi uydurdu ("termal su içerir" gibi). Gemini uydurma iddiayı hiçbir
+  yanıtta sorgulamadı.
+</p>
+
+<h2>7. Kendi modellerimiz ne öğrendi</h2>
+
+<h3>7.1 Tahmin başarısı</h3>
+<div class="tblock">
+  <div class="tcap">Tablo 11 — Türkçe, birincil öneri tahmini (136 yanıt, soru grubuna göre çapraz doğrulama)</div>
+  <table>
+  <thead><tr><th>Model</th><th class="n">PR-AUC</th><th class="n">Top-1 doğruluk</th></tr></thead>
+  <tbody>
+    <tr><td>Naive: en üst sonucun markası</td><td class="n">0,085</td><td class="n">%8,8</td></tr>
+    <tr><td>Naive: en sık kazanan marka</td><td class="n">0,166</td><td class="n">%21,3</td></tr>
+    <tr><td>M0: yalnız tanınırlık</td><td class="n">0,198</td><td class="n">%30,1</td></tr>
+    <tr><td>M1: + arama sırası, kaynak türü</td><td class="n hi">0,234</td><td class="n">%30,9</td></tr>
+    <tr><td>M2: + metin özellikleri</td><td class="n">0,230</td><td class="n hi">%33,8</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  M2, en güçlü naive kuralı top-1'de 12,5 puan geçiyor (hedef ≥10 puandı). PR-AUC hedefi (≥0,60) Türkçede
+  tutmadı: birincil öneri çok nadir (%2,8) ve veri küçük. İngilizcede, sektörü görmüş ve tanınırlık bilen
+  M2 kod editörlerinde 0,848, VPN'de 0,688 PR-AUC'ye ulaşıyor.
+</p>
+
+<h3>7.2 Model neye bakıyor? (SHAP)</h3>
+<p>
+  M2'nin kararlarında en büyük katkıyı her iki dilde de <strong>markanın tanınırlığı</strong> veriyor
+  (ortalama |SHAP|: İngilizcede 2,68, Türkçede 1,73), onu arama koşulu ve yanıtı üreten asistan izliyor.
+  Yani tanınırlığı bilen bir model iyi tahmin ediyor ama bu, bir markaya "ne yapmalı" sorusunun cevabı
+  değil. İki çözüm geliştirdik: tanınırlığın payını ölçen <strong>maskeleme</strong> ve tanınırlığı hiç
+  kullanmayan <strong>M2-Invariant</strong>.
+</p>
+
+<h3>7.3 Maskeleme: tahmin ne kadar marka adına dayanıyor?</h3>
+<div class="tblock">
+  <div class="tcap">Tablo 12 — M3, marka adları açık ve [BRAND] ile maskeli (birincil öneri, PR-AUC)</div>
+  <table>
+  <thead><tr><th>Sektör</th><th class="n">Açık</th><th class="n">Maskeli</th><th class="n">Fark [95% GA]</th></tr></thead>
+  <tbody>
+    <tr><td>Kod editörleri</td><td class="n">0,841</td><td class="n">0,427</td><td class="n hi">+0,414 [+0,21 · +0,59]</td></tr>
+    <tr><td>VPN · EN</td><td class="n">0,735</td><td class="n">0,389</td><td class="n hi">+0,347 [+0,14 · +0,49]</td></tr>
+    <tr><td>Seyahat</td><td class="n">0,642</td><td class="n">0,558</td><td class="n">+0,084 [−0,13 · +0,32]</td></tr>
+    <tr><td>Hosting</td><td class="n">0,210</td><td class="n">0,138</td><td class="n hi">+0,072 [+0,02 · +0,13]</td></tr>
+    <tr><td>VPN · TR</td><td class="n">0,146</td><td class="n">0,120</td><td class="n">+0,026 [−0,08 · +0,15]</td></tr>
+    <tr><td>Kozmetik · TR</td><td class="n">0,055</td><td class="n">0,072</td><td class="n">3 soru; yön çağrılmaz</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  Kod editörü ve İngilizce VPN'de ad silinince tahmin gücü yarıdan fazla düşüyor (kimlik ağırlıklı
+  sektörler); diğerlerinde çok daha az ya da hiç. "Marka payı %X" diye tek bir sayı çıkmıyor; cevap sektöre
+  bağlı.
+</p>
+
+<h3>7.4 Görmediği sektöre taşınan sinyal</h3>
+<div class="tblock">
+  <div class="tcap">Tablo 13 — Birincil öneri, modelin eğitimde hiç görmediği sektörde (PR-AUC)</div>
+  <table>
+  <thead><tr><th>Test sektörü</th><th class="n">Ham sayılar (M2-General)</th><th class="n">Göreli sinyaller (M2-Invariant)</th></tr></thead>
+  <tbody>
+    <tr><td>Kod editörleri</td><td class="n">0,348</td><td class="n hi">0,675</td></tr>
+    <tr><td>Hosting</td><td class="n">0,192</td><td class="n hi">0,290</td></tr>
+    <tr><td>Seyahat</td><td class="n">0,249</td><td class="n hi">0,361</td></tr>
+    <tr><td>VPN</td><td class="n">0,256</td><td class="n hi">0,566</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  Sinyalleri "aynı yanıttaki rakiplere göre" ifade edince (sonuç payı, lidere oran, sıra yüzdeliği) model
+  hiç görmediği sektörde de çalışıyor; dört sektörün dördünde anlamlı kazanç. Yalnız İngilizce veriyle
+  eğitilen bu model Türkçe VPN'de birincil öneride top-1 %42,1'e ulaştı (konum kuralı %15,8). Gözlemsel
+  veride her sektörde ve iki dilde ayakta kalan sinyal: <strong>arama sonuçlarında görünmek ve kaç bağımsız
+  sonuçta anıldığı</strong>. Üstünlük dili, affiliate ve otorite ifadeleri, sonuç sayısı eşitlenince
+  ayakta kalmıyor.
+</p>
+
+<h3>7.5 Nihai model paketi</h3>
+<p>
+  Seçilen modeller bütün veriyle yeniden eğitildi, ağırlıkları kaydedildi ve diskten yeniden yüklenen
+  modelin aynı tahmini verdiği doğrulandı: Türkçe VPN için maskeli BERTurk, Türkçe kozmetik için M1
+  LightGBM, İngilizce VPN için isimli BERT. Danışmanın canlı kullandığı model ise beş sektörün ve iki dilin
+  tamamında eğitilen M2-Invariant'tır.
+</p>
+
+<h2>8. Asıl soru: yapay zekâ neye göre öneriyor?</h2>
+
+<p>Dört çalışmanın birlikte verdiği cevap, bir markanın yolculuğu olarak:</p>
+
+<div class="tblock">
+  <div class="tcap">Tablo 14 — Önerinin belirleyicileri ve kanıt düzeyi</div>
+  <table>
+  <thead><tr><th>Belirleyici</th><th>Kanıt</th><th>Düzey</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Marka tanınırlığı</strong> — içerik sessizken varsayılan tercih</td><td>Aynı kartlarda yerleşik %50–65, kurgusal %5–10; SHAP'ta en büyük katkı; maskelemede kimlik ağırlıklı sektörler</td><td class="yes">Güçlü, iki asistan</td></tr>
+    <tr><td><strong>Aramada bağımsız bir kaynakta görünmek</strong> — listeye girmek</td><td>Karşılaştırma sayfası +31 puan; gözlemsel veride her sektörde ve iki dilde belirleyici</td><td class="yes">Nedensel (Gemini) + gözlemsel</td></tr>
+    <tr><td><strong>Sıra</strong> — üstte olmak</td><td>Sayfa 1. sırada +31 puan; ürün listesinde ilk kart %30–37 (şans %20)</td><td class="yes">Nedensel, iki asistan</td></tr>
+    <tr><td><strong>Ürüne özgü somut bilgi</strong> — seçilmek</td><td>Teknik ayrıntı %35 / %67, fiyat avantajı %35 / %50; bilgisiz metin etkisiz</td><td class="yes">Nedensel, iki asistan</td></tr>
+    <tr><td><strong>Üçüncü taraf kanıtı</strong> (istatistik, test raporu)</td><td>Gemini'de kazandırıyor, gpt-oss-120b'de kazandırmıyor</td><td class="flat">Asistana bağlı</td></tr>
+    <tr><td><strong>Üstünlük, otorite, uzman alıntısı, sertifika, duygusal dil</strong></td><td>Turnuvada şans düzeyinde ya da altında; arama bağlamında üstünlük dili +6, aralık sıfırı içeriyor</td><td class="no">Kazandırmıyor</td></tr>
+    <tr><td><strong>Aynı metni çoğaltmak</strong></td><td>İkinci sitede aynı metin +6, aralık sıfırı içeriyor</td><td class="no">Kazandırmıyor</td></tr>
+    <tr><td><strong>Uydurma kurum / klinik iddiası</strong></td><td>%45 / %30 kazanıyor, %79 / %69 kullanıcıya aktarılıyor, neredeyse hiç uyarı yok</td><td class="no">Kazandırıyor — etik risk</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="keybox">
+  <h3>Sunumda tek cümle</h3>
+  <p>
+    <strong>Asistan önce bağımsız kaynaklarda rakipleriyle birlikte ve üstte görünen markayı listesine
+    alıyor, sonra listedekiler arasından ürünü hakkında somut ve farklı bilgi sunanı seçiyor; içerik
+    sessiz kaldığında tanınmış markaya dönüyor.</strong> "En iyiyiz" demek işe yaramıyor, uydurma iddia ise
+    işe yarıyor ve sorgulanmıyor — bu yüzden aracımız onu engelliyor.
+  </p>
+</div>
+
+<h2>9. Ürün: elimizdeki araçlar</h2>
+
+<h3>9.1 Görünürlük danışmanı (LangGraph)</h3>
+<p>
+  Herhangi bir marka ve herhangi bir sektör verilir. Akış canlı arama yapar, rakip markaları arama
+  sonuçlarından çıkarır, asistana soruyu arama kapalı ve açık sorar, markayı rakiplerine göre M2-Invariant
+  ile skorlar, teşhis koyar ve o teşhise özgü öneriyi kontrollü testte ölçülmüş etkisiyle verir.
+</p>
+<div class="flow">plan → search → discover → interrogate → analyse ─┬─ absent   ─┐
+                                                  ├─ low_rank ─┤
+                                                  ├─ ceiling  ─┼→ report
+                                                  ├─ leader   ─┤
+                                                  └─ thin     ─┘</div>
+<div class="tblock">
+  <div class="tcap">Tablo 15 — Teşhis dalları</div>
+  <table>
+  <thead><tr><th>Teşhis</th><th>Anlamı</th><th>Öneri</th></tr></thead>
+  <tbody>
+    <tr><td>absent</td><td>Arama sonuçlarında yok</td><td>Rakiplerini anan bağımsız karşılaştırma sayfalarına gir (+31 puan, ölçüldü)</td></tr>
+    <tr><td>low_rank</td><td>Sonuçlarda var ama alt sıralarda</td><td>Girdiğin sayfalarda üst sıraya çık (+31 puan, ölçüldü)</td></tr>
+    <tr><td>ceiling</td><td>Anılıyor ama asla ilk değil</td><td>Arama bağlamında içerikle çözülmüyor; ürün açıklamasını denetle</td></tr>
+    <tr><td>leader</td><td>Zaten önde</td><td>Konumu koru</td></tr>
+    <tr><td>thin</td><td>Sonuçlarda 2'den az rakip; pazar yok</td><td>Teşhis konmaz, nedeni yazılır</td></tr>
+  </tbody>
+  </table>
+</div>
+<p>
+  <strong>Görmediği sektörde örnek:</strong> Garanti BBVA, bankacılık (araştırmanın beş sektöründen biri
+  değil). 16 banka aday olarak çıkarıldı; marka arama sonuçlarının hepsinde var ama ortanca sırası 6;
+  teşhis "görünüyorsun ama alt sıralarda"; önerilen bağımsız hedefler hangikredi.com ve enuygunfinans.com.
+  Bu sonuca üç başarısız koşudan geçilerek varıldı: kesilen yanıt tüm koşuyu düşürüyordu, üretilen sorular
+  hiç banka önermiyordu, rakip listesine uygulama mağazaları giriyordu. Her biri kodda düzeltildi ve
+  belgelendi.
+</p>
+
+<h3>9.2 Açıklama denetimi (ücretsiz)</h3>
+<p>
+  Açıklama deneyinin sonucunu ürüne çeviren kural tabanlı araç. Kullanıcı ürün açıklamasını (ve isterse
+  rakip açıklamalarını) yapıştırır; araç açıklamadaki cümle türlerini bulur, her birinin iki asistanda
+  ölçülmüş kazanma payını gösterir ve öneri verir: somut ürün bilgisi yoksa ekle, rakiplerde de varsa
+  farklılaş, "en iyi" yerine ölçülebilir özellik yaz, kaynaksız kurum iddiasını kaldır. API çağrısı ve model
+  gerekmez. Deneyde kullanılan her cümlenin kendi türüyle tanındığı ve sayıların raporlarla aynı olduğu
+  testle doğrulanır.
+</p>
+
+<h3>9.3 Etik filtre</h3>
+<p>
+  Görünürlüğü naif biçimde optimize eden bir araç en üst önerisi olarak tam da uydurma otoriteyi söylerdi.
+  Kısıt bu yüzden bir istem cümlesinde değil kodda: <code>src/visibility/ethics.py</code> yedi kuralı
+  (sahte inceleme, editoryal görünümlü ücretli yerleşim, uydurma klinik/uzman otoritesi, garantili
+  sıralama, toplu spam, başkasının sitesini değiştirme, gerçek kullanıcı taklidi) Türkçe ve İngilizce
+  tutar. Kullanıcıya ulaşan her öneri buradan geçer; takılan öneri ne önbelleğe ne rapora girer.
+</p>
+
+<h3>9.4 Demo akışı (kota gerektirmez)</h3>
+<ol>
+  <li><code>make advisor-ui</code> ile arayüzü açın.</li>
+  <li><strong>Açıklama denetimi:</strong> önce yalnız temel özellikleri olan bir VPN açıklaması, sonra aynı
+    açıklamaya "WireGuard ve AES-256 şifreleme" ekleyin, sonra "MIT denetiminde saldırıların %100'ünü
+    engellediği kanıtlanmıştır" ekleyin. Üç farklı karar gösterilir: bilgi yok → kazandıran bilgi var →
+    risk.</li>
+  <li><strong>Görünürlük analizi:</strong> marka "Garanti BBVA", sektör "bankacılık", dil tr, <strong>markanın diğer yazılışları "Garanti"</strong>, ayarlarda 3 soru ve 2 tekrar. Bu koşu 13 Eylül'de yapıldığı için önbellekten okunur: "Ücretli çağrıları onaylıyorum" işaretlense bile yeni çağrı yapılmaz. Akışın adımları, 16 banka, "görünüyorsun ama alt sıralarda" teşhisi ve rapor gösterilir; rakip düzeltme bölümü de önbellekten yeniden hesaplar. Yazılış alanı boş bırakılırsa farklı bir koşu sayılır ve ~17 ücretli çağrı ister.</li>
+</ol>
+
+<h2>10. Öneriden bugüne: nerede haklı çıktık, nerede çıkmadık</h2>
+
+<div class="tblock">
+  <div class="tcap">Tablo 16 — Başlangıç iddiaları ve ölçüm (ayrıntı: ekip bulgu raporu, Tablo 18)</div>
+  <table>
+  <thead><tr><th>İddia</th><th>Ölçüm</th><th>Durum</th></tr></thead>
+  <tbody>
+    <tr><td>Ürünler aynıyken öneri "%100" tanınmış markaya gider</td><td>Yerleşik %50–65, kurgusal %5–10</td><td class="flat">Kısmen</td></tr>
+    <tr><td>Farklılaştırıcı bilgi marka avantajını kırar</td><td>Tek istatistik cümlesi yerleşiğe karşı %90–100</td><td class="yes">Doğrulandı</td></tr>
+    <tr><td>İçeriği yeniden yazmak "+%40" görünürlük getirir</td><td>Arama bağlamında üstünlük dili +6 (belirsiz); ürün listesinde somut bilgi %5–10 → %85–100. GEO stratejileri birebir test edilmedi</td><td class="flat">Bağlama bağlı</td></tr>
+    <tr><td>Otorite tonu ve uydurma klinik iddia avantaj sağlar</td><td>Otorite kazandırmıyor; uydurma iddia kazandırıyor ve aktarılıyor</td><td class="flat">Yarı yarıya</td></tr>
+    <tr><td>Güvenilirlik dili (otorite, sosyal kanıt) etkili</td><td>Şans düzeyinde; kazandıran somut ürün bilgisi</td><td class="no">Desteklenmedi</td></tr>
+    <tr><td>Liste sırası etkiler</td><td>+31 puan; ilk kart %30–37</td><td class="yes">Doğrulandı</td></tr>
+    <tr><td>Affiliate ile doymuş arama öneriyi bozar</td><td>Etki sonuç hacminden ayrılamadı; sunumdaki rakamlar yayıncıdan, yeniden üretilmedi</td><td class="no">Desteklenmedi</td></tr>
+    <tr><td>Maskeleme isim ve içerik payını ayırır</td><td>Sektöre bağlı; tek bir oran çıkmıyor</td><td class="flat">Sektöre bağlı</td></tr>
+    <tr><td>Model naive tabanı ≥10 puan geçer, PR-AUC ≥0,60</td><td>Top-1 +12,5 puan; Türkçe PR-AUC 0,23</td><td class="flat">Kısmen</td></tr>
+    <tr><td>Küçük ve yerel markalar dezavantajlı</td><td>Birincil öneri çok yoğun; yerli marka farkı ölçülemedi</td><td class="flat">Kısmen</td></tr>
+    <tr><td>3 sektör, ~4.300 çağrı; E-GEO testi; ≥2 ajans testi</td><td>2 sektör, 300 yanıt; E-GEO yerine sektörler arası test; kullanıcı testi yapılmadı</td><td class="no">Kapsam daraldı</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<p class="note">
+  Sunumdaki "%12 / %31", "+14 / +7 / +3 puan" ve "tanınırlık %32 / içerik %68" değerleri ürün maketiydi,
+  ölçüm değildi. Jüriye bunların yerine Tablo 9, 10 ve 14'teki ölçülmüş değerler gösterilmeli.
+</p>
+
+<h3>Öğrendiklerimiz</h3>
+<ul>
+  <li><strong>Pilot, deneyin en ucuz sigortası.</strong> Açıklama deneyinin 12 çağrılık pilotu iki ölçüm
+    hatasını yakaladı (asistanın ilk karta çekilmesi, önerilen markanın yanlış okunması); tam koşudan önce
+    düzeltildi. Kontrollü testin pilotu da müdahaleyi değiştirdi.</li>
+  <li><strong>Kendi iddiamızı daraltmak bir bulgudur.</strong> Maskeleme ve affiliate iddialarını ölçüm
+    genişledikçe geri çektik; rapor bunu açıkça yazıyor.</li>
+  <li><strong>Tek model yetmez.</strong> İki asistanın aynı yönü gösterdiği sonuçlar "genel", yalnız birinde
+    görünenler "asistana bağlı" diye ayrıldı; bu ayrım ürünün önerilerini değiştirdi.</li>
+  <li><strong>Maliyet disiplini.</strong> Kota iki kez doldu; makbuzlu ve dalga sıralı tasarım sayesinde
+    yarım kalan koşu dengesini bozmadan kaldığı yerden tamamlandı, hiçbir çağrı iki kez ödenmedi.</li>
+</ul>
+
+<h2>11. Sınırlılıklar: jüriye açıkça söylenecekler</h2>
+<ul>
+  <li><strong>Az asistan.</strong> Nedensel testler Gemini 3.5 Flash Lite ve gpt-oss-120b ile yapıldı; ChatGPT,
+    Claude, Copilot gibi yaygın asistanlarda ölçülmedi. Referans veri, asistanların birbirinden farklı
+    davrandığını gösteriyor.</li>
+  <li><strong>Az bağımsız soru.</strong> Türkçede sektör başına 5, İngilizcede 10 soru; açıklama deneyinde
+    kategori başına tek ürün seti ve her cümle türü için tek metin. Aralıklar geniş; sektör kırılımları yön
+    göstericidir.</li>
+  <li><strong>Yapay ortam.</strong> Kontrollü testte sayfalar kayıtlı arama sonuçlarına eklendi; gerçek web'de
+    bir sayfanın aramada çıkacağı garanti değil. Açıklama deneyinin kartları gerçek bir mağaza değil.</li>
+  <li><strong>Etiketler doğrulanmadı.</strong> Türkçe etiketler hakem modelden geliyor; planlanan insan
+    incelemesi tamamlanmadı.</li>
+  <li><strong>Kullanıcı testi yapılmadı.</strong> Ajans oturumu materyali hazır; oturumlar yürütülmedi,
+    önerilerin uygulanabilirliği bir ajans tarafından doğrulanmadı.</li>
+  <li><strong>Zaman penceresi.</strong> Asistanlar güncelleniyor; ölçümler Eylül 2026'ya aittir.</li>
+</ul>
+
+<h2>12. Sunum akışı önerisi (~15 dakika)</h2>
+
+<div class="tblock">
+  <div class="tcap">Tablo 17 — Slayt planı</div>
+  <table>
+  <thead><tr><th class="n">#</th><th>Slayt</th><th>Ana mesaj</th><th>Kaynak</th></tr></thead>
+  <tbody>
+    <tr><td class="n">1</td><td>SEO bitti, GEO başladı</td><td>10 bağlantı → 3 isim; adı geçmeyen marka yok</td><td>Bölüm 2</td></tr>
+    <tr><td class="n">2</td><td>Soru</td><td>Asistan neye göre öneriyor, küçük marka ne yapabilir?</td><td>Bölüm 1</td></tr>
+    <tr><td class="n">3</td><td>Veri</td><td>9.586 + 300 yanıt; Türkçe veri setini biz topladık ve yayımladık</td><td>Tablo 3</td></tr>
+    <tr><td class="n">4</td><td>Modeller ve LLM'ler</td><td>Hangi LLM ne için; kendi modellerimiz</td><td>Tablo 4, 5</td></tr>
+    <tr><td class="n">5</td><td>Asistanlar aynı değil</td><td>Claude en geniş, GPT-5.4 en dar pazar; birincil öneri tek markaya iniyor</td><td>Tablo 6</td></tr>
+    <tr><td class="n">6</td><td>Tanınırlık ne kadar belirleyici?</td><td>SHAP ve maskeleme: sektöre bağlı</td><td>Bölüm 7.2–7.3</td></tr>
+    <tr><td class="n">7</td><td>Kapı 1: listeye girmek</td><td>Karşılaştırma sayfası +31, 1. sıra +31; tek markalı sayfa işe yaramadı</td><td>Tablo 9</td></tr>
+    <tr><td class="n">8</td><td>Kapı 2: seçilmek</td><td>Somut ürün bilgisi iki asistanda kazanıyor; "en iyi" kazanmıyor</td><td>Tablo 10</td></tr>
+    <tr><td class="n">9</td><td>Risk</td><td>Uydurma iddia kazanıyor ve sorgulanmıyor</td><td>Tablo 10</td></tr>
+    <tr><td class="n">10</td><td>Cevap</td><td>İki kapı ve bir varsayılan</td><td>Tablo 14</td></tr>
+    <tr><td class="n">11</td><td>Demo</td><td>Açıklama denetimi → Garanti BBVA danışman koşusu</td><td>Bölüm 9.4</td></tr>
+    <tr><td class="n">12</td><td>Öneriden bugüne ve sınırlar</td><td>Nerede haklı çıktık, nerede çıkmadık; ne söylemiyoruz</td><td>Bölüm 10–11</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<h2>13. Jüri sorularına hazırlık</h2>
+
+<dl class="qa">
+  <dt>Kendi yapay zekâ modelinizi eğittiniz mi, yoksa sadece hazır LLM'lere mi soru sordunuz?</dt>
+  <dd>İkisi de. Asistanların davranışını ölçmek için hazır LLM'leri çağırdık; bu davranışı tahmin etmek için
+    kendi modellerimizi eğittik: LightGBM (M0–M2, M2-Invariant) ve cross-encoder BERT / BERTurk (M3). Sıfırdan
+    sohbet modeli eğitmek projenin amacı değildi; asistanın kararını modellemek amaçtı.</dd>
+
+  <dt>Etiketleri bir LLM çıkardıysa sonuçlar döngüsel değil mi?</dt>
+  <dd>Hakem model yalnız Türkçe veri setinde yanıttaki marka adlarını yapılandırılmış hale getirdi; bir
+    "görünürlük yargısı" vermedi. Bütün deneylerde (kontrollü test, açıklama deneyi, danışman) önerilen marka
+    ad eşleştirmesiyle, kurallarla ölçüldü. Etiketlerin insanla doğrulanmadığı sınırlılık olarak yazıldı.</dd>
+
+  <dt>Derin öğrenme neden LightGBM'i geçemedi?</dt>
+  <dd>Veri ölçeği: sektör başına ~1.000 yanıt ve 10 bağımsız soru. Konsept notunda bunu bir risk olarak
+    öngördük ve "M2 üretim modeli olur, M3 ablasyon için kalır" dedik; öyle oldu. İngilizce VPN'de isimli
+    BERT 0,69 PR-AUC ile en iyi modeldi.</dd>
+
+  <dt>Sonuçlar ChatGPT'ye de geçerli mi?</dt>
+  <dd>Doğrudan ölçmedik. Referans veri asistanların farklı davrandığını gösteriyor (GPT-5.4 en dar pazar). Bu
+    yüzden iki asistanda tutan sonuçları "genel", tek asistanda tutanları "asistana bağlı" diye ayırdık.</dd>
+
+  <dt>Literatürdeki "+%40" ne oldu?</dt>
+  <dd>GEO makalesinin yeniden yazım stratejilerini birebir test etmedik. Ölçtüğümüz: arama bağlamında üstünlük
+    dili belirsiz (+6 puan, aralık sıfırı içeriyor); ürün listesinde somut bir bilgi cümlesi önerilmeyi %5–10'dan
+    %85–100'e çıkardı. İçerik etkisi var ama türüne ve bağlamına bağlı.</dd>
+
+  <dt>Bir markanın görünürlüğünün yüzde kaçı tanınırlıktan geliyor?</dt>
+  <dd>Tek bir sayı veremiyoruz ve vermemek de bir bulgu: maskelemede kod editörü ve İngilizce VPN'de tahmin gücü
+    yarıya düşüyor, Türkçe kozmetikte düşmüyor. Açıklama deneyinde ise tanınırlık, içerik sessizken belirleyici,
+    içerik konuşunca geri planda.</dd>
+
+  <dt>Uydurma iddia bu kadar etkiliyse neden önermiyorsunuz?</dt>
+  <dd>Çünkü tüketiciyi aldatır, sağlık ve güvenlik iddialarında hukuki risk taşır ve SKA 12'nin tam tersidir.
+    Bunu bir istem cümlesine değil koda koyduk; etik filtre ve açıklama denetimi böyle bir öneriyi üretemez. Ayrıca
+    bulgunun kendisi değerli: asistanlar bu iddiaları sorgulamadan kullanıcıya aktarıyor.</dd>
+
+  <dt>Küçük bir markaya somut tavsiyeniz ne?</dt>
+  <dd>Üç adım: (1) rakipleriyle birlikte anıldığı bağımsız karşılaştırma içeriklerinde yer al ve üste çık;
+    (2) ürün açıklamasına rakiplerde olmayan, doğrulanabilir teknik ayrıntı ve varsa gerçek fiyat avantajı yaz;
+    (3) "en iyiyiz" gibi ifadelere ve aynı metni çoğaltmaya bütçe ayırma.</dd>
+
+  <dt>Kullanıcı testi neden yok?</dt>
+  <dd>Materyal (örnek raporlar, geri bildirim formu) hazırlandı; oturumlar takvim nedeniyle yapılamadı. Raporda
+    M8 açıkça "yapılmadı" olarak işaretli; aracın uygulanabilirliği ajanslarla doğrulanmadı.</dd>
+
+  <dt>Maliyet ne oldu?</dt>
+  <dd>Deneyler düşük maliyetli modellerle yapıldı: kontrollü test ~1,17M girdi + 498K çıktı token, açıklama
+    deneyi 562K girdi + 374K çıktı token; gpt-oss-120b Cerebras'ın hız sınırları içinde çalıştı (dakikada 5, saatte 150 istek). Açıklama denetimi hiç çağrı
+    yapmaz; danışmanın bir koşusu ~17 çağrıdır ve bütçe sınırı aşılırsa başlamaz.</dd>
+</dl>
+
+<h2>Ek: dosya haritası ve komutlar</h2>
+
+<div class="tblock">
+  <table>
+  <thead><tr><th>Ne</th><th>Nerede</th><th>Komut</th></tr></thead>
+  <tbody>
+    <tr><td>Ekip bulgu raporu (teknik)</td><td><code>docs/ekip-bulgu-raporu.html</code></td><td><code>make team-report-pdf</code></td></tr>
+    <tr><td>Bu sunum raporu</td><td><code>docs/sunum-raporu.html</code></td><td><code>make sunum-report-pdf</code></td></tr>
+    <tr><td>Türkçe veri kartı</td><td><code>docs/veri-karti.md</code></td><td><code>make turkish-data</code></td></tr>
+    <tr><td>Genelleme ve sinyal kararlılığı</td><td><code>reports/generalization/</code></td><td><code>make modeling-generalization</code></td></tr>
+    <tr><td>Yoğunlaşma ve adalet</td><td><code>reports/fairness/</code></td><td><code>make modeling-fairness</code></td></tr>
+    <tr><td>Maskeleme</td><td><code>reports/masking/</code></td><td><code>make modeling-masking</code> (GPU)</td></tr>
+    <tr><td>Kontrollü test</td><td><code>reports/intervention/</code></td><td><code>make intervention-analyze</code></td></tr>
+    <tr><td>Açıklama deneyi</td><td><code>reports/description_lab/</code></td><td><code>make lab-analyze LAB_ARGS="--assistant gemini --round 2"</code></td></tr>
+    <tr><td>Danışman ve arayüz</td><td><code>docs/advisor.md</code></td><td><code>make advisor-ui</code></td></tr>
+    <tr><td>Açıklama denetimi</td><td><code>src/advisor/audit.py</code></td><td><code>make advisor-audit AUDIT_ARGS="--file aciklama.txt"</code></td></tr>
+    <tr><td>Etik filtre</td><td><code>src/visibility/ethics.py</code></td><td><code>make check</code></td></tr>
+    <tr><td>Yeniden üretim rehberi</td><td><code>docs/tekrarlanabilirlik.md</code></td><td><code>uv sync --group dev --locked &amp;&amp; make check</code></td></tr>
+  </tbody>
+  </table>
+</div>
+
+</body>
+</html>

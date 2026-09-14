@@ -146,6 +146,14 @@ team-report-pdf: ## Ekip bulgu raporunu PDF'e bas (offline; uv.lock değişmez)
 	  HTML('docs/ekip-bulgu-raporu.html').write_pdf('$(TEAM_REPORT_PDF)')"
 	@echo "$(TEAM_REPORT_PDF)"
 
+.PHONY: sunum-report-pdf
+SUNUM_REPORT_PDF ?= output/pdf/Capstone_Sunum_Raporu.pdf
+sunum-report-pdf: ## Sunum raporunu PDF'e bas (offline; uv.lock değişmez)
+	@mkdir -p $(dir $(SUNUM_REPORT_PDF))
+	uv run --with weasyprint python -c "from weasyprint import HTML; \
+	  HTML('docs/sunum-raporu.html').write_pdf('$(SUNUM_REPORT_PDF)')"
+	@echo "$(SUNUM_REPORT_PDF)"
+
 modeling-m3-smoke: ## Açık revision ve çalışan GPU ile küçük listwise eğitim kontrolü
 	$(EVIDENCE) m3-smoke $(M3_ARGS)
 
