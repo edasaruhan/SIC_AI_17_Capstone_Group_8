@@ -49,10 +49,12 @@ RECORD_KEYS = (
     "language",
     "curated",
     "queries",
+    "named_queries",
     "candidates",
     "diagnosis",
     "measures",
     "assistant_measures",
+    "named_measures",
     "scores",
     "signals",
     "description_audit",
@@ -79,6 +81,8 @@ class Options:
     description: str = ""
     audit_ai: bool = False
     assistants: tuple[str, ...] = (assistants.PRIMARY,)
+    custom_queries: tuple[str, ...] = ()
+    named_queries: tuple[str, ...] = ()
 
 
 def run_id(options: Options) -> str:
@@ -92,22 +96,27 @@ def run_id(options: Options) -> str:
     their calls carry their own step keys (a payload digest, an assistant suffix), so
     turning them on adds receipts to the same folder and re-pays nothing.
     """
-    return digest(
-        {
-            "brand": options.brand,
-            "aliases": sorted(options.brand_aliases),
-            "sector": options.sector,
-            "language": options.language,
-            "queries": options.queries,
-            "reps": options.reps,
-            "model": nodes.MODEL,
-            "temperature": nodes.TEMPERATURE,
-            "max_tokens": nodes.MAX_TOKENS,
-            "prompts": digest(
-                [nodes.QUERY_PROMPT, nodes.SYSTEM, nodes.SYSTEM_OFFLINE, candidates.EXTRACT_PROMPT]
-            ),
-        }
-    )[:16]
+    identity = {
+        "brand": options.brand,
+        "aliases": sorted(options.brand_aliases),
+        "sector": options.sector,
+        "language": options.language,
+        "queries": options.queries,
+        "reps": options.reps,
+        "model": nodes.MODEL,
+        "temperature": nodes.TEMPERATURE,
+        "max_tokens": nodes.MAX_TOKENS,
+        "prompts": digest(
+            [nodes.QUERY_PROMPT, nodes.SYSTEM, nodes.SYSTEM_OFFLINE, candidates.EXTRACT_PROMPT]
+        ),
+    }
+    # Profile questions shape every payload, so they are part of the identity -- but only
+    # when given, so a run without them keeps the folder it always had.
+    if options.custom_queries:
+        identity["custom_queries"] = list(options.custom_queries)
+    if options.named_queries:
+        identity["named_queries"] = list(options.named_queries)
+    return digest(identity)[:16]
 
 
 def run_folder(options: Options) -> Path:
@@ -116,10 +125,14 @@ def run_folder(options: Options) -> Path:
 
 def estimated_calls(options: Options) -> int:
     """Query generation (only without recorded queries) + searches + extraction + answers."""
-    recorded = nodes.recorded_queries(options.sector, options.language, options.queries)
+    discovery = len(options.custom_queries) or options.queries
+    asked = discovery + len(options.named_queries)
+    recorded = options.custom_queries or nodes.recorded_queries(
+        options.sector, options.language, options.queries
+    )
     generation = 0 if recorded else 1
-    answers = options.queries * 2 * options.reps * len(options.assistants)
-    return generation + options.queries + 1 + answers + (1 if options.audit_ai else 0)
+    answers = asked * 2 * options.reps * len(options.assistants)
+    return generation + asked + 1 + answers + (1 if options.audit_ai else 0)
 
 
 _EXTEND_KEYS = frozenset(
@@ -157,6 +170,8 @@ async def stream(options: Options, boosters: dict) -> AsyncIterator[tuple[str, d
             description=options.description,
             audit_ai=options.audit_ai,
             assistants=options.assistants,
+            custom_queries=options.custom_queries,
+            named_queries=options.named_queries,
         )
         graph = build(runtime, options.max_calls)
         state: dict = {

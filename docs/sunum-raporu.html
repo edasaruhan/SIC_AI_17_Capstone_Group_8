@@ -115,11 +115,11 @@
   <div class="card"><div class="label">Veri</div><div class="big">9.886 yanıt</div><p>9.586 İngilizce referans + 300 yanıtlık Türkçe veri seti (bizim topladığımız, HuggingFace'te CC BY 4.0)</p></div>
   <div class="card"><div class="label">Deney</div><div class="big">2.191 çağrı</div><p>1.107 çağrılık kontrollü test (pilot dahil) + 1.084 çağrılık açıklama deneyi, iki asistanla</p></div>
   <div class="card"><div class="label">Model</div><div class="big">6 aile</div><p>Naive tabanlar, M0–M2 (LightGBM + SHAP), M3 (BERT / BERTurk), sektörler arası M2-Invariant</p></div>
-  <div class="card"><div class="label">Ürün</div><div class="big">2 araç</div><p>LangGraph görünürlük danışmanı + ücretsiz açıklama denetimi, Streamlit arayüzünde; etik filtre kodda</p></div>
+  <div class="card"><div class="label">Ürün</div><div class="big">2 araç</div><p>LangGraph görünürlük danışmanı + ücretsiz açıklama denetimi, web arayüzünde; etik filtre kodda</p></div>
 </div>
 
 <p>
-  Proje 67 commit, 357 otomatik test ve her pull request'te çalışan bir CI hattıyla geliştirildi.
+  Proje 67 commit, 369 otomatik test ve her pull request'te çalışan bir CI hattıyla geliştirildi.
   Ücretli her çağrı bir makbuz dosyasına yazıldı; kesintiden sonra kaldığı yerden devam ediyor ve
   aynı çağrı iki kez ödenmiyor. Temiz bir klonda kurulum ve bütün testler anahtar, GPU veya veri
   indirmeden geçiyor.
@@ -172,7 +172,7 @@
     <tr><td>1–3 Eyl</td><td>Sprint 1</td><td>Türkçe toplama modülü; referansla aynı şemada Türkçe üretim, Serper arama ve Cerebras hakem (judge) hattı; kesintiden devam eden ham kayıt</td></tr>
     <tr><td>6–7 Eyl</td><td>Sprint 2</td><td>Modelleme hattı (çiftler, bölünmeler, M0–M2, M3) ve ilk bulgular; yayımlanan veriye sabitleme, kaynak izleri, çapraz eğitimli tabanlar, listwise BERT eğitimi</td></tr>
     <tr><td>12 Eyl</td><td>Sprint 3</td><td>Kaynak taksonomisinin düzeltilmesi (evidence_v2), sektörler arası genelleme ve sinyal kararlılık matrisi, 1.080 çağrılık kontrollü test, yoğunlaşma ve adalet raporu, etik filtre, veri kartı, maskelemenin bütün sektörlere genişletilmesi, nihai model paketi, ekip bulgu raporu</td></tr>
-    <tr><td>13 Eyl</td><td>Ürün · Deney</td><td>LangGraph görünürlük danışmanı ve görmediği sektörde (bankacılık) canlı koşu; Streamlit arayüzü; açıklama deneyinin tasarımı, pilotu ve iki asistanla iki turu</td></tr>
+    <tr><td>13 Eyl</td><td>Ürün · Deney</td><td>LangGraph görünürlük danışmanı ve görmediği sektörde (bankacılık) canlı koşu; web arayüzü; açıklama deneyinin tasarımı, pilotu ve iki asistanla iki turu</td></tr>
     <tr><td>14 Eyl</td><td>Ürün · Rapor</td><td>Açıklama denetimi aracı, rapora deney bölümü ve "öneriden bugüne" tablosu, temiz klon doğrulaması, bu sunum raporu</td></tr>
   </tbody>
   </table>
@@ -566,12 +566,9 @@
 
 <h3>9.4 Demo akışı (kota gerektirmez)</h3>
 <ol>
-  <li><code>make advisor-ui</code> ile arayüzü açın.</li>
-  <li><strong>Açıklama denetimi:</strong> önce yalnız temel özellikleri olan bir VPN açıklaması, sonra aynı
-    açıklamaya "WireGuard ve AES-256 şifreleme" ekleyin, sonra "MIT denetiminde saldırıların %100'ünü
-    engellediği kanıtlanmıştır" ekleyin. Üç farklı karar gösterilir: bilgi yok → kazandıran bilgi var →
-    risk.</li>
-  <li><strong>Görünürlük analizi:</strong> marka "Garanti BBVA", sektör "bankacılık", dil tr, <strong>markanın diğer yazılışları "Garanti"</strong>, ayarlarda 3 soru ve 2 tekrar. Bu koşu 13 Eylül'de yapıldığı için önbellekten okunur: "Ücretli çağrıları onaylıyorum" işaretlense bile yeni çağrı yapılmaz. Akışın adımları, 16 banka, "görünüyorsun ama alt sıralarda" teşhisi ve rapor gösterilir; rakip düzeltme bölümü de önbellekten yeniden hesaplar. Yazılış alanı boş bırakılırsa farklı bir koşu sayılır ve ~17 ücretli çağrı ister.</li>
+  <li><code>make advisor-ui</code> ile uygulamayı açın, tarayıcıda <code>http://localhost:8600</code>.</li>
+  <li><strong>Açıklama denetimi:</strong> önce yalnız temel özellikleri olan bir VPN açıklaması, sonra aynı açıklamaya "WireGuard ve AES-256 şifreleme" ekleyin, sonra "MIT denetiminde saldırıların %100'ünü engellediği kanıtlanmıştır" ekleyin. Cümleler türüne göre renklenir: bilgi yok → kazandıran bilgi → risk.</li>
+  <li><strong>Marka analizi:</strong> kutuya <code>garantibbva.com.tr</code> yazıp "Markayı tanı"ya basın. Site okunur; marka, sektör, ürünler ve ürün cümleleri çıkar, markayı anmayan ve anan sorular yazılır. "Analizi başlat" ile teşhis, asistan yanıtları (marka sarı işaretli), ölçülmüş etkili öneriler, sitedeki cümlelerin renklendirildiği açıklama incelemesi ve markayı anan soruların sonucu gelir. Bu analiz önbellektedir, yeni çağrı yapmaz; sorular değiştirilirse yaklaşık 20–30 çağrı gerekir.</li>
 </ol>
 
 <h2>10. Öneriden bugüne: nerede haklı çıktık, nerede çıkmadık</h2>

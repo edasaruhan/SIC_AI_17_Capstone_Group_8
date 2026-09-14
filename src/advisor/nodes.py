@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from brand_demo.workflow import Receipts
+from description_lab import analysis as lab_analysis
 from evidence_eval.io import read_json
 from modeling.brands import BrandRegistry, comparison_key
 
@@ -73,6 +74,8 @@ LANGUAGE_NAME = {"tr": "Türkçe", "en": "İngilizce"}
 MIN_RIVALS = 2
 # Rivals whose search snippets are audited next to the brand's.
 AUDIT_RIVALS = 4
+# Characters of each answer kept in the state, for the report and the interface.
+ANSWER_KEPT = 1600
 
 
 class BudgetExceeded(ValueError):
@@ -97,6 +100,8 @@ class Runtime:
     description: str = ""
     audit_ai: bool = False
     assistants: tuple[str, ...] = (assistants.PRIMARY,)
+    custom_queries: tuple[str, ...] = ()
+    named_queries: tuple[str, ...] = ()
 
     def charge(self, key: str, budget: int) -> None:
         if len(self.spent) >= budget:
@@ -162,8 +167,14 @@ def _queries_from(result: dict) -> list[str]:
 def make_plan(runtime: Runtime, budget: int):
     async def plan(state: AdvisorState) -> dict:
         sector, language = state["sector"], state["language"]
-        queries = recorded_queries(sector, language, runtime.n_queries)
         curated = sector in candidates.CURATED
+        named = list(runtime.named_queries)
+        if runtime.custom_queries:
+            queries = list(runtime.custom_queries)
+            note = f"{len(queries)} keşif sorusu marka profilinden alındı"
+            note += f"; {len(named)} marka ve ürün sorusu eklendi." if named else "."
+            return {"queries": queries, "named_queries": named, "curated": curated, "notes": [note]}
+        queries = recorded_queries(sector, language, runtime.n_queries)
         note = f"{len(queries)} sorgu donmuş korpustan alındı ({sector}/{language})."
         if not queries:
             runtime.charge("plan_queries", budget)
@@ -173,7 +184,7 @@ def make_plan(runtime: Runtime, budget: int):
             )
             queries = _queries_from(result)[: runtime.n_queries]
             note = f"{len(queries)} sorgu asistana ürettirildi; korpusta bu sektör/dil yok."
-        return {"queries": queries, "curated": curated, "notes": [note]}
+        return {"queries": queries, "named_queries": named, "curated": curated, "notes": [note]}
 
     return plan
 
@@ -189,7 +200,9 @@ def make_search(runtime: Runtime, budget: int):
                 result = await runtime.receipts.call(f"search_{index}", "serper", payload)
                 return {"query": query, "results": result["organic"][:RESULTS_KEPT]}
 
-        queries = state.get("queries", [])
+        # Brand-and-product questions are searched after the discovery ones, so the keys of a
+        # run without them are the keys it always had.
+        queries = [*state.get("queries", []), *state.get("named_queries", [])]
         pages = await asyncio.gather(*(one(i, q) for i, q in enumerate(queries)))
         found = sum(len(page["results"]) for page in pages)
         return {"search": list(pages), "notes": [f"{found} arama sonucu alındı."]}
@@ -292,19 +305,22 @@ def make_interrogate(runtime: Runtime, budget: int):
         brand = state["brand"]
         registry = runtime.require_registry()
         queries = state.get("queries", [])
+        named = state.get("named_queries", [])
         pages = {page["query"]: page["results"] for page in state.get("search", [])}
         # One gate per assistant: a slow, rate-limited assistant must not hold the others.
         gates = {name: asyncio.Semaphore(runtime.concurrency) for name in runtime.assistants}
+        asks = [("discovery", i, q) for i, q in enumerate(queries)]
+        asks += [("named", i, q) for i, q in enumerate(named)]
         jobs = [
-            (name, query, condition, rep)
+            (name, kind, index, query, condition, rep)
             for name in runtime.assistants
-            for query in queries
+            for kind, index, query in asks
             for condition in ("search_off", "search_on")
             for rep in range(runtime.reps)
         ]
 
-        async def one(name: str, query: str, condition: str, rep: int):
-            key = f"ask_{queries.index(query)}_{condition}_r{rep}"
+        async def one(name: str, kind: str, index: int, query: str, condition: str, rep: int):
+            key = f"{'ask' if kind == 'discovery' else 'named'}_{index}_{condition}_r{rep}"
             if name != assistants.PRIMARY:
                 key = f"{key}__{name}"
             results = pages.get(query, []) if condition == "search_on" else None
@@ -323,6 +339,11 @@ def make_interrogate(runtime: Runtime, budget: int):
                 results=pages.get(query, []),
             )
             observation["assistant"] = name
+            observation["kind"] = kind
+            observation["answer"] = result["text"][:ANSWER_KEPT]
+            if kind == "named":
+                picked, _ = lab_analysis.recommended(result["text"], registry, registry.brands)
+                observation["picked"] = picked
             return observation
 
         # One refused answer must not discard the rest: the failure is already recorded
@@ -341,14 +362,11 @@ def make_interrogate(runtime: Runtime, budget: int):
             raise ValueError("Hiçbir asistan yanıtı alınamadı; ölçüm yapılamaz.")
         notes = [f"{len(observations)} asistan yanıtı ölçüldü."]
         if len(runtime.assistants) > 1:
-            notes.append(
-                "Asistan başına: "
-                + ", ".join(
-                    f"{assistants.label(name)} {sum(o.get('assistant') == name for o in observations)}"
-                    for name in runtime.assistants
-                )
-                + "."
+            counts = ", ".join(
+                f"{assistants.label(name)} {sum(o.get('assistant') == name for o in observations)}"
+                for name in runtime.assistants
             )
+            notes.append(f"Asistan başına: {counts}.")
         if failed:
             notes.append(
                 f"{failed} yanıt alınamadı (kesilmiş veya hatalı) ve ölçüme katılmadı; makbuzda "
@@ -367,13 +385,16 @@ def make_analyse(runtime: Runtime):
         registry = runtime.require_registry()
         observations = state.get("observations", [])
         search = state.get("search", [])
+        # Visibility is read from the discovery questions only: a question that names the
+        # brand would count its own echo as a mention.
+        discovery = [o for o in observations if o.get("kind", "discovery") == "discovery"]
         # Diagnosis and advice follow the primary assistant, whose effects were measured.
-        primary = [o for o in observations if _assistant_of(o) == assistants.PRIMARY]
+        primary = [o for o in discovery if _assistant_of(o) == assistants.PRIMARY]
         measures = measure.rates(primary)
         rivals = measure.rival_brands(primary, brand)
         per_assistant = {
-            name: measure.rates([o for o in observations if _assistant_of(o) == name])
-            for name in dict.fromkeys(_assistant_of(o) for o in observations)
+            name: measure.rates([o for o in discovery if _assistant_of(o) == name])
+            for name in dict.fromkeys(_assistant_of(o) for o in discovery)
         }
         diagnosis = advise.diagnose(measures)
         targets = measure.outreach_targets(search, brand, rivals, registry)
@@ -399,6 +420,7 @@ def make_analyse(runtime: Runtime):
         return {
             "measures": measures,
             "assistant_measures": per_assistant,
+            "named_measures": named_rates(observations, brand),
             "rivals": rivals,
             "diagnosis": diagnosis,
             "evidence": targets,
@@ -408,6 +430,26 @@ def make_analyse(runtime: Runtime):
         }
 
     return analyse
+
+
+def named_rates(observations: list[Observation], brand: str) -> dict[str, dict]:
+    """For questions that name the brand: how often each assistant recommends it, or whom."""
+    rows = [o for o in observations if o.get("kind") == "named"]
+    out: dict[str, dict] = {}
+    for name in dict.fromkeys(_assistant_of(o) for o in rows):
+        mine = [o for o in rows if _assistant_of(o) == name]
+        picks: dict[str, int] = {}
+        for row in mine:
+            picked = row.get("picked")
+            if picked and picked != brand:
+                picks[picked] = picks.get(picked, 0) + 1
+        out[name] = {
+            "n": len(mine),
+            "picked": sum(o.get("picked") == brand for o in mine) / len(mine),
+            "mentioned": sum(bool(o["mentioned"]) for o in mine) / len(mine),
+            "rivals_picked": sorted(picks.items(), key=lambda kv: (-kv[1], kv[0]))[:5],
+        }
+    return out
 
 
 def _assistant_of(observation: Observation) -> str:

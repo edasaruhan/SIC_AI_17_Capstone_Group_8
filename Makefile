@@ -113,8 +113,8 @@ advisor-plan: ## Herhangi bir sektör için teşhis planı ve çağrı tahmini (
 advisor-audit: ## Ürün açıklamasını deneyde ölçülen kurallarla denetle; AUDIT_ARGS='--file aciklama.txt' (ücretsiz)
 	PYTHONPATH=src $(PYTHON) -m advisor.audit $(AUDIT_ARGS)
 
-advisor-ui: ## Danışmanın Streamlit arayüzü: adım adım canlı akış, rakip düzeltme (ücretli çağrılar onay ister)
-	PYTHONPATH=src uv run --with streamlit --with langgraph streamlit run src/advisor/ui.py
+advisor-ui: ## Danışmanın web uygulaması: http://localhost:8600 (ücretli çağrılar onay ister)
+	PYTHONPATH=src uv run --with fastapi --with uvicorn --with langgraph uvicorn advisor.web.app:app --port 8600
 
 advisor: ## LangGraph görünürlük danışmanı: ölç, teşhis et, öner (ÜCRETLİ; --yes gerekir)
 	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" --yes $(ADVISOR_ARGS)

@@ -513,6 +513,35 @@ def as_record(result: dict) -> dict:
     }
 
 
+RANK = {"risk": 0, "strong": 1, "mixed": 2, "weak": 3}
+
+
+def marked(text: str, record: dict) -> list[dict]:
+    """The text sentence by sentence, each with the types found in it: what the
+    interface highlights. Types from a classifier may quote part of a sentence."""
+    quoted: list[tuple[str, str]] = [
+        (_norm(sentence), row["key"]) for row in record["findings"] for sentence in row["sentences"]
+    ]
+    out = []
+    for sentence in _sentences(text):
+        norm = _norm(sentence)
+        keys = list(
+            dict.fromkeys(
+                key for quote, key in quoted if quote and (quote in norm or norm in quote)
+            )
+        )
+        verdicts = sorted({verdict(key) for key in keys}, key=RANK.__getitem__)
+        out.append(
+            {
+                "text": sentence,
+                "keys": keys,
+                "labels": [LABELS[key] for key in keys],
+                "verdict": verdicts[0] if verdicts else None,
+            }
+        )
+    return out
+
+
 def section(record: dict, *, heading: str = "##") -> list[str]:
     """Findings, advice and method as Markdown lines, shared by both reports."""
     lines = [f"{heading} Açıklamada bulunan cümle türleri", ""]

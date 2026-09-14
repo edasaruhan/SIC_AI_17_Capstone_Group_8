@@ -19,17 +19,23 @@ make advisor      BRAND="Garanti BBVA" DOMAIN="bankacılık" LANGUAGE=tr   # ÜC
 make advisor-ui
 ```
 
-Streamlit sayfası LangGraph akışını sürer; akışın kendisi değişmez. Üç sekme vardır:
-**Görünürlük analizi**, **Açıklama denetimi** ve **Nasıl çalışır?**. Analiz sekmesinde
-marka, sektör, dil, isteğe bağlı ürün açıklaması ve iki anahtar girilir: "gpt-oss-120b
-ile de ölç" ve "Açıklamayı yapay zekâ ile sınıflandır". Sayfa ücretli çağrı tahminini ve bütçeyi gösterir, analiz daha önce
-yapıldıysa önbellekten okunacağını söyler, onay kutusu işaretlenmeden başlatmaz. Koşu
-sırasında grafiğin her düğümü bittikçe listelenir (sorular → arama → rakipler → yapay
-zekâya sorma → ölçüm ve teşhis → öneriler → rapor). Sonuçta teşhis, görünme, anılma ve
-rakiplere göre sıra metrik olarak gösterilir; ardından beş alt sekme gelir: ölçüm grafiği
-(iki asistan yan yana), yanıtlarda en çok anılan markalar, ürün açıklaması denetimi,
-öneriler ve indirilebilir tam rapor. `.streamlit/config.toml` temayı ayarlar ve ilk
-açılıştaki e-posta sorusunu kapatır.
+Tarayıcıda http://localhost:8600 açılır (FastAPI arka uç, tek sayfalık ön yüz;
+`src/advisor/web/`). Kullanıcı yalnız markanın **web sitesini ya da adını** girer:
+
+1. **Marka.** Site okunur (ana sayfa ve en fazla üç ürün sayfası, yalnız herkese açık
+   adresler). Ad girildiyse önce aranır ve markanın kendi sitesi bulunur. Gemini markayı,
+   diğer yazılışlarını, sektörü, dili ve ürünleri çıkarır; ürün cümleleri siteden birebir
+   alıntı olmak zorundadır.
+2. **Sorular.** Profilden iki tür soru yazılır: markayı anmayan keşif soruları (görünürlük
+   bunlarla ölçülür) ve markayı ile ürününü anan sorular (asistan seni mi rakibini mi
+   öneriyor). Kullanıcı profili ve soruları düzeltir; çağrı tahmini canlı güncellenir.
+3. **Analiz.** Akışın her düğümü bittikçe listelenir.
+4. **Sonuç.** Teşhis, dört ölçü, asistan yanıtları (markan sarı, rakipler gri işaretli),
+   ölçülmüş etkisiyle öneriler, sitedeki ürün cümlelerinin türüne göre renklendirildiği
+   açıklama incelemesi, markanı anan soruların sonucu, rakipler ve indirilebilir rapor.
+
+Açıklama denetimi ayrı bir sayfada da kullanılabilir. Model ve site metni sayfaya yalnız
+düz metin olarak yazılır.
 
 "Karşılaştırılan markaları düzelt" bölümünde yanlış rakipler kaldırılır, eksikler
 eklenir ve "Düzeltmeyle yeniden hesapla" ile yeniden çalıştırılır. Düzeltme hiçbir ücretli

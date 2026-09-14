@@ -29,6 +29,9 @@ class Observation(TypedDict):
     best_position: int | None
     n_results_mentioning: int
     assistant: NotRequired[str]  # "gemini" when absent: runs before the second assistant
+    kind: NotRequired[str]  # "discovery" (brand not named) or "named"; discovery when absent
+    picked: NotRequired[str | None]  # the brand a named question's answer recommends
+    answer: NotRequired[str]  # the start of the answer, for the report and the interface
 
 
 class AdvisorInput(TypedDict):
@@ -50,6 +53,7 @@ class AdvisorState(AdvisorInput, total=False):
 
     # Plan
     queries: list[str]
+    named_queries: list[str]
     curated: bool
     # Candidate brands for this run (extracted, then corrected by the user)
     candidates: list[str]
@@ -60,6 +64,7 @@ class AdvisorState(AdvisorInput, total=False):
     # Analysis
     measures: dict[str, Any]
     assistant_measures: dict[str, Any]
+    named_measures: dict[str, Any]
     scores: dict[str, Any]
     signals: list[dict]
     diagnosis: str

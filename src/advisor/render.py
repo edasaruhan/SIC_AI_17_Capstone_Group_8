@@ -106,6 +106,29 @@ def _assistant_section(state: AdvisorState) -> list[str]:
     return [*lines, ""]
 
 
+def _named_section(state: AdvisorState) -> list[str]:
+    per = state.get("named_measures") or {}
+    if not per:
+        return []
+    lines = [
+        "## Markanı ve ürününü anan sorular",
+        "",
+        "Bu sorular markanı ve bir ürününü adıyla anar; ölçülen, asistanın ürünü rakiplerine "
+        "karşı önerip önermediğidir. Görünürlük oranlarına katılmazlar.",
+        "",
+        "| Asistan | Soru × koşul × tekrar | Seni önerdi | Onun yerine önerdiği |",
+        "|---|---:|---:|---|",
+    ]
+    for name, m in per.items():
+        rivals = ", ".join(f"{b} ({c})" for b, c in m.get("rivals_picked") or []) or "–"
+        lines.append(
+            f"| {assistants.label(name)} | {m.get('n', 0)} | {pct(m.get('picked', 0))} | {rivals} |"
+        )
+    for question in state.get("named_queries") or []:
+        lines.append(f"\n- {question}")
+    return [*lines, ""]
+
+
 def _description_section(state: AdvisorState) -> list[str]:
     record = state.get("description_audit") or {}
     if not record.get("findings") and not record.get("advice"):
@@ -185,6 +208,7 @@ def report(state: AdvisorState) -> str:
                 )
             lines.append("")
 
+    lines += _named_section(state)
     lines += _description_section(state)
 
     names = state.get("candidates") or []
