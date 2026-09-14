@@ -276,11 +276,13 @@ async def fetch_html(http: httpx.AsyncClient, url: str) -> tuple[str, str]:
     raise ValueError("Site çok fazla yönlendirme yaptı.")
 
 
-def _cached(data: dict) -> Site:
+def _cached(data: dict, path: Path | None = None) -> Site:
+    # Copies written before the read time was recorded fall back to the file's own time.
+    fetched_at = data.get("fetched_at", "")
+    if not fetched_at and path is not None:
+        fetched_at = datetime.fromtimestamp(path.stat().st_mtime, UTC).isoformat(timespec="seconds")
     return Site(
-        url=data["url"],
-        pages=[Page(**page) for page in data["pages"]],
-        fetched_at=data.get("fetched_at", ""),
+        url=data["url"], pages=[Page(**page) for page in data["pages"]], fetched_at=fetched_at
     )
 
 
@@ -297,7 +299,7 @@ async def read_site(
     path = cache / f"{digest(url)[:16]}.json"
     old = read_json(path) if path.exists() else None
     if old and not refresh:
-        return _cached(old)
+        return _cached(old, path)
     html, final = await fetch_html(http, url)
     home, links = parse(html, final)
     extra: list[Page] = []

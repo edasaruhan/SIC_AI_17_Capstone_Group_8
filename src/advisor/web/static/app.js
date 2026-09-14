@@ -511,7 +511,7 @@ function profileView() {
             "p",
             { class: "hint" },
             p.website ? `Kaynak: ${p.website}` : "Web sitesi bulunamadı; profil arama sonuçlarından çıkarıldı.",
-            p.read_at && readAt(p.read_at) ? `, ${readAt(p.read_at)} tarihinde okundu.` : ".",
+            p.website && p.read_at && readAt(p.read_at) ? `, ${readAt(p.read_at)} tarihinde okundu.` : "",
             " Yanlış olanı düzeltin."
           ),
           h(

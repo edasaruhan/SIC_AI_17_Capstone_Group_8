@@ -445,3 +445,13 @@ def test_a_repeated_search_sets_the_old_receipt_aside_instead_of_deleting_it(tmp
     )
     moved = asyncio.run(profile.source_text("Asperox", receipts, None, refresh=True))  # type: ignore[arg-type]
     assert moved["changed"] is True and "yeni ürün" in moved["text"]
+
+
+def test_a_cached_copy_from_before_read_times_still_says_when_it_was_read(tmp_path):
+    from evidence_eval.io import digest, write_json
+
+    url = "https://eski.example.com/"
+    page = {"url": url, "title": "Eski", "description": "", "headings": [], "text": "Metin."}
+    write_json(tmp_path / f"{digest(url)[:16]}.json", {"url": url, "pages": [page]})
+    kept = asyncio.run(site.read_site(url, None, cache=tmp_path))  # type: ignore[arg-type]
+    assert kept.fetched_at.startswith("20") and kept.changed is None
