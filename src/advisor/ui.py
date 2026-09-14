@@ -13,10 +13,11 @@ decides a result lives in ``service.py``, shared with the CLI.
 from __future__ import annotations
 
 import asyncio
+import re
 
 import streamlit as st
 
-from advisor import model, service
+from advisor import audit, model, service
 from advisor.advise import DIAGNOSES
 from advisor.clients import require_keys
 
@@ -108,8 +109,29 @@ def show_result(options: service.Options, state: dict, boosters: dict) -> None:
     )
 
 
+def show_audit() -> None:
+    """The free tool: no call, no model, only the rules measured in the experiment."""
+    st.header("Ürün açıklaması denetimi")
+    st.caption(
+        "Ücretsizdir, API çağrısı yapmaz. Kurallar iki asistanla (Gemini 3.5 Flash Lite, "
+        "gpt-oss-120b) yapılan kontrollü açıklama deneyine dayanır."
+    )
+    text = st.text_area("Ürün açıklamanız", height=160)
+    rivals_raw = st.text_area(
+        "Rakip açıklamaları (isteğe bağlı; her birini boş bir satırla ayırın)", height=160
+    )
+    if st.button("Denetle", type="primary", disabled=not text.strip()):
+        rivals = tuple(part.strip() for part in re.split(r"\n\s*\n", rivals_raw) if part.strip())
+        st.markdown(audit.render(audit.audit(text, rivals)))
+
+
 def main() -> None:
     st.title("Yapay zekâ asistanlarında marka görünürlüğü danışmanı")
+    with st.sidebar:
+        tool = st.radio("Araç", ["Görünürlük analizi", "Açıklama denetimi"])
+    if tool == "Açıklama denetimi":
+        show_audit()
+        return
     st.caption(
         "Herhangi bir marka ve sektör. Canlı Google araması ve Gemini ile ölçer, araştırmada "
         "öğrenilen sinyalle rakiplerinize göre konumlar; öneriler kontrollü testte ölçülmüş "

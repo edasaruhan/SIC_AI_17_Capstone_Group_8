@@ -48,6 +48,51 @@ Anahtarlar `.env` içinde: `GEMINI_API_KEY`, `SERPER_API_KEY`. Varsayılan koşu
 1 rakip çıkarımı + 12 asistan yanıtı. `--max-calls 20` bütçesini aşan bir koşu hiç
 başlamaz.
 
+## Açıklama denetimi (ücretsiz)
+
+Görünürlük analizi "asistan markamı buluyor ve anıyor mu?" sorusunu yanıtlar. Denetim
+ikinci soruyu yanıtlar: **ürün listede olduğunda asistan onu neye göre seçiyor, ve benim
+açıklamam o bilgiyi taşıyor mu?** Çağrı yapmaz, model yüklemez.
+
+```bash
+make advisor-audit AUDIT_ARGS='--file aciklama.txt --rival-file rakip1.txt --rival-file rakip2.txt'
+```
+
+Arayüzde soldaki "Araç" seçiminden **Açıklama denetimi** açılır.
+
+Kurallar açıklama deneyinin 2. turundan gelir (`reports/description_lab/*/round2/`):
+beş kurgusal marka, her kartta farklı bir cümle, iki asistan (Gemini 3.5 Flash Lite,
+gpt-oss-120b). Bir cümle türünün **kazanma payı**, göründüğü çağrılarda önerilen ürün
+olma oranıdır; rastgele seçimde %20'dir.
+
+| Cümle türü | Gemini | Cerebras | Denetimin kararı |
+|---|---:|---:|---|
+| Ürüne özgü teknik ayrıntı | %35 | %67 | İki asistanda da kazandırıyor → yoksa ekle |
+| Fiyat avantajı | %35 | %50 | İki asistanda da kazandırıyor → varsa yaz |
+| Sayısal ölçüm / istatistik | %37 | %22 | Asistana bağlı → tek başına güvenme |
+| Bağımsız test veya denetim raporu | %32 | %3 | Asistana bağlı → tek başına güvenme |
+| Puan ve kullanıcı sayısı | %23 | %3 | Belirgin kazanç yok |
+| Otorite ifadesi | %13 | %27 | Belirgin kazanç yok |
+| Sertifika | %7 | %23 | Belirgin kazanç yok |
+| Uzman alıntısı | %10 | %15 | Belirgin kazanç yok |
+| Üstünlük ifadesi ("en iyi") | %20 | %13 | Belirgin kazanç yok → yerine özellik yaz |
+| Duygusal dil | %3 | %3 | Belirgin kazanç yok |
+| Kaynağı gösterilmeyen kurum/klinik iddiası | %45 | %30 | **Risk** → kaldır ya da kaynağını ver |
+
+Karar kuralı sonuçlardan önce değil sonra konmuştur ve basittir: iki asistanda da en az
+%30 ise "kazandırıyor", yalnız birinde ise "asistana bağlı", hiçbirinde değilse "belirgin
+kazanç yok". Kaynaksız iddia kazandırsa bile hiçbir zaman önerilmez: asistanlar iddiayı
+gösterildiği yanıtların %69–79'unda kullanıcıya aktardı ve neredeyse hiç uyarmadı.
+
+Rakip açıklamaları verilirse denetim, kazandıran bilginin rakiplerde de olup olmadığına
+bakar. Deneyde bütün kartlar aynı bilgiyi taşıdığında seçimi marka tanınırlığı ve liste
+sırası belirledi; herkeste olan bilgi ayırt etmez.
+
+Cümle türleri anahtar ifadelerle bulunur; deneyde kullanılan her cümlenin kendi türüyle
+tanındığı ve temel ürün özelliklerinin hiçbir türe sayılmadığı testle doğrulanır
+(`tests/test_advisor_audit.py`). Tablodaki sayıların raporlarla aynı olduğu da testtedir.
+Denetim bir iddianın doğru olup olmadığını sınamaz; her önerisi etik filtreden geçer.
+
 ## Örnek veriden sinyal, başka sektöre
 
 Taşınan sinyal **M2-Invariant** modelidir (`reports/generalization/`). Marka

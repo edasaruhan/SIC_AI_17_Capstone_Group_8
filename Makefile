@@ -100,7 +100,8 @@ lab-run: ## Tam açıklama deneyi (1. tur 280, 2. tur 256 çağrı); kaldığı 
 lab-analyze: ## Tamamlanan çağrılardan marka adı, içerik ve sıra etkileri ile rapor (API yok)
 	$(LAB) analyze $(LAB_ARGS)
 
-.PHONY: advisor advisor-plan advisor-train advisor-ui
+.PHONY: advisor advisor-plan advisor-train advisor-ui advisor-audit
+AUDIT_ARGS ?=
 ADVISOR := PYTHONPATH=src uv run --with langgraph python -m advisor
 ADVISOR_ARGS ?=
 advisor-train: ## Aktarılabilir sinyal modelini (M2-Invariant) kayıtlı tüm sektörlerde eğit ve kaydet (CPU, offline)
@@ -108,6 +109,9 @@ advisor-train: ## Aktarılabilir sinyal modelini (M2-Invariant) kayıtlı tüm s
 
 advisor-plan: ## Herhangi bir sektör için teşhis planı ve çağrı tahmini (ücretsiz, çağrı yok)
 	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" $(ADVISOR_ARGS)
+
+advisor-audit: ## Ürün açıklamasını deneyde ölçülen kurallarla denetle; AUDIT_ARGS='--file aciklama.txt' (ücretsiz)
+	PYTHONPATH=src $(PYTHON) -m advisor.audit $(AUDIT_ARGS)
 
 advisor-ui: ## Danışmanın Streamlit arayüzü: adım adım canlı akış, rakip düzeltme (ücretli çağrılar onay ister)
 	PYTHONPATH=src uv run --with streamlit --with langgraph streamlit run src/advisor/ui.py
