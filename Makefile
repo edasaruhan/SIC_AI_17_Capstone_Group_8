@@ -154,6 +154,14 @@ sunum-report-pdf: ## Sunum raporunu PDF'e bas (offline; uv.lock değişmez)
 	  HTML('docs/sunum-raporu.html').write_pdf('$(SUNUM_REPORT_PDF)')"
 	@echo "$(SUNUM_REPORT_PDF)"
 
+.PHONY: nihai-sunum-pdf
+NIHAI_SUNUM_PDF ?= output/pdf/Capstone_Nihai_Sunum.pdf
+nihai-sunum-pdf: ## Nihai sunumu (kısaliste ekran görüntüleriyle) 16:9 PDF'e bas (uv.lock değişmez)
+	@mkdir -p $(dir $(NIHAI_SUNUM_PDF))
+	uv run --with weasyprint python -c "from weasyprint import HTML; \
+	  HTML('docs/nihai-sunum.html').write_pdf('$(NIHAI_SUNUM_PDF)')"
+	@echo "$(NIHAI_SUNUM_PDF)"
+
 .PHONY: sunum-slides-pdf
 SUNUM_SLIDES_PDF ?= output/pdf/Capstone_Sunum_Slaytlari.pdf
 sunum-slides-pdf: ## Sunum slaytlarını 16:9 PDF'e bas (offline; uv.lock değişmez)
