@@ -75,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.brand or not args.sector:
             if not sys.stdin.isatty():
                 parser.error(
-                    "--brand ve --sector gerekli; interaktif kullanım için make brand-demo"
+                    "--brand ve --sector gerekli; interaktif kullanım için PYTHONPATH=src python -m brand_demo --live"
                 )
             args.brand = args.brand or input("Markanız: ").strip()
             args.sector = args.sector or input("Sektörünüz (örn. vpn, kozmetik, kahve): ").strip()

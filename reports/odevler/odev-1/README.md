@@ -17,4 +17,4 @@ This folder contains the three reports requested in the assignment brief, in bot
 - **Figure 2:** publisher-reported statistics from the current paper. These were not independently recomputed in S0-4. The older Hugging Face card reports 44% for affiliate sites at rank 1, while the current paper reports 49.0%; the figure follows the current paper and the report discloses this difference.
 - **Figure 3:** planned Turkish data-collection volume based on the project design. It is a forecast, not a completed collection result.
 
-The independent validation notebook remains at `../../notebooks/S0-4-reference-validation.ipynb`, and its concise report at `../referans_dogrulama.md`.
+The independent validation notebook remains at `../../../notebooks/S0-4-reference-validation.ipynb`, and its concise report at `../sprint-0-referans-dogrulama.md`.

@@ -1,298 +1,162 @@
-# Yapay Zekâ Asistanlarında Marka Görünürlüğü
+# kısaliste: yapay zekâ asistanları markanı öneriyor mu?
 
-Samsung Innovation Campus capstone projesi. Amaç, yapay zekâ asistanlarının marka
-önerilerini ölçmek ve marka ön bilgisi ile içerik etkisini ayrıştırmaktır.
+Samsung Innovation Campus capstone projesi, Grup 8.
 
-[Fikir önerisi (PDF)](docs/references/fikir-onerisi.pdf)
+Bir kullanıcı ChatGPT ya da Gemini'ye "iyi bir VPN önerir misin?" diye sorduğunda
+karşısına on bağlantı değil, üç marka adı çıkıyor. Adı geçmeyen marka o kullanıcı için
+yok. Bu proje asistanların o birkaç markayı **neye göre** seçtiğini ölçtü ve bulguları,
+bir markanın kendi üzerinde kullanabileceği bir araca çevirdi: **kısaliste**.
 
-MiniMax + Serper ile marka/sektör girilen terminal prototipi: **`make brand-demo`**.
-Anahtarsız sentetik örnek: `make brand-demo-offline`.
-[CLI demo, çağrı sınırları ve devam rehberi](docs/brand-cli-demo.md).
-Mevcut demo raporuna API harcamadan somut iş planı eklemek için:
-`make brand-demo-actions DEMO_RUN=data/processed/brand_demo/<id>`.
+<p><img src="docs/sunum-gorselleri/kisaliste-giris.jpg" alt="kısaliste giriş ekranı: Yapay zekâ asistanları markanı öneriyor mu?"></p>
 
-Seçilen üç sıralama modelinin tam veriyle yeniden eğitimi, kaydedilmiş ağırlıklardan
-tahmin ve sınırları: [Nihai deneysel model paketi](docs/final-model-training.md).
-`make final-model-train` yerel GPU/CPU kullanır; veri toplama veya API çağrısı yapmaz.
+- **Nihai sunum:** [`docs/nihai-sunum.html`](docs/nihai-sunum.html), PDF için `make nihai-sunum-pdf`
+- **Teknik rapor:** [`docs/ekip-bulgu-raporu.html`](docs/ekip-bulgu-raporu.html), PDF için `make team-report-pdf`
+- **Türkçe veri seti:** [huggingface.co/datasets/furkankarli/turkish-brand-bias-evaluations](https://huggingface.co/datasets/furkankarli/turkish-brand-bias-evaluations) ([veri kartı](docs/veri-karti.md))
+- **Başlangıç noktası:** [fikir önerisi (PDF)](docs/references/fikir-onerisi.pdf)
 
-### Genellenebilirlik, marka arayüzü ve öneri testi (evidence_v2)
+## Ne bulduk
 
-- **evidence_v2**: v1'deki boş editoryal/affiliate listeleri tamamlanmış kaynak
-  taksonomisi. `make evidence-v2-prepare` ve `make evidence-v2-baselines` komutlarıyla
-  üretilir. v1 ve v1'e bağlı modeller olduğu gibi kalır.
-- **Sektör dışı genelleme ve sinyal kararlılık matrisi**: prior'suz M2-General,
-  yanıt içi göreli M2-Invariant, leave-one-domain-out testi. Komut:
-  `make modeling-generalization`. Rapor: [`reports/generalization/`](reports/generalization/README.md).
-- **Marka arayüzü**: `make app`. Streamlit, offline çalışır, API çağrısı yapmaz;
-  `uv.lock` değişmez. Marka ve sektör seçilince görünürlük, kaynak kanıtı, rakiplerini
-  anıp seni anmayan sayfalar ve test edilmiş öneriler gösterilir.
-- **Kontrollü öneri testi**:
-  - `make intervention-plan` (ücretsiz)
-  - `make intervention-pilot` / `make intervention-run INTERVENTION_ARGS=--yes`
-    (ücretli Gemini 3.5 Flash Lite çağrıları; `--yes` olmadan çağrı yapılmaz)
-  - `make intervention-analyze` (API yok)
+Dört çalışma birbirini tamamlıyor: 9.886 kayıtlı asistan yanıtında gözlem, altı
+sektörde adalet analizi, 1.107 çağrılık kontrollü test ve iki asistanda 1.084 çağrılık
+açıklama deneyi. Ortak cevap iki kapıdan oluşuyor.
 
-  Rapor: [`reports/intervention/`](reports/intervention/README.md).
-- **Yoğunlaşma ve adalet**: `make modeling-fairness`. Bir cevapta kaç marka
-  görünüyor (etkin marka sayısı `N_eff = 1/HHI`), arama açıldığında yoğunlaşma
-  artıyor mu, aramadan hangi tanınırlık tercili kazanıyor ve Türkiye menşeli
-  markalar farklı muamele görüyor mu. API yok.
-  Rapor: [`reports/fairness/`](reports/fairness/README.md).
-- **Maskeleme ablasyonu**: `make modeling-masking`, tamamlanmış M3 koşularından
-  sektör sektör isimli/maskeli farkı üretir (eğitim için `scripts/run_m3.py`, GPU).
-  Rapor: [`reports/masking/`](reports/masking/results.md).
-- **Görünürlük danışmanı (LangGraph)**: örnek veriden öğrenilen sinyali **herhangi bir
-  sektöre** uygular. `make advisor-train` ile M2-Invariant modeli kayıtlı beş sektörde
-  eğitilir; `make advisor BRAND=... DOMAIN=... LANGUAGE=...` canlı arama yapar, rakip
-  markaları sonuçlardan çıkarır (kullanıcı düzeltebilir), markayı rakiplerine göre
-  skorlar, üç durumdan hangisinde olduğunu teşhis eder (aramada yok / alt sıralarda /
-  anılıyor ama asla ilk değil) ve kontrollü testte ölçülmüş etkisiyle öneri verir.
-  Ücretli, bütçe sınırlı, makbuzlu. Arayüz: `make advisor-ui` (adım adım canlı akış,
-  rakip düzeltme). Belge: [`docs/advisor.md`](docs/advisor.md).
-- **Veri kartı**: [`docs/veri-karti.md`](docs/veri-karti.md) — Türkçe veri setinin
-  tasarımı, alanları, lisansı (CC BY 4.0) ve sınırlılıkları.
-- **Tekrarlanabilirlik**: [`docs/tekrarlanabilirlik.md`](docs/tekrarlanabilirlik.md) —
-  temiz klonda hangi komut ne üretir, hangisi ağ/GPU/anahtar ister.
-
-Ödev 1 teslimindeki üç raporun Markdown/DOCX sürümleri ve güncellenmiş görselleri
-[`reports/assignment-1/`](reports/assignment-1/) klasöründedir.
-
-## Sprint 0 · 10–16 Ağustos
-
-| Görev | Sorumlu | Çıktı |
+| | Ne gerekiyor | Ölçülen |
 |---|---|---|
-| S0-1 Repo iskeleti | [@furkankarli](https://github.com/furkankarli) | Çalışan minimal repo |
-| S0-2 Ortam ve bağımlılıklar | [@furkankarli](https://github.com/furkankarli) | Python 3.11 + `uv` |
-| S0-3 Referans veri setini hazırlama | [@muratmertkucuk](https://github.com/muratmertkucuk) | `reference.parquet` |
-| S0-4 İki bulguyu yeniden üretme | [@muratmertkucuk](https://github.com/muratmertkucuk) | Notebook ve kısa rapor |
-| S0-5 Literatür tablosu | [@kubragzc](https://github.com/kubragzc) | Sekiz çalışmalık özet |
-| S0-6 Teknoloji ve maliyet incelemesi | [@kubragzc](https://github.com/kubragzc) | Tarihli maliyet tablosu |
-| S0-7 Kullanıcı görüşmeleri | [@zeynepsinal](https://github.com/zeynepsinal) | En az beş görüşme notu |
-| S0-8 Görüşme sentezi | [@zeynepsinal](https://github.com/zeynepsinal) | Ürün gereksinimleri |
+| **1. Listeye girmek** | Bağımsız bir kaynakta, rakipleriyle birlikte ve üst sırada görünmek | Karşılaştırma sayfasına girmek anılmayı %2'den %33'e, sayfa 1. sıradayken %65'e çıkardı. Yalnız markayı öven sayfa işe yaramadı. |
+| **2. Seçilmek** | Ürün hakkında somut ve rakipte olmayan bilgi | Ürünler aynıyken tek bir bilgi cümlesi kurgusal markayı %5–10'dan %76–99'a taşıdı. "En iyi", otorite ve duygusal dil kazandırmadı. |
+| **Varsayılan ve risk** | İçerik sessizse tanınmış marka kazanıyor | Kaynaksız kurum iddiası da kazandırdı ve asistanlar onu yanıtların %69–79'unda sorgulamadan aktardı. kısaliste bunu önermiyor, işaretliyor. |
 
-## Kurulum
+Raporlar: [kontrollü test](reports/intervention/README.md),
+[açıklama deneyi](reports/description_lab/gemini/round2/README.md),
+[sektör dışı genelleme](reports/generalization/README.md),
+[adalet](reports/fairness/README.md), [maskeleme](reports/masking/results.md).
 
-Gereksinimler: Git ve [`uv`](https://docs.astral.sh/uv/).
+## kısaliste nasıl çalışır
+
+Dört adım: **Marka → Sorular → Analiz → Sonuç.** Örnek, modelin eğitim verisinde olmayan
+bir sektörden: asperox.com.tr, temizlik ürünleri.
+
+**1–2. Siteni yaz, markanı tanısın.** Ana sayfa ve üç ürün sayfası okunur. Gemini markayı,
+diğer yazılışlarını, sektörü ve ürünleri çıkarır; ürün cümleleri siteden birebir alıntı
+olmak zorunda. Sonra iki tür soru yazılır: markanı anmayan sorular görünürlüğü, markanı ve
+ürününü anan sorular asistanın seni mi rakibini mi önerdiğini ölçer. Kullanıcı hepsini
+düzeltir ve çağrı tahminini görmeden analiz başlamaz.
+
+<p><img src="docs/sunum-gorselleri/kisaliste-profil.jpg" alt="Asperox profili ve asistanlara sorulacak sorular"></p>
+
+**3–4. Asistanlara sorar, teşhis eder.** Canlı Türkçe Google araması (Serper), Gemini 3.5
+Flash Lite ve istenirse gpt-oss-120b; arama açık ve kapalı. Dört teşhisten biri çıkar:
+aramada yok, var ama altta, anılıyor ama ilk değil, zaten önde.
+
+<p><img src="docs/sunum-gorselleri/kisaliste-sonuc.jpg" alt="Asperox sonucu: Aramada görünmüyorsun ve dört ölçü"></p>
+
+**Asistanlar ne dedi.** Yanıtlar kesilmeden, tablolarıyla gösterilir; senin markan sarıyla,
+rakipler griyle işaretli.
+
+<p>
+<img src="docs/sunum-gorselleri/kisaliste-yanit-tablo.jpg" alt="gpt-oss-120b yanıtı: marka ve ürün tablosu" width="49%">
+<img src="docs/sunum-gorselleri/kisaliste-adin-gectiginde.jpg" alt="Gemini yanıtında Asperox sarıyla işaretli" width="49%">
+</p>
+
+**Ne yapmalı.** Her öneri kontrollü testteki etkisi ve güven aralığıyla gelir; sitedeki
+ürün cümleleri deneyde ölçülen türlerine göre renklenir.
+
+<p>
+<img src="docs/sunum-gorselleri/kisaliste-oneriler.jpg" alt="Listeye girmek için öneriler ve ölçülmüş etkileri" width="49%">
+<img src="docs/sunum-gorselleri/kisaliste-aciklama.jpg" alt="Sitedeki cümleler türüne göre renklendirilmiş" width="49%">
+</p>
+
+**Açıklama denetimi.** Ayrı bir sayfa: ürün açıklamasını yapıştır, her cümle iki asistanda
+ölçülen kazanma payına göre işaretlenir. Kurallarla ücretsiz, yapay zekâyla her sektörde.
+
+<p><img src="docs/sunum-gorselleri/kisaliste-denetim-sonuc.jpg" alt="Açıklama denetimi: renklendirilmiş cümleler ve kazanma payları"></p>
+
+**Rapor.** Sonuç, sayfanın görünümüyle PDF olarak indirilir; ekte yanıtların tam metni.
+
+<p>
+<img src="docs/sunum-gorselleri/rapor-01.jpg" alt="PDF raporun ilk sayfası" width="32%">
+<img src="docs/sunum-gorselleri/rapor-02.jpg" alt="PDF raporun ikinci sayfası" width="32%">
+<img src="docs/sunum-gorselleri/rapor-08.jpg" alt="PDF raporun ek sayfası" width="32%">
+</p>
+
+Ayrıntılar: [`docs/advisor.md`](docs/advisor.md).
+
+## Çalıştırma
+
+Gereksinimler: Git, [`uv`](https://docs.astral.sh/uv/) ve Python 3.11.
 
 ```bash
-cp .env.example .env
+cp .env.example .env          # GEMINI_API_KEY, SERPER_API_KEY; ikinci asistan için CEREBRAS_API_KEY
 make setup
-make check
+make check                    # ruff, black, pyright ve 378 test
+
+make modeling-data            # İngilizce referans ve Türkçe veri seti (ağ, anahtar gerekmez)
+make evidence-v2-prepare      # kaynak taksonomili analiz tabloları (offline)
+make advisor-train            # kısaliste'nin sinyal modeli, bir kez (CPU, ~1 sn)
+make advisor-ui               # http://localhost:8600
 ```
 
-Notebook'lar Colab/Kaggle üzerinde veya ekip üyesinin tercih ettiği yerel notebook
-ortamında çalıştırılabilir.
+Ücretli çağrılar yalnız kullanıcı çağrı tahminini onaylayınca başlar. Her çağrı makbuzla
+saklanır: aynı analiz ikinci kez tamamen kayıttan gelir ve yeniden ödenmez. Anahtar
+gerektirmeyen denetim: `make advisor-audit AUDIT_ARGS='--file aciklama.txt'`.
 
-Referans veri setini hazırlamak için:
+Hangi komutun ne ürettiği, hangisinin ağ, GPU ya da anahtar istediği:
+[`docs/tekrarlanabilirlik.md`](docs/tekrarlanabilirlik.md). Bütün hedefler için `make help`.
 
-```bash
-make reference-data
-```
+## Araştırma hattı
 
-Komut, sabitlenmiş `3RAIN/brand-bias-evaluations` sürümünün yalnızca `all` alt
-kümesini işler ve `data/interim/reference.parquet` dosyasını üretir. Parquet türetilmiş
-veridir ve Git'e eklenmez; ekip aynı dosyayı komutla yeniden oluşturur.
-
-## Türkçe marka yanlılığı veri seti
-
-Referansın deney ve export yapısıyla uyumlu Türkçe toplama altyapısı iki domain,
-üç model ve aramalı/aramasız iki koşul için tam 300 hücre planlar. Kod gerçek
-API çağrısı yapmadan hazırlanmış ve mock testleriyle doğrulanmıştır; veri toplama
-ancak sizin `.env` anahtarlarını ekleyip ilgili Make hedefini çalıştırmanızla başlar.
-
-Tüm Türkçe veri setini tek komutla üretmek için:
-
-```bash
-make dataset-all
-```
-
-Bu hedef preflight, eksik generation hücreleri, judge, export ve validation
-aşamalarını sırayla çalıştırır; hata durumunda durur ve yeniden çalıştırıldığında
-tamamlanmış hücreleri tekrar çağırmaz.
-
-Generation modelleri Gemini Flash Lite, MiniMax M2.7 ve GLM-5.3/Abliteration'dır.
-NVIDIA, tekrarlanan timeout ve endpoint hataları nedeniyle deneyden çıkarılmış;
-ilgili ham ve arşiv kayıtları temizlenmiştir. Tamamlanan generation sonrasında
-judge, export ve validation aşamalarını tek komutla çalıştırmak için
-`make dataset-finish` kullanılır.
-
-Boş nihai cevapla kalan GLM hücreleri `make dataset-repair-generation` ile
-onarılır. Bu hedef yalnız eksik GLM hücrelerinde Abliteration düşünmesini kapatır;
-tamamlanmış kayıtları ve diğer generation sağlayıcılarını yeniden çağırmaz.
-
-Her CLI komutu, ekrandaki kısa durum mesajlarının yanında ayrıntılı ve dönen bir
-`logs/bias-eval.log` dosyası üretir. Son logları `make dataset-logs`, canlı akışı
-ayrı bir terminalden `make dataset-follow-logs` ile izleyebilirsiniz. Anahtarlar ve
-Authorization değerleri log yazılmadan önce maskelenir.
-
-```bash
-make dataset-plan
-make dataset-preflight
-make dataset-pilot
-make dataset-status
-make dataset-collect
-make dataset-judge
-make dataset-judge-status
-make dataset-export
-make dataset-validate
-make reference-data
-make dataset-report
-```
-
-Kurulum, kota güvenliği, resume davranışı, dosya şemaları ve hata giderme adımları
-için [Türkçe veri seti runbook'una](docs/turkce-veri-seti-runbook.md) bakın.
-Pipeline'ı değiştirecek ekip üyeleri önce
-[veri seti geliştirici rehberini](docs/veri-seti-gelistirici-rehberi.md) okumalıdır.
-
-İki referans bulguyu yeniden üretip notebook'u çalıştırmak için:
-
-```bash
-make reference-report
-```
-
-Notebook araçları bu komutta geçici olarak kurulur; kalıcı proje bağımlılıklarına
-eklenmez. Çalıştırılmış analiz `notebooks/S0-4-reference-validation.ipynb`, kısa sonuç
-özeti ise `reports/referans_dogrulama.md` altında tutulur.
-
-## Modelleme ve bulgular
-
-Yeni çalışma için önce [kaynaklı marka analizi rehberini](docs/kaynakli-marka-analizi.md)
-okuyun. `evidence_v1`, aşağıdaki tarihsel S2 deneyinden ayrı, sabit veri sürümlü
-analiz hattıdır. Canlı web taraması veya yeni generation/judge çağrısı yapmaz.
-İnsan incelemesi ve GPU eğitimi tamamlanmadan tamamlanmış ürün gibi sunulmaz.
-Türkçe ilk GPU koşusu tamamlandı: [eğitim sonuçları ve checkpoint doğrulaması](reports/listwise_tr_seed7.md).
-Bu, çapraz doğrulama eğitimidir; insan incelemesi, final model paketi ve canlı servis henüz tamamlanmadı.
-İngilizce VPN uzun koşusu için [başlatma, durum ve devam rehberi](docs/english-listwise-training.md)
-ve `make modeling-en-status` kullanılabilir; koşunun gerçek durumu yerel durum dosyasındadır.
-
-`src/modeling/` altındaki paket, İngilizce referans ile Türkçe veri setini **aynı
-kodla iki kez** işler; hiçbir yerde dile özel ayrı bir hat yoktur. İki korpus 282.450
-(yanıt, aday marka) çiftine açılır ve iki hedef modellenir: markanın yanıtta anılması
-(satır düzeyinde AI Share of Voice) ve markanın tek birincil öneri olması.
-
-Model ailesi kümülatiftir, çünkü anlamlı olan tek bir skor değil aralarındaki farktır:
-iki naive temel → **M0** yalnız marka prior'ı → **M1** + arama konumu ve kaynak tipi →
-**M2** + snippet dil özellikleri (LightGBM, SHAP ile öneri üretir) → **M3** cross-encoder
-(BERTurk / BERT, maskeleme ablation'ı için).
-
-**Üç bulgu.**
-
-1. **Arama, öneriyi değiştiriyor.** Web araması açıldığında mahremiyet itibarıyla
-   tanınan markalar görünürlük kaybediyor, ticari pazarlama yapanlar kazanıyor:
-   NordVPN Türkçe'de +30,7 / İngilizce'de +25,9 puan, Mullvad Türkçe'de −24,0.
-   Kozmetikte de aynı yapı (L'Oréal Paris +18,7, CeraVe −17,3). Örüntü iki dil ve
-   iki sektörde, farklı modellerle tekrarlanıyor.
-2. **Tahmin modeli temelleri aşıyor.** İngilizce VPN'de M2, "en sık kazananı söyle"
-   temelini +0,27 PR-AUC geçiyor (0,801 vs 0,535) ve top-1 doğruluğu %64,1'den
-   %72,4'e çıkıyor. Görünürlük hedefinde M2 altı domain-dil kombinasyonunun dördünde
-   kazanıyor.
-3. **Marka kimliği tahmin edilebilirliğin büyük kısmını taşıyor.** Snippet'lerdeki her
-   marka adı `[BRAND]` ile değiştirildiğinde İngilizce'de PR-AUC yarıya iniyor
-   (0,714 → 0,362, üç seed'de de aynı yönde). Dikkat: bu, *bizim tahmin modelimizin*
-   neye dayandığını gösterir, asistanın karar mekanizmasını değil — M3 bir vekil model.
-   Ayrıca maskeleme yalnız ad dizgisini siler, bir markanın hangi sayfalarda göründüğünü
-   silmez; o örüntü kimlikle ilişkili kalır. Sonuç nedensel katkı yüzdesi veya
-   marka/içerik payına bir alt ya da üst sınır vermez. Türkçe'de aynı ölçüm 57 karara
-   bağlanmış yanıtla yapılamıyor.
-
-Ayrıntılı yöntem, beş domainin tamamındaki sonuç tabloları, SHAP atfı, sınırlılıklar
-ve sızıntı önlemleri için [Sprint 2 raporuna](reports/sprint-2/Sprint2_Modelleme_Raporu.pdf)
-bakın. Rakamların ham hâli `reports/modeling/` altındaki CSV'lerde.
-
-### Veri modelleme koduna nasıl giriyor
-
-Modelleme kodu hiçbir veri dosyasını depoda tutmaz; ikisini de yayınlanmış
-kaynaklarından yeniden üretir. Temiz bir klondan tek komut yeter:
-
-```bash
-make modeling-data
-```
-
-Bu hedef üç adımı sırayla çalıştırır:
-
-| Adım | Komut | Üretilen |
+| Aşama | Komut | Çıktı |
 |---|---|---|
-| İngilizce referans | `make reference-data` | `data/interim/reference.parquet` |
-| Türkçe veri seti | `make turkish-data` | `data/interim/turkish_raw.parquet` |
-| Tablolar | `scripts/build_pairs.py` | `data/processed/modeling/` altındaki üç dosya |
+| Türkçe veri toplama (Serper, 3 model, gpt-oss-120b hakem) | `make dataset-all` | 300 yanıt; [runbook](docs/turkce-veri-seti-runbook.md) |
+| M0–M2 taban çizgileri ve SHAP (LightGBM) | `make evidence-v2-baselines` | `reports/modeling/` |
+| M3 cross-encoder ve maskeleme (BERT / BERTurk, GPU) | `scripts/run_m3.py`, `make modeling-masking` | `reports/masking/` |
+| Sektör dışı genelleme, sinyal kararlılığı | `make modeling-generalization` | `reports/generalization/` |
+| Yoğunlaşma ve adalet | `make modeling-fairness` | `reports/fairness/` |
+| Kontrollü öneri testi (Gemini, ücretli) | `make intervention-plan`, `make intervention-analyze` | `reports/intervention/` |
+| Açıklama deneyi (iki asistan, ücretli) | `make lab-plan`, `make lab-analyze` | `reports/description_lab/` |
+| Nihai deneysel model paketi (GPU) | `make final-model-train` | [belge](docs/final-model-training.md) |
 
-`make turkish-data`, HuggingFace'teki `furkankarli/turkish-brand-bias-evaluations`
-setini indirir ve donmuş deney tasarımına karşı doğrular: 300 satır, domain başına
-150, koşul başına 150, üç üretim modeli, bozuk JSON alanı yok. Herhangi biri
-tutmazsa **hata verir** — yayınlanan set değişmişse mevcut skorlar artık
-karşılaştırılabilir değildir ve bunun sessizce geçmemesi gerekir. Bu adım API
-anahtarı istemez; anahtarlar yalnız veriyi *toplayan* `bias-eval` hattı için gerekir.
-
-İndirme artık `4d274b954be7d9b0abbfe3314b2cbc387dfd800f` revision'ına ve kaynak
-SHA-256 değerine sabittir. Hücreler, sorgu metinleri, dil ve tekrarlar da denetlenir.
-Yeni veri release'i aynı analiz çıktılarının üzerine yazılmaz.
-
-`scripts/build_pairs.py` her hat için üç dosya yazar:
-
-| Dosya | Şekil | Ne için |
-|---|---|---|
-| `splits_<hat>.json` | sorgu → fold | Donmuş bölme. **Depoda sürümlü.** Varsa yeniden kullanılır, sessizce yeniden karılmaz. |
-| `pairs_<hat>.parquet` | (yanıt × aday marka) | M0–M3'ün eğitildiği özellik tablosu |
-| `evidence_<hat>.parquet` | (yanıt × marka × arama sonucu) | Kaynak izlenebilirliği: arama sorgusu, tur, sıra, URL, alan adı, kaynak tipi, başlık, snippet |
-
-**Kanıt tablosu neden ayrı.** `pairs` bir markayı destekleyen arama sonuçlarını
-sayılara indirger — model için doğru şekil, kaynak gösterecek bir öneri için yanlış.
-`evidence` uzun formattadır: bir marka altı sonuçta geçiyorsa altı satır alır ve her
-satır o sayfanın hangi arama sorgusuyla, kaçıncı turda, kaçıncı sırada geldiğini
-saklar. İkisi `(record_id, brand)` üzerinden birleşir. Ölçek: İngilizce 169.719 satır
-/ 9.919 farklı URL, Türkçe 2.391 satır / 333 URL.
-
-Veriler yerine oturduktan sonra modelleme aşamaları:
-
-```bash
-uv run python scripts/run_family.py       # M0-M2, iki hedef, beş domain
-uv run python scripts/score_tables.py     # metrik tabloları, yeniden eğitmeden
-uv run python scripts/run_m3.py           # M3 + maskeleme ablation'ı
-uv run python scripts/compare_tracks.py   # VPN yan yana tablosu
-uv run python scripts/attribution.py      # SHAP + ASoV temeli
-```
-
-M3 dışındaki her aşama varsayılan kurulumla çalışır. Cross-encoder için ek paketler
-ve bir CUDA GPU'su gerekir; torch ~2,4 GB olduğu için varsayılana dahil edilmemiştir:
-
-```bash
-uv sync --extra m3
-uv pip install torch --index-url https://download.pytorch.org/whl/cu124  # CUDA wheel
-```
-
-`scripts/run_m3.py --tracks tr` yalnız Türkçe hattını çalıştırır ve birkaç dakika sürer. Fold atamaları `data/processed/modeling/splits_*.json`
-altında dondurulmuş ve sürümlenmiştir — aynı bölme olmadan hiçbir skor yeniden
-üretilemez. Beş domainin marka kayıtları ve dil sözlükleri `configs/modeling/` altında
-denetlenebilir YAML olarak durur.
-
-## AI incelemeli marka raporu (offline önizleme)
-
-Seçilmiş iddiaların AI etiketleri, insan incelemesinden ayrı CSV + manifest olarak
-saklanır. Mevcut eğitim sonuçlarını değiştirmeden rapora eklemek için:
-
-```bash
-make ai-review-check
-make ai-brand-report BRAND="Proton VPN" DOMAIN=vpn LANGUAGE=tr
-```
-
-API kredisi kullanmaz. AI etiketleri insan onayı veya nedensel görünürlük artışı
-kanıtı değildir. Girdi, kapsam ve çıktı ayrıntıları için
-[AI önizleme rehberine](docs/ai_review_preview.md) bakın.
+Eğitim ve test soru grubuna göre bölünür; aynı sorunun tekrarları bağımsız örnek sayılmaz.
+Bootstrap güven aralıkları seed 42, sorgu kümeleri üzerinden.
 
 ## Klasörler
 
 ```text
-configs/       Ortak deney ayarları
-data/raw/      Değiştirilmeyen ham veri
-data/interim/  Ara çıktılar
-data/processed/ Analize hazır veri
-docs/          Proje referansları
-notebooks/     Keşif ve doğrulama çalışmaları
-reports/       Sprint çıktıları
-src/           Tekrar kullanılabilir kod
-tests/         Testler
+src/advisor/          kısaliste: LangGraph akışı, web uygulaması, açıklama denetimi, PDF rapor
+src/description_lab/  açıklama deneyi
+src/visibility/       kontrollü test, genelleme, adalet, etik filtre, ortak LLM istemcisi
+src/modeling/         M0–M3 modelleme hattı
+src/evidence_eval/    kaynak izleri ve analiz tabloları
+src/bias_eval/        Türkçe veri seti toplama hattı
+src/brand_demo/       makbuzlu çağrı akışı ve ilk terminal prototipi
+src/final_model/      nihai deneysel model paketi
+configs/              deney ayarları, marka kayıtları, sözlükler
+reports/              ölçüm sonuçları; ara teslimler reports/odevler/ altında
+docs/                 sunum, teknik rapor, veri kartı, rehberler, ekran görüntüleri
+tests/                otomatik testler
 ```
 
-Veri dosyaları Git'e eklenmez; yalnızca onları üreten kod ve raporlar paylaşılır.
-Her görev `feat/S0-<no>-<konu>` dalında geliştirilir ve pull request ile birleştirilir.
-Dal, veri ve PR kurallarının tamamı için [katkı rehberine](CONTRIBUTING.md) bakın.
+Veri dosyaları Git'e eklenmez; komutlar onları yayımlanmış kaynaklarından yeniden üretir.
+Ders ödevleri ve sprint teslimleri: [`reports/odevler/`](reports/odevler/README.md).
+Projenin temizlenmeden önceki tam hâli `arsiv/tam-calisma` dalında.
+
+## Sınırlar
+
+- Nedensel testler iki asistanda yapıldı (Gemini 3.5 Flash Lite, gpt-oss-120b); ChatGPT,
+  Claude ve Copilot'ta ölçülmedi.
+- Türkçe veride sektör başına 5 soru var; aralıklar geniş.
+- Deneyler kayıtlı arama sonuçları ve yapay ürün listeleriyle yapıldı.
+- Veri setindeki etiketler hakem modelden geldi, insanla doğrulanmadı.
+- Kullanıcı testi için materyal hazır ([`docs/kullanici-testi/`](docs/kullanici-testi/geri-bildirim-rubrigi.md)).
+
+## Ekip
+
+| | |
+|---|---|
+| Furkan Karlı | [@furkankarli](https://github.com/furkankarli) |
+| Murat Mert Küçük | [@muratmertkucuk](https://github.com/muratmertkucuk) |
+| Kübra Gezici | [@kubragzc](https://github.com/kubragzc) |
+| Zeynep Sude İnal | [@zeynepsinal](https://github.com/zeynepsinal) |
+
+Katkı kuralları: [`CONTRIBUTING.md`](CONTRIBUTING.md). Üçüncü taraf veri ve lisanslar:
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Türkçe veri seti CC BY 4.0.

@@ -152,7 +152,7 @@ The two acceptance findings above and the data-quality checks were completed in 
 | Inter-repetition consistency by cell | How stable are recommendations, and how many repetitions do we need? |
 | Parse success and label confidence by cell | Which cells are trustworthy for modelling? |
 
-Reproduction code is committed to `notebooks/S0-4-reference-validation.ipynb`, with the concise validation record in `reports/referans_dogrulama.md`. S0-4 meets its acceptance criterion by reproducing the VPN shift and editor control exactly.
+Reproduction code is committed to `notebooks/S0-4-reference-validation.ipynb`, with the concise validation record in `reports/odevler/sprint-0-referans-dogrulama.md`. S0-4 meets its acceptance criterion by reproducing the VPN shift and editor control exactly.
 
 ---
 

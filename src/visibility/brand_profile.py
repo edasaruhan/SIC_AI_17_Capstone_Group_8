@@ -1,6 +1,6 @@
 """Brand report logic: observed visibility, retrieval gaps, concrete targets, advice.
 
-Pure functions over evidence_v2 tables; the Streamlit page only renders them.
+Pure functions over evidence_v2 tables; the reports that use them only render them.
 Every number is observational (recorded answers of the frozen corpus) unless it
 comes from the controlled test, and each recommendation says which.
 

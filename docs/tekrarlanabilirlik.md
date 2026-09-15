@@ -94,10 +94,9 @@ setindedir, yeniden koşulması gerekmez.
 |---|---|
 | `make dataset-*` (Türkçe veri toplama) | GEMINI, MINIMAX, ABLITERATION, SERPER, CEREBRAS |
 | `make intervention-run` (kontrollü test) | GEMINI |
-| `make brand-demo` (canlı CLI demosu) | MINIMAX, SERPER |
 
-`make brand-demo-offline`, `make ai-brand-report`, `make brand-report` ve
-`make app` anahtarsız ve ağsız çalışır.
+`make ai-brand-report`, `make brand-report` ve `make advisor-audit` anahtarsız ve
+ağsız çalışır.
 
 ## Değerlendirici için en kısa yol
 

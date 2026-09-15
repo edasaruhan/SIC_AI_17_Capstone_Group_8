@@ -119,10 +119,7 @@ advisor-ui: ## Danışmanın web uygulaması: http://localhost:8600 (ücretli ç
 advisor: ## LangGraph görünürlük danışmanı: ölç, teşhis et, öner (ÜCRETLİ; --yes gerekir)
 	$(ADVISOR) --brand "$(BRAND)" --sector "$(DOMAIN)" --language "$(LANGUAGE)" --yes $(ADVISOR_ARGS)
 
-.PHONY: app intervention-plan intervention-pilot intervention-run intervention-analyze
-app: ## Marka görünürlük arayüzü (Streamlit, offline; uv.lock ve evidence manifestleri değişmez)
-	PYTHONPATH=src uv run --with streamlit streamlit run src/visibility/app.py
-
+.PHONY: intervention-plan intervention-pilot intervention-run intervention-analyze
 INTERVENTION := PYTHONPATH=src $(PYTHON) -m visibility.intervention --root "$(EVIDENCE_V2_ROOT)"
 INTERVENTION_ARGS ?=
 intervention-plan: ## Kontrollü öneri testi: hedefler, kollar ve çağrı sayısı (API çağrısı yok)
@@ -146,14 +143,6 @@ team-report-pdf: ## Ekip bulgu raporunu PDF'e bas (offline; uv.lock değişmez)
 	  HTML('docs/ekip-bulgu-raporu.html').write_pdf('$(TEAM_REPORT_PDF)')"
 	@echo "$(TEAM_REPORT_PDF)"
 
-.PHONY: sunum-report-pdf
-SUNUM_REPORT_PDF ?= output/pdf/Capstone_Sunum_Raporu.pdf
-sunum-report-pdf: ## Sunum raporunu PDF'e bas (offline; uv.lock değişmez)
-	@mkdir -p $(dir $(SUNUM_REPORT_PDF))
-	uv run --with weasyprint python -c "from weasyprint import HTML; \
-	  HTML('docs/sunum-raporu.html').write_pdf('$(SUNUM_REPORT_PDF)')"
-	@echo "$(SUNUM_REPORT_PDF)"
-
 .PHONY: nihai-sunum-pdf
 NIHAI_SUNUM_PDF ?= output/pdf/Capstone_Nihai_Sunum.pdf
 nihai-sunum-pdf: ## Nihai sunumu (kısaliste ekran görüntüleriyle) 16:9 PDF'e bas (uv.lock değişmez)
@@ -161,14 +150,6 @@ nihai-sunum-pdf: ## Nihai sunumu (kısaliste ekran görüntüleriyle) 16:9 PDF'e
 	uv run --with weasyprint python -c "from weasyprint import HTML; \
 	  HTML('docs/nihai-sunum.html').write_pdf('$(NIHAI_SUNUM_PDF)')"
 	@echo "$(NIHAI_SUNUM_PDF)"
-
-.PHONY: sunum-slides-pdf
-SUNUM_SLIDES_PDF ?= output/pdf/Capstone_Sunum_Slaytlari.pdf
-sunum-slides-pdf: ## Sunum slaytlarını 16:9 PDF'e bas (offline; uv.lock değişmez)
-	@mkdir -p $(dir $(SUNUM_SLIDES_PDF))
-	uv run --with weasyprint python -c "from weasyprint import HTML; \
-	  HTML('docs/sunum-slaytlari.html').write_pdf('$(SUNUM_SLIDES_PDF)')"
-	@echo "$(SUNUM_SLIDES_PDF)"
 
 modeling-m3-smoke: ## Açık revision ve çalışan GPU ile küçük listwise eğitim kontrolü
 	$(EVIDENCE) m3-smoke $(M3_ARGS)
@@ -194,19 +175,6 @@ final-model-train: ## 3 modeli uygun verinin tamamıyla eğit ve yeniden yükley
 
 final-model-status: ## Nihai paket ilerlemesi ve tamamlanan ağırlıkların SHA-256 kontrolü
 	$(FINAL_MODEL) status --output "$(FINAL_MODELS_ROOT)"
-
-.PHONY: brand-demo brand-demo-offline
-brand-demo: ## Marka/sektör sor, maliyet onayından sonra MiniMax + Serper CLI demosu
-	PYTHONPATH=src $(PYTHON) -m brand_demo --live
-
-brand-demo-offline: ## Anahtarsız ve ağsız SENTETİK CLI örneği; gerçek ölçüm değildir
-	PYTHONPATH=src $(PYTHON) -m brand_demo --offline --brand "Proton VPN" --sector vpn
-
-.PHONY: brand-demo-actions
-DEMO_RUN ?=
-brand-demo-actions: ## DEMO_RUN klasöründeki mevcut rapora API kullanmadan somut aksiyon planı ekle
-	@test -n "$(DEMO_RUN)" || (echo 'DEMO_RUN=data/processed/brand_demo/<id> gerekli'; exit 1)
-	PYTHONPATH=src $(PYTHON) -m brand_demo --rebuild-report "$(DEMO_RUN)"
 
 brand-report: ## Marka için kaynaklı Markdown ve JSON rapor oluştur (offline)
 	$(EVIDENCE) report --brand "$(BRAND)" --domain "$(DOMAIN)" --language "$(LANGUAGE)"
