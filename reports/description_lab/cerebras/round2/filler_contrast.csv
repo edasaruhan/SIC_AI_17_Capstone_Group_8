@@ -1,0 +1,4 @@
+scope,n,filler,filler_lo,filler_hi,control,sentences,filler_vs_control,sentences_vs_filler,filler_vs_control_lo,filler_vs_control_hi,sentences_vs_filler_lo,sentences_vs_filler_hi
+ALL,20,0.0,0.0,0.0,0.05,0.759090909090909,-0.05,0.759090909090909,-0.15,0.0,0.7,0.8092045454545448
+sunscreen,10,0.0,0.0,0.0,0.1,0.6818181818181818,-0.1,0.6818181818181818,-0.3,0.0,0.6,0.7727272727272727
+vpn,10,0.0,0.0,0.0,0.0,0.8363636363636363,0.0,0.8363636363636363,0.0,0.0,0.7636363636363637,0.9

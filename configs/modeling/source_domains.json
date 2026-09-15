@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "official": {
+    "NordVPN": ["nordvpn.com"],
+    "Surfshark": ["surfshark.com"],
+    "Mullvad": ["mullvad.net"],
+    "Proton VPN": ["protonvpn.com"],
+    "ExpressVPN": ["expressvpn.com"],
+    "IVPN": ["ivpn.net"]
+  },
+  "retailer": ["amazon.com", "amazon.com.tr", "hepsiburada.com", "trendyol.com", "gratis.com", "watsons.com.tr"],
+  "forum": ["reddit.com", "donanimhaber.com", "eksisozluk.com"],
+  "editorial": [],
+  "affiliate": []
+}

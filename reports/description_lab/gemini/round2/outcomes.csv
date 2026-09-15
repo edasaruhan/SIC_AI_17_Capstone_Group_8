@@ -1,0 +1,257 @@
+key,block,category,rep,variant,picked,pick_method,picked_sentence,picked_position,first,incumbent_first,fabricated_shown,claim_echo,warned,sentences
+r2__tournament__sunscreen__d1__i00,tournament,sunscreen,0,,Sunora,sentence,statistics,2,0,0,0,,,control|statistics|cited_test|expert_quote|authority
+r2__tournament__sunscreen__d1__i01,tournament,sunscreen,1,,Sunora,sentence,statistics,1,0,0,0,,,statistics|cited_test|expert_quote|authority|social_proof
+r2__tournament__sunscreen__d1__i02,tournament,sunscreen,2,,Calidra,sentence,cited_test,1,0,0,0,,,cited_test|expert_quote|authority|social_proof|certificate
+r2__tournament__sunscreen__d1__i03,tournament,sunscreen,3,,Dermavie,sentence,expert_quote,1,0,0,0,,,expert_quote|authority|social_proof|certificate|superlative
+r2__tournament__sunscreen__d1__i04,tournament,sunscreen,4,,Veyla,sentence,social_proof,2,0,0,0,,,authority|social_proof|certificate|superlative|emotional
+r2__tournament__sunscreen__d1__i05,tournament,sunscreen,5,,Veyla,sentence,social_proof,1,0,0,0,,,social_proof|certificate|superlative|emotional|technical
+r2__tournament__sunscreen__d1__i06,tournament,sunscreen,6,,Veyla,sentence,price,5,0,0,0,,,certificate|superlative|emotional|technical|price
+r2__tournament__sunscreen__d1__i07,tournament,sunscreen,7,,Lumera,sentence,technical,3,0,0,1,0.0,0.0,superlative|emotional|technical|price|fabricated_claim
+r2__filler__sunscreen__r0,filler,sunscreen,0,filler,Avène,sentence,control,5,0,0,0,,,control|filler|control|control|control
+r2__cross__sunscreen__control__r0,cross,sunscreen,0,control,Lumera,bold,control,1,1,0,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r0,cross,sunscreen,0,statistics,Lumera,bold,statistics,5,1,0,0,,,control|control|control|control|statistics
+r2__cross__sunscreen__superlative__r0,cross,sunscreen,0,superlative,Lumera,sentence,superlative,3,1,0,0,,,control|control|superlative|control|control
+r2__cross__sunscreen__fabricated_claim__r0,cross,sunscreen,0,fabricated_claim,Lumera,sentence,fabricated_claim,3,1,0,1,1.0,0.0,control|control|fabricated_claim|control|control
+r2__tournament__vpn__d1__i00,tournament,vpn,0,,Orbiguard VPN,sentence,cited_test,3,0,0,0,,,control|statistics|cited_test|expert_quote|authority
+r2__tournament__vpn__d1__i01,tournament,vpn,1,,Kestrova VPN,bold,statistics,1,0,0,0,,,statistics|cited_test|expert_quote|authority|social_proof
+r2__tournament__vpn__d1__i02,tournament,vpn,2,,Orbiguard VPN,sentence,cited_test,1,0,0,0,,,cited_test|expert_quote|authority|social_proof|certificate
+r2__tournament__vpn__d1__i03,tournament,vpn,3,,Orbiguard VPN,sentence,superlative,5,0,0,0,,,expert_quote|authority|social_proof|certificate|superlative
+r2__tournament__vpn__d1__i04,tournament,vpn,4,,Veilnet VPN,sentence,authority,1,0,0,0,,,authority|social_proof|certificate|superlative|emotional
+r2__tournament__vpn__d1__i05,tournament,vpn,5,,Tunnelo VPN,sentence,social_proof,1,0,0,0,,,social_proof|certificate|superlative|emotional|technical
+r2__tournament__vpn__d1__i06,tournament,vpn,6,,Kestrova VPN,sentence,certificate,1,0,0,0,,,certificate|superlative|emotional|technical|price
+r2__tournament__vpn__d1__i07,tournament,vpn,7,,Orbiguard VPN,sentence,superlative,1,0,0,1,1.0,0.0,superlative|emotional|technical|price|fabricated_claim
+r2__filler__vpn__r0,filler,vpn,0,filler,Surfshark,sentence,control,1,0,0,0,,,control|control|filler|control|control
+r2__cross__vpn__control__r0,cross,vpn,0,control,NordVPN,sentence,control,1,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r0,cross,vpn,0,statistics,Veilnet VPN,sentence,statistics,2,1,0,0,,,control|statistics|control|control|control
+r2__cross__vpn__superlative__r0,cross,vpn,0,superlative,Veilnet VPN,sentence,superlative,2,1,0,0,,,control|superlative|control|control|control
+r2__cross__vpn__fabricated_claim__r0,cross,vpn,0,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,5,1,0,1,1.0,0.0,control|control|control|control|fabricated_claim
+r2__tournament__sunscreen__d1__i08,tournament,sunscreen,8,,Sunora,sentence,fabricated_claim,4,0,0,1,1.0,0.0,emotional|technical|price|fabricated_claim|filler
+r2__tournament__sunscreen__d1__i09,tournament,sunscreen,9,,Lumera,sentence,technical,1,0,0,1,0.0,0.0,technical|price|fabricated_claim|filler|control
+r2__tournament__sunscreen__d1__i10,tournament,sunscreen,10,,Sunora,sentence,fabricated_claim,2,0,0,1,1.0,0.0,price|fabricated_claim|filler|control|statistics
+r2__tournament__sunscreen__d1__i11,tournament,sunscreen,11,,Sunora,sentence,fabricated_claim,1,0,0,1,0.0,0.0,fabricated_claim|filler|control|statistics|cited_test
+r2__tournament__sunscreen__d1__i12,tournament,sunscreen,12,,Lumera,sentence,statistics,3,0,0,0,,,filler|control|statistics|cited_test|expert_quote
+r2__tournament__sunscreen__d2__i00,tournament,sunscreen,0,,Calidra,sentence,cited_test,2,0,0,0,,,control|cited_test|authority|certificate|emotional
+r2__tournament__sunscreen__d2__i01,tournament,sunscreen,1,,Sunora,sentence,technical,5,0,0,0,,,statistics|expert_quote|social_proof|superlative|technical
+r2__tournament__sunscreen__d2__i02,tournament,sunscreen,2,,Calidra,sentence,price,5,0,0,0,,,cited_test|authority|certificate|emotional|price
+r2__filler__sunscreen__r1,filler,sunscreen,1,filler,Bioderma,bold,control,1,0,0,0,,,control|control|filler|control|control
+r2__cross__sunscreen__control__r1,cross,sunscreen,1,control,CeraVe,sentence,control,1,0,0,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r1,cross,sunscreen,1,statistics,Lumera,bold,statistics,1,1,0,0,,,statistics|control|control|control|control
+r2__cross__sunscreen__superlative__r1,cross,sunscreen,1,superlative,Lumera,sentence,superlative,4,1,0,0,,,control|control|control|superlative|control
+r2__cross__sunscreen__fabricated_claim__r1,cross,sunscreen,1,fabricated_claim,Lumera,sentence,fabricated_claim,4,1,0,1,1.0,0.0,control|control|control|fabricated_claim|control
+r2__tournament__vpn__d1__i08,tournament,vpn,8,,Kestrova VPN,sentence,fabricated_claim,4,0,0,1,1.0,0.0,emotional|technical|price|fabricated_claim|filler
+r2__tournament__vpn__d1__i09,tournament,vpn,9,,Tunnelo VPN,sentence,price,2,0,0,1,1.0,0.0,technical|price|fabricated_claim|filler|control
+r2__tournament__vpn__d1__i10,tournament,vpn,10,,Kestrova VPN,sentence,fabricated_claim,2,0,0,1,1.0,0.0,price|fabricated_claim|filler|control|statistics
+r2__tournament__vpn__d1__i11,tournament,vpn,11,,Kestrova VPN,sentence,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|filler|control|statistics|cited_test
+r2__tournament__vpn__d1__i12,tournament,vpn,12,,Tunnelo VPN,sentence,cited_test,4,0,0,0,,,filler|control|statistics|cited_test|expert_quote
+r2__tournament__vpn__d2__i00,tournament,vpn,0,,Orbiguard VPN,sentence,cited_test,2,0,0,0,,,control|cited_test|authority|certificate|emotional
+r2__tournament__vpn__d2__i01,tournament,vpn,1,,Orbiguard VPN,sentence,statistics,1,0,0,0,,,statistics|expert_quote|social_proof|superlative|technical
+r2__tournament__vpn__d2__i02,tournament,vpn,2,,Nexashield VPN,sentence,cited_test,1,0,0,0,,,cited_test|authority|certificate|emotional|price
+r2__filler__vpn__r1,filler,vpn,1,filler,ExpressVPN,bold,control,5,0,0,0,,,control|control|control|filler|control
+r2__cross__vpn__control__r1,cross,vpn,1,control,Veilnet VPN,sentence,control,1,1,0,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r1,cross,vpn,1,statistics,Veilnet VPN,sentence,statistics,3,1,0,0,,,control|control|statistics|control|control
+r2__cross__vpn__superlative__r1,cross,vpn,1,superlative,Veilnet VPN,sentence,superlative,3,1,0,0,,,control|control|superlative|control|control
+r2__cross__vpn__fabricated_claim__r1,cross,vpn,1,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,1,1,0,1,1.0,0.0,fabricated_claim|control|control|control|control
+r2__tournament__sunscreen__d2__i03,tournament,sunscreen,3,,Veyla,sentence,social_proof,2,0,0,1,0.0,0.0,expert_quote|social_proof|superlative|technical|fabricated_claim
+r2__tournament__sunscreen__d2__i04,tournament,sunscreen,4,,Dermavie,sentence,price,4,0,0,0,,,authority|certificate|emotional|price|filler
+r2__tournament__sunscreen__d2__i05,tournament,sunscreen,5,,Dermavie,sentence,technical,3,0,0,1,0.0,0.0,social_proof|superlative|technical|fabricated_claim|control
+r2__tournament__sunscreen__d2__i06,tournament,sunscreen,6,,Lumera,bold,price,3,0,0,0,,,certificate|emotional|price|filler|statistics
+r2__tournament__sunscreen__d2__i07,tournament,sunscreen,7,,Dermavie,sentence,superlative,1,0,0,1,1.0,0.0,superlative|technical|fabricated_claim|control|cited_test
+r2__tournament__sunscreen__d2__i08,tournament,sunscreen,8,,Calidra,sentence,statistics,4,0,0,0,,,emotional|price|filler|statistics|expert_quote
+r2__tournament__sunscreen__d2__i09,tournament,sunscreen,9,,Veyla,sentence,technical,1,0,0,1,0.0,0.0,technical|fabricated_claim|control|cited_test|authority
+r2__tournament__sunscreen__d2__i10,tournament,sunscreen,10,,Dermavie,sentence,statistics,3,0,0,0,,,price|filler|statistics|expert_quote|social_proof
+r2__filler__sunscreen__r2,filler,sunscreen,2,filler,CeraVe,sentence,control,1,0,0,0,,,control|control|control|filler|control
+r2__cross__sunscreen__control__r2,cross,sunscreen,2,control,La Roche-Posay,sentence,control,1,0,1,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r2,cross,sunscreen,2,statistics,Lumera,sentence,statistics,2,1,0,0,,,control|statistics|control|control|control
+r2__cross__sunscreen__superlative__r2,cross,sunscreen,2,superlative,Lumera,sentence,superlative,5,1,0,0,,,control|control|control|control|superlative
+r2__cross__sunscreen__fabricated_claim__r2,cross,sunscreen,2,fabricated_claim,Lumera,sentence,fabricated_claim,5,1,0,1,1.0,0.0,control|control|control|control|fabricated_claim
+r2__tournament__vpn__d2__i03,tournament,vpn,3,,Nexashield VPN,sentence,fabricated_claim,5,0,0,1,1.0,0.0,expert_quote|social_proof|superlative|technical|fabricated_claim
+r2__tournament__vpn__d2__i04,tournament,vpn,4,,Nexashield VPN,sentence,price,4,0,0,0,,,authority|certificate|emotional|price|filler
+r2__tournament__vpn__d2__i05,tournament,vpn,5,,Veilnet VPN,sentence,fabricated_claim,4,0,0,1,1.0,0.0,social_proof|superlative|technical|fabricated_claim|control
+r2__tournament__vpn__d2__i06,tournament,vpn,6,,Orbiguard VPN,sentence,certificate,1,0,0,0,,,certificate|emotional|price|filler|statistics
+r2__tournament__vpn__d2__i07,tournament,vpn,7,,Nexashield VPN,sentence,superlative,1,0,0,1,1.0,0.0,superlative|technical|fabricated_claim|control|cited_test
+r2__tournament__vpn__d2__i08,tournament,vpn,8,,Veilnet VPN,sentence,emotional,1,0,0,0,,,emotional|price|filler|statistics|expert_quote
+r2__tournament__vpn__d2__i09,tournament,vpn,9,,Kestrova VPN,sentence,fabricated_claim,2,0,0,1,1.0,0.0,technical|fabricated_claim|control|cited_test|authority
+r2__tournament__vpn__d2__i10,tournament,vpn,10,,Kestrova VPN,sentence,price,1,0,0,0,,,price|filler|statistics|expert_quote|social_proof
+r2__filler__vpn__r2,filler,vpn,2,filler,Proton VPN,sentence,control,1,0,0,0,,,control|control|control|control|filler
+r2__cross__vpn__control__r2,cross,vpn,2,control,NordVPN,sentence,control,5,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r2,cross,vpn,2,statistics,Veilnet VPN,sentence,statistics,4,1,0,0,,,control|control|control|statistics|control
+r2__cross__vpn__superlative__r2,cross,vpn,2,superlative,Veilnet VPN,sentence,superlative,4,1,0,0,,,control|control|control|superlative|control
+r2__cross__vpn__fabricated_claim__r2,cross,vpn,2,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,2,1,0,1,1.0,0.0,control|fabricated_claim|control|control|control
+r2__tournament__sunscreen__d2__i11,tournament,sunscreen,11,,Calidra,sentence,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|control|cited_test|authority|certificate
+r2__tournament__sunscreen__d2__i12,tournament,sunscreen,12,,Lumera,sentence,statistics,2,0,0,0,,,filler|statistics|expert_quote|social_proof|superlative
+r2__tournament__sunscreen__d3__i00,tournament,sunscreen,0,,Dermavie,bold,expert_quote,2,0,0,0,,,control|expert_quote|certificate|technical|filler
+r2__tournament__sunscreen__d3__i01,tournament,sunscreen,1,,Dermavie,sentence,statistics,1,0,0,0,,,statistics|authority|superlative|price|control
+r2__tournament__sunscreen__d3__i02,tournament,sunscreen,2,,Calidra,sentence,fabricated_claim,4,0,0,1,1.0,0.0,cited_test|social_proof|emotional|fabricated_claim|statistics
+r2__tournament__sunscreen__d3__i03,tournament,sunscreen,3,,Calidra,sentence,technical,3,0,0,0,,,expert_quote|certificate|technical|filler|cited_test
+r2__tournament__sunscreen__d3__i04,tournament,sunscreen,4,,Calidra,sentence,superlative,2,0,0,0,,,authority|superlative|price|control|expert_quote
+r2__tournament__sunscreen__d3__i05,tournament,sunscreen,5,,Calidra,sentence,social_proof,1,0,0,1,1.0,0.0,social_proof|emotional|fabricated_claim|statistics|authority
+r2__filler__sunscreen__r3,filler,sunscreen,3,filler,Avène,sentence,control,4,0,0,0,,,control|control|control|control|filler
+r2__cross__sunscreen__control__r3,cross,sunscreen,3,control,Bioderma,sentence,control,1,0,0,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r3,cross,sunscreen,3,statistics,Lumera,bold,statistics,3,1,0,0,,,control|control|statistics|control|control
+r2__cross__sunscreen__superlative__r3,cross,sunscreen,3,superlative,Lumera,sentence,superlative,1,1,0,0,,,superlative|control|control|control|control
+r2__cross__sunscreen__fabricated_claim__r3,cross,sunscreen,3,fabricated_claim,Lumera,sentence,fabricated_claim,1,1,0,1,1.0,0.0,fabricated_claim|control|control|control|control
+r2__tournament__vpn__d2__i11,tournament,vpn,11,,Orbiguard VPN,sentence,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|control|cited_test|authority|certificate
+r2__tournament__vpn__d2__i12,tournament,vpn,12,,Veilnet VPN,sentence,statistics,2,0,0,0,,,filler|statistics|expert_quote|social_proof|superlative
+r2__tournament__vpn__d3__i00,tournament,vpn,0,,Nexashield VPN,sentence,expert_quote,2,0,0,0,,,control|expert_quote|certificate|technical|filler
+r2__tournament__vpn__d3__i01,tournament,vpn,1,,Kestrova VPN,sentence,price,4,0,0,0,,,statistics|authority|superlative|price|control
+r2__tournament__vpn__d3__i02,tournament,vpn,2,,Veilnet VPN,sentence,cited_test,1,0,0,1,1.0,0.0,cited_test|social_proof|emotional|fabricated_claim|statistics
+r2__tournament__vpn__d3__i03,tournament,vpn,3,,Orbiguard VPN,sentence,technical,3,0,0,0,,,expert_quote|certificate|technical|filler|cited_test
+r2__tournament__vpn__d3__i04,tournament,vpn,4,,Kestrova VPN,bold,authority,1,0,0,0,,,authority|superlative|price|control|expert_quote
+r2__tournament__vpn__d3__i05,tournament,vpn,5,,Veilnet VPN,sentence,fabricated_claim,3,0,0,1,1.0,0.0,social_proof|emotional|fabricated_claim|statistics|authority
+r2__filler__vpn__r3,filler,vpn,3,filler,Veilnet VPN,sentence,filler,1,1,0,0,,,filler|control|control|control|control
+r2__cross__vpn__control__r3,cross,vpn,3,control,NordVPN,bold,control,2,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r3,cross,vpn,3,statistics,Veilnet VPN,sentence,statistics,5,1,0,0,,,control|control|control|control|statistics
+r2__cross__vpn__superlative__r3,cross,vpn,3,superlative,Veilnet VPN,sentence,superlative,5,1,0,0,,,control|control|control|control|superlative
+r2__cross__vpn__fabricated_claim__r3,cross,vpn,3,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,3,1,0,1,1.0,0.0,control|control|fabricated_claim|control|control
+r2__tournament__sunscreen__d3__i06,tournament,sunscreen,6,,Lumera,sentence,technical,2,0,0,0,,,certificate|technical|filler|cited_test|social_proof
+r2__tournament__sunscreen__d3__i07,tournament,sunscreen,7,,Lumera,sentence,superlative,1,0,0,0,,,superlative|price|control|expert_quote|certificate
+r2__tournament__sunscreen__d3__i08,tournament,sunscreen,8,,Sunora,sentence,fabricated_claim,2,0,0,1,1.0,0.0,emotional|fabricated_claim|statistics|authority|superlative
+r2__tournament__sunscreen__d3__i09,tournament,sunscreen,9,,Sunora,sentence,technical,1,0,0,0,,,technical|filler|cited_test|social_proof|emotional
+r2__tournament__sunscreen__d3__i10,tournament,sunscreen,10,,Calidra,sentence,price,1,0,0,0,,,price|control|expert_quote|certificate|technical
+r2__tournament__sunscreen__d3__i11,tournament,sunscreen,11,,Calidra,sentence,price,5,0,0,1,0.0,0.0,fabricated_claim|statistics|authority|superlative|price
+r2__tournament__sunscreen__d3__i12,tournament,sunscreen,12,,Dermavie,sentence,fabricated_claim,5,0,0,1,1.0,0.0,filler|cited_test|social_proof|emotional|fabricated_claim
+r2__filler__sunscreen__r4,filler,sunscreen,4,filler,Lumera,sentence,filler,1,1,0,0,,,filler|control|control|control|control
+r2__cross__sunscreen__control__r4,cross,sunscreen,4,control,La Roche-Posay,sentence,control,1,0,1,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r4,cross,sunscreen,4,statistics,Lumera,sentence,statistics,4,1,0,0,,,control|control|control|statistics|control
+r2__cross__sunscreen__superlative__r4,cross,sunscreen,4,superlative,Lumera,sentence,superlative,2,1,0,0,,,control|superlative|control|control|control
+r2__cross__sunscreen__fabricated_claim__r4,cross,sunscreen,4,fabricated_claim,Lumera,sentence,fabricated_claim,2,1,0,1,1.0,0.0,control|fabricated_claim|control|control|control
+r2__tournament__vpn__d3__i06,tournament,vpn,6,,Kestrova VPN,sentence,cited_test,4,0,0,0,,,certificate|technical|filler|cited_test|social_proof
+r2__tournament__vpn__d3__i07,tournament,vpn,7,,Veilnet VPN,sentence,superlative,1,0,0,0,,,superlative|price|control|expert_quote|certificate
+r2__tournament__vpn__d3__i08,tournament,vpn,8,,Kestrova VPN,sentence,fabricated_claim,2,0,0,1,1.0,0.0,emotional|fabricated_claim|statistics|authority|superlative
+r2__tournament__vpn__d3__i09,tournament,vpn,9,,Nexashield VPN,sentence,cited_test,3,0,0,0,,,technical|filler|cited_test|social_proof|emotional
+r2__tournament__vpn__d3__i10,tournament,vpn,10,,Orbiguard VPN,sentence,price,1,0,0,0,,,price|control|expert_quote|certificate|technical
+r2__tournament__vpn__d3__i11,tournament,vpn,11,,Veilnet VPN,sentence,statistics,2,0,0,1,0.0,0.0,fabricated_claim|statistics|authority|superlative|price
+r2__tournament__vpn__d3__i12,tournament,vpn,12,,Tunnelo VPN,sentence,cited_test,2,0,0,1,1.0,0.0,filler|cited_test|social_proof|emotional|fabricated_claim
+r2__filler__vpn__r4,filler,vpn,4,filler,ExpressVPN,sentence,control,1,0,0,0,,,control|filler|control|control|control
+r2__cross__vpn__control__r4,cross,vpn,4,control,ExpressVPN,sentence,control,1,0,0,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r4,cross,vpn,4,statistics,Veilnet VPN,sentence,statistics,1,1,0,0,,,statistics|control|control|control|control
+r2__cross__vpn__superlative__r4,cross,vpn,4,superlative,Veilnet VPN,sentence,superlative,1,1,0,0,,,superlative|control|control|control|control
+r2__cross__vpn__fabricated_claim__r4,cross,vpn,4,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,4,1,0,1,1.0,0.0,control|control|control|fabricated_claim|control
+r2__tournament__sunscreen__d4__i00,tournament,sunscreen,0,,Calidra,sentence,expert_quote,5,0,0,0,,,control|authority|emotional|filler|expert_quote
+r2__tournament__sunscreen__d4__i01,tournament,sunscreen,1,,Veyla,sentence,social_proof,2,0,0,0,,,statistics|social_proof|technical|control|authority
+r2__tournament__sunscreen__d4__i02,tournament,sunscreen,2,,Dermavie,sentence,statistics,4,0,0,0,,,cited_test|certificate|price|statistics|social_proof
+r2__tournament__sunscreen__d4__i03,tournament,sunscreen,3,,Calidra,sentence,superlative,2,0,0,1,1.0,0.0,expert_quote|superlative|fabricated_claim|cited_test|certificate
+r2__tournament__sunscreen__d4__i04,tournament,sunscreen,4,,Calidra,sentence,authority,1,0,0,0,,,authority|emotional|filler|expert_quote|superlative
+r2__tournament__sunscreen__d4__i05,tournament,sunscreen,5,,Lumera,sentence,technical,2,0,0,0,,,social_proof|technical|control|authority|emotional
+r2__tournament__sunscreen__d4__i06,tournament,sunscreen,6,,Veyla,bold,price,2,0,0,0,,,certificate|price|statistics|social_proof|technical
+r2__tournament__sunscreen__d4__i07,tournament,sunscreen,7,,Lumera,sentence,price,5,0,0,1,1.0,0.0,superlative|fabricated_claim|cited_test|certificate|price
+r2__filler__sunscreen__r5,filler,sunscreen,5,filler,Avène,sentence,control,1,0,0,0,,,control|filler|control|control|control
+r2__cross__sunscreen__control__r5,cross,sunscreen,5,control,Avène,sentence,control,5,0,0,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r5,cross,sunscreen,5,statistics,Lumera,bold,statistics,5,1,0,0,,,control|control|control|control|statistics
+r2__cross__sunscreen__superlative__r5,cross,sunscreen,5,superlative,Lumera,sentence,superlative,3,1,0,0,,,control|control|superlative|control|control
+r2__cross__sunscreen__fabricated_claim__r5,cross,sunscreen,5,fabricated_claim,Lumera,sentence,fabricated_claim,3,1,0,1,1.0,0.0,control|control|fabricated_claim|control|control
+r2__tournament__vpn__d4__i00,tournament,vpn,0,,Veilnet VPN,sentence,authority,2,0,0,0,,,control|authority|emotional|filler|expert_quote
+r2__tournament__vpn__d4__i01,tournament,vpn,1,,Veilnet VPN,sentence,statistics,1,0,0,0,,,statistics|social_proof|technical|control|authority
+r2__tournament__vpn__d4__i02,tournament,vpn,2,,Tunnelo VPN,sentence,cited_test,1,0,0,0,,,cited_test|certificate|price|statistics|social_proof
+r2__tournament__vpn__d4__i03,tournament,vpn,3,,Nexashield VPN,sentence,fabricated_claim,3,0,0,1,1.0,0.0,expert_quote|superlative|fabricated_claim|cited_test|certificate
+r2__tournament__vpn__d4__i04,tournament,vpn,4,,Orbiguard VPN,sentence,authority,1,0,0,0,,,authority|emotional|filler|expert_quote|superlative
+r2__tournament__vpn__d4__i05,tournament,vpn,5,,Veilnet VPN,sentence,technical,2,0,0,0,,,social_proof|technical|control|authority|emotional
+r2__tournament__vpn__d4__i06,tournament,vpn,6,,Veilnet VPN,sentence,certificate,1,0,0,0,,,certificate|price|statistics|social_proof|technical
+r2__tournament__vpn__d4__i07,tournament,vpn,7,,Veilnet VPN,sentence,price,5,0,0,1,1.0,0.0,superlative|fabricated_claim|cited_test|certificate|price
+r2__filler__vpn__r5,filler,vpn,5,filler,Proton VPN,bold,control,1,0,0,0,,,control|control|filler|control|control
+r2__cross__vpn__control__r5,cross,vpn,5,control,NordVPN,bold,control,2,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r5,cross,vpn,5,statistics,Veilnet VPN,sentence,statistics,2,1,0,0,,,control|statistics|control|control|control
+r2__cross__vpn__superlative__r5,cross,vpn,5,superlative,Veilnet VPN,sentence,superlative,2,1,0,0,,,control|superlative|control|control|control
+r2__cross__vpn__fabricated_claim__r5,cross,vpn,5,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,5,1,0,1,1.0,0.0,control|control|control|control|fabricated_claim
+r2__tournament__sunscreen__d4__i08,tournament,sunscreen,8,,Veyla,sentence,fabricated_claim,5,0,0,1,0.0,0.0,emotional|filler|expert_quote|superlative|fabricated_claim
+r2__tournament__sunscreen__d4__i09,tournament,sunscreen,9,,Calidra,sentence,technical,1,0,0,0,,,technical|control|authority|emotional|filler
+r2__tournament__sunscreen__d4__i10,tournament,sunscreen,10,,Sunora,sentence,technical,4,0,0,0,,,price|statistics|social_proof|technical|control
+r2__tournament__sunscreen__d4__i11,tournament,sunscreen,11,,Calidra,sentence,price,4,0,0,1,1.0,0.0,fabricated_claim|cited_test|certificate|price|statistics
+r2__tournament__sunscreen__d4__i12,tournament,sunscreen,12,,Sunora,sentence,expert_quote,2,0,0,1,0.0,0.0,filler|expert_quote|superlative|fabricated_claim|cited_test
+r2__tournament__sunscreen__d5__i00,tournament,sunscreen,0,,Veyla,sentence,social_proof,2,0,0,0,,,control|social_proof|price|cited_test|superlative
+r2__tournament__sunscreen__d5__i01,tournament,sunscreen,1,,Veyla,sentence,statistics,1,0,0,1,0.0,0.0,statistics|certificate|fabricated_claim|expert_quote|emotional
+r2__tournament__sunscreen__d5__i02,tournament,sunscreen,2,,Veyla,sentence,technical,5,0,0,0,,,cited_test|superlative|filler|authority|technical
+r2__filler__sunscreen__r6,filler,sunscreen,6,filler,CeraVe,sentence,control,1,0,0,0,,,control|control|filler|control|control
+r2__cross__sunscreen__control__r6,cross,sunscreen,6,control,La Roche-Posay,sentence,control,5,0,1,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r6,cross,sunscreen,6,statistics,Lumera,sentence,statistics,1,1,0,0,,,statistics|control|control|control|control
+r2__cross__sunscreen__superlative__r6,cross,sunscreen,6,superlative,Lumera,sentence,superlative,4,1,0,0,,,control|control|control|superlative|control
+r2__cross__sunscreen__fabricated_claim__r6,cross,sunscreen,6,fabricated_claim,Lumera,sentence,fabricated_claim,4,1,0,1,1.0,0.0,control|control|control|fabricated_claim|control
+r2__tournament__vpn__d4__i08,tournament,vpn,8,,Nexashield VPN,sentence,expert_quote,3,0,0,1,0.0,0.0,emotional|filler|expert_quote|superlative|fabricated_claim
+r2__tournament__vpn__d4__i09,tournament,vpn,9,,Orbiguard VPN,sentence,technical,1,0,0,0,,,technical|control|authority|emotional|filler
+r2__tournament__vpn__d4__i10,tournament,vpn,10,,Nexashield VPN,sentence,price,1,0,0,0,,,price|statistics|social_proof|technical|control
+r2__tournament__vpn__d4__i11,tournament,vpn,11,,Veilnet VPN,sentence,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|cited_test|certificate|price|statistics
+r2__tournament__vpn__d4__i12,tournament,vpn,12,,Nexashield VPN,sentence,fabricated_claim,4,0,0,1,1.0,0.0,filler|expert_quote|superlative|fabricated_claim|cited_test
+r2__tournament__vpn__d5__i00,tournament,vpn,0,,Orbiguard VPN,sentence,cited_test,4,0,0,0,,,control|social_proof|price|cited_test|superlative
+r2__tournament__vpn__d5__i01,tournament,vpn,1,,Veilnet VPN,sentence,emotional,5,0,0,1,1.0,0.0,statistics|certificate|fabricated_claim|expert_quote|emotional
+r2__tournament__vpn__d5__i02,tournament,vpn,2,,Kestrova VPN,sentence,cited_test,1,0,0,0,,,cited_test|superlative|filler|authority|technical
+r2__filler__vpn__r6,filler,vpn,6,filler,ExpressVPN,bold,control,2,0,0,0,,,control|control|control|filler|control
+r2__cross__vpn__control__r6,cross,vpn,6,control,ExpressVPN,sentence,control,5,0,0,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r6,cross,vpn,6,statistics,Veilnet VPN,sentence,statistics,3,1,0,0,,,control|control|statistics|control|control
+r2__cross__vpn__superlative__r6,cross,vpn,6,superlative,Veilnet VPN,sentence,superlative,3,1,0,0,,,control|control|superlative|control|control
+r2__cross__vpn__fabricated_claim__r6,cross,vpn,6,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,1,1,0,1,1.0,0.0,fabricated_claim|control|control|control|control
+r2__tournament__sunscreen__d5__i03,tournament,sunscreen,3,,Veyla,sentence,social_proof,4,0,0,0,,,expert_quote|emotional|control|social_proof|price
+r2__tournament__sunscreen__d5__i04,tournament,sunscreen,4,,Lumera,sentence,technical,2,0,0,1,0.0,0.0,authority|technical|statistics|certificate|fabricated_claim
+r2__tournament__sunscreen__d5__i05,tournament,sunscreen,5,,Lumera,sentence,social_proof,1,0,0,0,,,social_proof|price|cited_test|superlative|filler
+r2__tournament__sunscreen__d5__i06,tournament,sunscreen,6,,Veyla,sentence,certificate,1,0,0,1,1.0,0.0,certificate|fabricated_claim|expert_quote|emotional|control
+r2__tournament__sunscreen__d5__i07,tournament,sunscreen,7,,Sunora,sentence,superlative,1,0,0,0,,,superlative|filler|authority|technical|statistics
+r2__tournament__sunscreen__d5__i08,tournament,sunscreen,8,,Lumera,sentence,social_proof,3,0,0,0,,,emotional|control|social_proof|price|cited_test
+r2__tournament__sunscreen__d5__i09,tournament,sunscreen,9,,Dermavie,sentence,technical,1,0,0,1,0.0,0.0,technical|statistics|certificate|fabricated_claim|expert_quote
+r2__tournament__sunscreen__d5__i10,tournament,sunscreen,10,,Dermavie,sentence,authority,5,0,0,0,,,price|cited_test|superlative|filler|authority
+r2__filler__sunscreen__r7,filler,sunscreen,7,filler,Neutrogena,sentence,control,1,0,0,0,,,control|control|control|filler|control
+r2__cross__sunscreen__control__r7,cross,sunscreen,7,control,Avène,sentence,control,1,0,0,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r7,cross,sunscreen,7,statistics,Lumera,sentence,statistics,2,1,0,0,,,control|statistics|control|control|control
+r2__cross__sunscreen__superlative__r7,cross,sunscreen,7,superlative,Lumera,sentence,superlative,5,1,0,0,,,control|control|control|control|superlative
+r2__cross__sunscreen__fabricated_claim__r7,cross,sunscreen,7,fabricated_claim,Lumera,bold,fabricated_claim,5,1,0,1,1.0,0.0,control|control|control|control|fabricated_claim
+r2__tournament__vpn__d5__i03,tournament,vpn,3,,Kestrova VPN,sentence,price,5,0,0,0,,,expert_quote|emotional|control|social_proof|price
+r2__tournament__vpn__d5__i04,tournament,vpn,4,,Nexashield VPN,sentence,authority,1,0,0,1,0.0,0.0,authority|technical|statistics|certificate|fabricated_claim
+r2__tournament__vpn__d5__i05,tournament,vpn,5,,Tunnelo VPN,sentence,price,2,0,0,0,,,social_proof|price|cited_test|superlative|filler
+r2__tournament__vpn__d5__i06,tournament,vpn,6,,Kestrova VPN,sentence,fabricated_claim,2,0,0,1,1.0,0.0,certificate|fabricated_claim|expert_quote|emotional|control
+r2__tournament__vpn__d5__i07,tournament,vpn,7,,Tunnelo VPN,sentence,statistics,5,0,0,0,,,superlative|filler|authority|technical|statistics
+r2__tournament__vpn__d5__i08,tournament,vpn,8,,Kestrova VPN,sentence,cited_test,5,0,0,0,,,emotional|control|social_proof|price|cited_test
+r2__tournament__vpn__d5__i09,tournament,vpn,9,,Veilnet VPN,sentence,statistics,2,0,0,1,1.0,0.0,technical|statistics|certificate|fabricated_claim|expert_quote
+r2__tournament__vpn__d5__i10,tournament,vpn,10,,Tunnelo VPN,sentence,cited_test,2,0,0,0,,,price|cited_test|superlative|filler|authority
+r2__filler__vpn__r7,filler,vpn,7,filler,CyberGhost,sentence,control,1,0,0,0,,,control|control|control|control|filler
+r2__cross__vpn__control__r7,cross,vpn,7,control,NordVPN,sentence,control,1,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r7,cross,vpn,7,statistics,Veilnet VPN,sentence,statistics,4,1,0,0,,,control|control|control|statistics|control
+r2__cross__vpn__superlative__r7,cross,vpn,7,superlative,Veilnet VPN,sentence,superlative,4,1,0,0,,,control|control|control|superlative|control
+r2__cross__vpn__fabricated_claim__r7,cross,vpn,7,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,2,1,0,1,1.0,0.0,control|fabricated_claim|control|control|control
+r2__tournament__sunscreen__d5__i11,tournament,sunscreen,11,,Veyla,sentence,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|expert_quote|emotional|control|social_proof
+r2__tournament__sunscreen__d5__i12,tournament,sunscreen,12,,Dermavie,sentence,technical,3,0,0,0,,,filler|authority|technical|statistics|certificate
+r2__tournament__sunscreen__d6__i00,tournament,sunscreen,0,,Dermavie,sentence,social_proof,4,0,0,1,1.0,0.0,control|certificate|filler|social_proof|fabricated_claim
+r2__tournament__sunscreen__d6__i01,tournament,sunscreen,1,,Sunora,sentence,statistics,1,0,0,0,,,statistics|superlative|control|certificate|filler
+r2__tournament__sunscreen__d6__i02,tournament,sunscreen,2,,Lumera,sentence,statistics,3,0,0,0,,,cited_test|emotional|statistics|superlative|control
+r2__tournament__sunscreen__d6__i03,tournament,sunscreen,3,,Lumera,sentence,technical,2,0,0,0,,,expert_quote|technical|cited_test|emotional|statistics
+r2__tournament__sunscreen__d6__i04,tournament,sunscreen,4,,Calidra,sentence,technical,4,0,0,0,,,authority|price|expert_quote|technical|cited_test
+r2__tournament__sunscreen__d6__i05,tournament,sunscreen,5,,Dermavie,sentence,price,4,0,0,1,0.0,0.0,social_proof|fabricated_claim|authority|price|expert_quote
+r2__filler__sunscreen__r8,filler,sunscreen,8,filler,Neutrogena,sentence,control,1,0,0,0,,,control|control|control|control|filler
+r2__cross__sunscreen__control__r8,cross,sunscreen,8,control,La Roche-Posay,sentence,control,5,0,1,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r8,cross,sunscreen,8,statistics,Lumera,sentence,statistics,3,1,0,0,,,control|control|statistics|control|control
+r2__cross__sunscreen__superlative__r8,cross,sunscreen,8,superlative,Lumera,sentence,superlative,1,1,0,0,,,superlative|control|control|control|control
+r2__cross__sunscreen__fabricated_claim__r8,cross,sunscreen,8,fabricated_claim,Lumera,sentence,fabricated_claim,1,1,0,1,1.0,0.0,fabricated_claim|control|control|control|control
+r2__tournament__vpn__d5__i11,tournament,vpn,11,,Tunnelo VPN,sentence,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|expert_quote|emotional|control|social_proof
+r2__tournament__vpn__d5__i12,tournament,vpn,12,,Orbiguard VPN,sentence,authority,2,0,0,0,,,filler|authority|technical|statistics|certificate
+r2__tournament__vpn__d6__i00,tournament,vpn,0,,Veilnet VPN,bold,fabricated_claim,5,0,0,1,1.0,0.0,control|certificate|filler|social_proof|fabricated_claim
+r2__tournament__vpn__d6__i01,tournament,vpn,1,,Kestrova VPN,sentence,statistics,1,0,0,0,,,statistics|superlative|control|certificate|filler
+r2__tournament__vpn__d6__i02,tournament,vpn,2,,Orbiguard VPN,bold,cited_test,1,0,0,0,,,cited_test|emotional|statistics|superlative|control
+r2__tournament__vpn__d6__i03,tournament,vpn,3,,Orbiguard VPN,sentence,statistics,5,0,0,0,,,expert_quote|technical|cited_test|emotional|statistics
+r2__tournament__vpn__d6__i04,tournament,vpn,4,,Nexashield VPN,sentence,cited_test,5,0,0,0,,,authority|price|expert_quote|technical|cited_test
+r2__tournament__vpn__d6__i05,tournament,vpn,5,,Kestrova VPN,sentence,fabricated_claim,2,0,0,1,1.0,0.0,social_proof|fabricated_claim|authority|price|expert_quote
+r2__filler__vpn__r8,filler,vpn,8,filler,ExpressVPN,sentence,control,5,0,0,0,,,filler|control|control|control|control
+r2__cross__vpn__control__r8,cross,vpn,8,control,NordVPN,sentence,control,4,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r8,cross,vpn,8,statistics,Veilnet VPN,sentence,statistics,5,1,0,0,,,control|control|control|control|statistics
+r2__cross__vpn__superlative__r8,cross,vpn,8,superlative,Veilnet VPN,sentence,superlative,5,1,0,0,,,control|control|control|control|superlative
+r2__cross__vpn__fabricated_claim__r8,cross,vpn,8,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,3,1,0,1,1.0,0.0,control|control|fabricated_claim|control|control
+r2__tournament__sunscreen__d6__i06,tournament,sunscreen,6,,Dermavie,sentence,social_proof,3,0,0,1,0.0,0.0,certificate|filler|social_proof|fabricated_claim|authority
+r2__tournament__sunscreen__d6__i07,tournament,sunscreen,7,,Calidra,sentence,superlative,1,0,0,0,,,superlative|control|certificate|filler|social_proof
+r2__tournament__sunscreen__d6__i08,tournament,sunscreen,8,,Lumera,sentence,statistics,2,0,0,0,,,emotional|statistics|superlative|control|certificate
+r2__tournament__sunscreen__d6__i09,tournament,sunscreen,9,,Lumera,sentence,technical,1,0,0,0,,,technical|cited_test|emotional|statistics|superlative
+r2__tournament__sunscreen__d6__i10,tournament,sunscreen,10,,Veyla,sentence,price,1,0,0,0,,,price|expert_quote|technical|cited_test|emotional
+r2__tournament__sunscreen__d6__i11,tournament,sunscreen,11,,Sunora,bold,fabricated_claim,1,0,0,1,1.0,0.0,fabricated_claim|authority|price|expert_quote|technical
+r2__tournament__sunscreen__d6__i12,tournament,sunscreen,12,,Dermavie,sentence,social_proof,2,0,0,1,1.0,0.0,filler|social_proof|fabricated_claim|authority|price
+r2__filler__sunscreen__r9,filler,sunscreen,9,filler,Lumera,sentence,filler,1,1,0,0,,,filler|control|control|control|control
+r2__cross__sunscreen__control__r9,cross,sunscreen,9,control,Avène,sentence,control,1,0,0,0,,,control|control|control|control|control
+r2__cross__sunscreen__statistics__r9,cross,sunscreen,9,statistics,Lumera,sentence,statistics,4,1,0,0,,,control|control|control|statistics|control
+r2__cross__sunscreen__superlative__r9,cross,sunscreen,9,superlative,Lumera,sentence,superlative,2,1,0,0,,,control|superlative|control|control|control
+r2__cross__sunscreen__fabricated_claim__r9,cross,sunscreen,9,fabricated_claim,CeraVe,bold,control,1,0,0,1,1.0,0.0,control|fabricated_claim|control|control|control
+r2__tournament__vpn__d6__i06,tournament,vpn,6,,Veilnet VPN,sentence,fabricated_claim,4,0,0,1,1.0,0.0,certificate|filler|social_proof|fabricated_claim|authority
+r2__tournament__vpn__d6__i07,tournament,vpn,7,,Orbiguard VPN,sentence,superlative,1,0,0,0,,,superlative|control|certificate|filler|social_proof
+r2__tournament__vpn__d6__i08,tournament,vpn,8,,Tunnelo VPN,sentence,superlative,3,0,0,0,,,emotional|statistics|superlative|control|certificate
+r2__tournament__vpn__d6__i09,tournament,vpn,9,,Orbiguard VPN,sentence,statistics,4,0,0,0,,,technical|cited_test|emotional|statistics|superlative
+r2__tournament__vpn__d6__i10,tournament,vpn,10,,Nexashield VPN,bold,cited_test,4,0,0,0,,,price|expert_quote|technical|cited_test|emotional
+r2__tournament__vpn__d6__i11,tournament,vpn,11,,Nexashield VPN,sentence,price,3,0,0,1,1.0,0.0,fabricated_claim|authority|price|expert_quote|technical
+r2__tournament__vpn__d6__i12,tournament,vpn,12,,Nexashield VPN,sentence,social_proof,2,0,0,1,1.0,0.0,filler|social_proof|fabricated_claim|authority|price
+r2__filler__vpn__r9,filler,vpn,9,filler,CyberGhost,sentence,control,1,0,0,0,,,control|filler|control|control|control
+r2__cross__vpn__control__r9,cross,vpn,9,control,NordVPN,sentence,control,1,0,1,0,,,control|control|control|control|control
+r2__cross__vpn__statistics__r9,cross,vpn,9,statistics,Veilnet VPN,sentence,statistics,1,1,0,0,,,statistics|control|control|control|control
+r2__cross__vpn__superlative__r9,cross,vpn,9,superlative,Veilnet VPN,sentence,superlative,1,1,0,0,,,superlative|control|control|control|control
+r2__cross__vpn__fabricated_claim__r9,cross,vpn,9,fabricated_claim,Veilnet VPN,sentence,fabricated_claim,4,1,0,1,1.0,0.0,control|control|control|fabricated_claim|control

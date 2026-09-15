@@ -1,0 +1,1201 @@
+sector,query_id,target,arm,rep,mentioned,first,prompt_tokens,completion_tokens
+vpn,vpn_01,Private Internet Access,control,0,0,0,961,236
+vpn,vpn_01,Windscribe,control,0,0,0,961,236
+vpn,vpn_01,Private Internet Access,neutral_p5,0,0,0,1054,256
+vpn,vpn_01,Private Internet Access,neutral_p1,0,1,0,1054,294
+vpn,vpn_01,Private Internet Access,superlative_p5,0,1,0,1066,263
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,0,0,0,1147,227
+vpn,vpn_01,Windscribe,neutral_p5,0,0,0,1051,198
+vpn,vpn_01,Windscribe,neutral_p1,0,1,0,1051,252
+vpn,vpn_01,Windscribe,superlative_p5,0,0,0,1063,226
+vpn,vpn_01,Windscribe,neutral_p5_p8,0,0,0,1141,236
+vpn,vpn_01,Private Internet Access,control,1,0,0,961,214
+vpn,vpn_01,Windscribe,control,1,0,0,961,214
+vpn,vpn_01,Private Internet Access,neutral_p5,1,0,0,1054,277
+vpn,vpn_01,Private Internet Access,neutral_p1,1,1,0,1054,269
+vpn,vpn_01,Private Internet Access,superlative_p5,1,1,0,1066,321
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,1,0,0,1147,290
+vpn,vpn_01,Windscribe,neutral_p5,1,0,0,1051,242
+vpn,vpn_01,Windscribe,neutral_p1,1,1,0,1051,254
+vpn,vpn_01,Windscribe,superlative_p5,1,1,0,1063,277
+vpn,vpn_01,Windscribe,neutral_p5_p8,1,0,0,1141,244
+vpn,vpn_01,Private Internet Access,control,2,0,0,961,290
+vpn,vpn_01,Windscribe,control,2,0,0,961,290
+vpn,vpn_01,Private Internet Access,neutral_p5,2,1,0,1054,480
+vpn,vpn_01,Private Internet Access,neutral_p1,2,1,0,1054,231
+vpn,vpn_01,Private Internet Access,superlative_p5,2,1,0,1066,407
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,2,0,0,1147,228
+vpn,vpn_01,Windscribe,neutral_p5,2,0,0,1051,327
+vpn,vpn_01,Windscribe,neutral_p1,2,1,0,1051,236
+vpn,vpn_01,Windscribe,superlative_p5,2,0,0,1063,250
+vpn,vpn_01,Windscribe,neutral_p5_p8,2,0,0,1141,268
+vpn,vpn_01,Private Internet Access,control,3,0,0,961,213
+vpn,vpn_01,Windscribe,control,3,0,0,961,213
+vpn,vpn_01,Private Internet Access,neutral_p5,3,1,0,1054,292
+vpn,vpn_01,Private Internet Access,neutral_p1,3,1,0,1054,326
+vpn,vpn_01,Private Internet Access,superlative_p5,3,1,0,1066,275
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,3,0,0,1147,228
+vpn,vpn_01,Windscribe,neutral_p5,3,0,0,1051,323
+vpn,vpn_01,Windscribe,neutral_p1,3,1,0,1051,256
+vpn,vpn_01,Windscribe,superlative_p5,3,0,0,1063,229
+vpn,vpn_01,Windscribe,neutral_p5_p8,3,0,0,1141,268
+vpn,vpn_01,Private Internet Access,control,4,0,0,961,277
+vpn,vpn_01,Windscribe,control,4,0,0,961,277
+vpn,vpn_01,Private Internet Access,neutral_p5,4,0,0,1054,352
+vpn,vpn_01,Private Internet Access,neutral_p1,4,1,0,1054,262
+vpn,vpn_01,Private Internet Access,superlative_p5,4,1,0,1066,312
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,4,0,0,1147,420
+vpn,vpn_01,Windscribe,neutral_p5,4,0,0,1051,222
+vpn,vpn_01,Windscribe,neutral_p1,4,1,0,1051,267
+vpn,vpn_01,Windscribe,superlative_p5,4,1,0,1063,291
+vpn,vpn_01,Windscribe,neutral_p5_p8,4,0,0,1141,290
+vpn,vpn_01,Private Internet Access,control,5,0,0,961,234
+vpn,vpn_01,Windscribe,control,5,0,0,961,234
+vpn,vpn_01,Private Internet Access,neutral_p5,5,0,0,1054,424
+vpn,vpn_01,Private Internet Access,neutral_p1,5,1,0,1054,260
+vpn,vpn_01,Private Internet Access,superlative_p5,5,1,0,1066,441
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,5,0,0,1147,239
+vpn,vpn_01,Windscribe,neutral_p5,5,0,0,1051,284
+vpn,vpn_01,Windscribe,neutral_p1,5,1,0,1051,252
+vpn,vpn_01,Windscribe,superlative_p5,5,1,0,1063,239
+vpn,vpn_01,Windscribe,neutral_p5_p8,5,0,0,1141,217
+vpn,vpn_01,Private Internet Access,control,6,0,0,961,266
+vpn,vpn_01,Windscribe,control,6,0,0,961,266
+vpn,vpn_01,Private Internet Access,neutral_p5,6,0,0,1054,342
+vpn,vpn_01,Private Internet Access,neutral_p1,6,1,0,1054,280
+vpn,vpn_01,Private Internet Access,superlative_p5,6,1,0,1066,373
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,6,0,0,1147,251
+vpn,vpn_01,Windscribe,neutral_p5,6,0,0,1051,334
+vpn,vpn_01,Windscribe,neutral_p1,6,1,0,1051,244
+vpn,vpn_01,Windscribe,superlative_p5,6,1,0,1063,244
+vpn,vpn_01,Windscribe,neutral_p5_p8,6,0,0,1141,282
+vpn,vpn_01,Private Internet Access,control,7,0,0,961,213
+vpn,vpn_01,Windscribe,control,7,0,0,961,213
+vpn,vpn_01,Private Internet Access,neutral_p5,7,0,0,1054,237
+vpn,vpn_01,Private Internet Access,neutral_p1,7,1,0,1054,269
+vpn,vpn_01,Private Internet Access,superlative_p5,7,1,0,1066,298
+vpn,vpn_01,Private Internet Access,neutral_p5_p8,7,0,0,1147,250
+vpn,vpn_01,Windscribe,neutral_p5,7,0,0,1051,234
+vpn,vpn_01,Windscribe,neutral_p1,7,1,0,1051,278
+vpn,vpn_01,Windscribe,superlative_p5,7,0,0,1063,250
+vpn,vpn_01,Windscribe,neutral_p5_p8,7,0,0,1141,291
+vpn,vpn_02,Private Internet Access,control,0,0,0,1032,514
+vpn,vpn_02,Windscribe,control,0,0,0,1032,514
+vpn,vpn_02,Private Internet Access,neutral_p5,0,0,0,1125,530
+vpn,vpn_02,Private Internet Access,neutral_p1,0,1,0,1125,449
+vpn,vpn_02,Private Internet Access,superlative_p5,0,0,0,1137,510
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,0,1,0,1218,325
+vpn,vpn_02,Windscribe,neutral_p5,0,1,0,1122,624
+vpn,vpn_02,Windscribe,neutral_p1,0,1,0,1122,528
+vpn,vpn_02,Windscribe,superlative_p5,0,0,0,1134,533
+vpn,vpn_02,Windscribe,neutral_p5_p8,0,0,0,1212,507
+vpn,vpn_02,Private Internet Access,control,1,0,0,1032,359
+vpn,vpn_02,Windscribe,control,1,0,0,1032,359
+vpn,vpn_02,Private Internet Access,neutral_p5,1,0,0,1125,523
+vpn,vpn_02,Private Internet Access,neutral_p1,1,1,0,1125,316
+vpn,vpn_02,Private Internet Access,superlative_p5,1,0,0,1137,400
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,1,0,0,1218,476
+vpn,vpn_02,Windscribe,neutral_p5,1,0,0,1122,555
+vpn,vpn_02,Windscribe,neutral_p1,1,1,0,1122,538
+vpn,vpn_02,Windscribe,superlative_p5,1,0,0,1134,461
+vpn,vpn_02,Windscribe,neutral_p5_p8,1,1,0,1212,273
+vpn,vpn_02,Private Internet Access,control,2,0,0,1032,483
+vpn,vpn_02,Windscribe,control,2,0,0,1032,483
+vpn,vpn_02,Private Internet Access,neutral_p5,2,1,0,1125,386
+vpn,vpn_02,Private Internet Access,neutral_p1,2,1,0,1125,525
+vpn,vpn_02,Private Internet Access,superlative_p5,2,0,0,1137,331
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,2,1,0,1218,391
+vpn,vpn_02,Windscribe,neutral_p5,2,1,0,1122,353
+vpn,vpn_02,Windscribe,neutral_p1,2,1,0,1122,499
+vpn,vpn_02,Windscribe,superlative_p5,2,0,0,1134,519
+vpn,vpn_02,Windscribe,neutral_p5_p8,2,1,0,1212,564
+vpn,vpn_02,Private Internet Access,control,3,0,0,1032,302
+vpn,vpn_02,Windscribe,control,3,0,0,1032,302
+vpn,vpn_02,Private Internet Access,neutral_p5,3,0,0,1125,505
+vpn,vpn_02,Private Internet Access,neutral_p1,3,1,0,1125,237
+vpn,vpn_02,Private Internet Access,superlative_p5,3,1,0,1137,330
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,3,1,0,1218,271
+vpn,vpn_02,Windscribe,neutral_p5,3,0,0,1122,430
+vpn,vpn_02,Windscribe,neutral_p1,3,1,0,1122,583
+vpn,vpn_02,Windscribe,superlative_p5,3,1,0,1134,255
+vpn,vpn_02,Windscribe,neutral_p5_p8,3,1,0,1212,596
+vpn,vpn_02,Private Internet Access,control,4,0,0,1032,429
+vpn,vpn_02,Windscribe,control,4,0,0,1032,429
+vpn,vpn_02,Private Internet Access,neutral_p5,4,0,0,1125,585
+vpn,vpn_02,Private Internet Access,neutral_p1,4,1,0,1125,507
+vpn,vpn_02,Private Internet Access,superlative_p5,4,1,0,1137,336
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,4,1,0,1218,262
+vpn,vpn_02,Windscribe,neutral_p5,4,1,0,1122,297
+vpn,vpn_02,Windscribe,neutral_p1,4,0,0,1122,546
+vpn,vpn_02,Windscribe,superlative_p5,4,1,0,1134,463
+vpn,vpn_02,Windscribe,neutral_p5_p8,4,0,0,1212,514
+vpn,vpn_02,Private Internet Access,control,5,0,0,1032,425
+vpn,vpn_02,Windscribe,control,5,0,0,1032,425
+vpn,vpn_02,Private Internet Access,neutral_p5,5,0,0,1125,507
+vpn,vpn_02,Private Internet Access,neutral_p1,5,1,0,1125,266
+vpn,vpn_02,Private Internet Access,superlative_p5,5,0,0,1137,478
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,5,1,0,1218,467
+vpn,vpn_02,Windscribe,neutral_p5,5,0,0,1122,560
+vpn,vpn_02,Windscribe,neutral_p1,5,1,0,1122,511
+vpn,vpn_02,Windscribe,superlative_p5,5,0,0,1134,373
+vpn,vpn_02,Windscribe,neutral_p5_p8,5,1,0,1212,491
+vpn,vpn_02,Private Internet Access,control,6,0,0,1032,464
+vpn,vpn_02,Windscribe,control,6,0,0,1032,464
+vpn,vpn_02,Private Internet Access,neutral_p5,6,0,0,1125,521
+vpn,vpn_02,Private Internet Access,neutral_p1,6,1,0,1125,409
+vpn,vpn_02,Private Internet Access,superlative_p5,6,1,0,1137,563
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,6,1,0,1218,440
+vpn,vpn_02,Windscribe,neutral_p5,6,1,0,1122,474
+vpn,vpn_02,Windscribe,neutral_p1,6,1,0,1122,584
+vpn,vpn_02,Windscribe,superlative_p5,6,0,0,1134,485
+vpn,vpn_02,Windscribe,neutral_p5_p8,6,0,0,1212,411
+vpn,vpn_02,Private Internet Access,control,7,0,0,1032,320
+vpn,vpn_02,Windscribe,control,7,0,0,1032,320
+vpn,vpn_02,Private Internet Access,neutral_p5,7,0,0,1125,486
+vpn,vpn_02,Private Internet Access,neutral_p1,7,1,0,1125,324
+vpn,vpn_02,Private Internet Access,superlative_p5,7,1,0,1137,569
+vpn,vpn_02,Private Internet Access,neutral_p5_p8,7,0,0,1218,210
+vpn,vpn_02,Windscribe,neutral_p5,7,0,0,1122,564
+vpn,vpn_02,Windscribe,neutral_p1,7,1,0,1122,553
+vpn,vpn_02,Windscribe,superlative_p5,7,0,0,1134,329
+vpn,vpn_02,Windscribe,neutral_p5_p8,7,0,0,1212,580
+vpn,vpn_03,Private Internet Access,control,0,0,0,946,480
+vpn,vpn_03,Windscribe,control,0,0,0,946,480
+vpn,vpn_03,Private Internet Access,neutral_p5,0,1,0,1039,427
+vpn,vpn_03,Private Internet Access,neutral_p1,0,1,0,1039,372
+vpn,vpn_03,Private Internet Access,superlative_p5,0,1,0,1051,450
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,0,1,0,1132,466
+vpn,vpn_03,Windscribe,neutral_p5,0,1,0,1036,460
+vpn,vpn_03,Windscribe,neutral_p1,0,1,0,1036,474
+vpn,vpn_03,Windscribe,superlative_p5,0,1,0,1048,393
+vpn,vpn_03,Windscribe,neutral_p5_p8,0,1,0,1126,617
+vpn,vpn_03,Private Internet Access,control,1,0,0,946,535
+vpn,vpn_03,Windscribe,control,1,0,0,946,535
+vpn,vpn_03,Private Internet Access,neutral_p5,1,1,0,1039,425
+vpn,vpn_03,Private Internet Access,neutral_p1,1,1,0,1039,333
+vpn,vpn_03,Private Internet Access,superlative_p5,1,1,0,1051,397
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,1,1,0,1132,377
+vpn,vpn_03,Windscribe,neutral_p5,1,1,0,1036,401
+vpn,vpn_03,Windscribe,neutral_p1,1,1,0,1036,536
+vpn,vpn_03,Windscribe,superlative_p5,1,1,0,1048,443
+vpn,vpn_03,Windscribe,neutral_p5_p8,1,1,0,1126,531
+vpn,vpn_03,Private Internet Access,control,2,0,0,946,498
+vpn,vpn_03,Windscribe,control,2,1,0,946,498
+vpn,vpn_03,Private Internet Access,neutral_p5,2,1,0,1039,458
+vpn,vpn_03,Private Internet Access,neutral_p1,2,1,0,1039,329
+vpn,vpn_03,Private Internet Access,superlative_p5,2,1,0,1051,338
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,2,1,0,1132,423
+vpn,vpn_03,Windscribe,neutral_p5,2,1,0,1036,433
+vpn,vpn_03,Windscribe,neutral_p1,2,1,0,1036,532
+vpn,vpn_03,Windscribe,superlative_p5,2,1,0,1048,494
+vpn,vpn_03,Windscribe,neutral_p5_p8,2,1,0,1126,460
+vpn,vpn_03,Private Internet Access,control,3,0,0,946,404
+vpn,vpn_03,Windscribe,control,3,0,0,946,404
+vpn,vpn_03,Private Internet Access,neutral_p5,3,1,0,1039,343
+vpn,vpn_03,Private Internet Access,neutral_p1,3,1,0,1039,258
+vpn,vpn_03,Private Internet Access,superlative_p5,3,1,0,1051,452
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,3,1,0,1132,439
+vpn,vpn_03,Windscribe,neutral_p5,3,1,0,1036,359
+vpn,vpn_03,Windscribe,neutral_p1,3,1,0,1036,451
+vpn,vpn_03,Windscribe,superlative_p5,3,1,0,1048,411
+vpn,vpn_03,Windscribe,neutral_p5_p8,3,1,0,1126,432
+vpn,vpn_03,Private Internet Access,control,4,0,0,946,391
+vpn,vpn_03,Windscribe,control,4,0,0,946,391
+vpn,vpn_03,Private Internet Access,neutral_p5,4,1,0,1039,397
+vpn,vpn_03,Private Internet Access,neutral_p1,4,1,0,1039,334
+vpn,vpn_03,Private Internet Access,superlative_p5,4,1,0,1051,479
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,4,1,0,1132,546
+vpn,vpn_03,Windscribe,neutral_p5,4,1,0,1036,540
+vpn,vpn_03,Windscribe,neutral_p1,4,1,0,1036,361
+vpn,vpn_03,Windscribe,superlative_p5,4,1,0,1048,486
+vpn,vpn_03,Windscribe,neutral_p5_p8,4,1,0,1126,475
+vpn,vpn_03,Private Internet Access,control,5,0,0,946,504
+vpn,vpn_03,Windscribe,control,5,0,0,946,504
+vpn,vpn_03,Private Internet Access,neutral_p5,5,1,0,1039,433
+vpn,vpn_03,Private Internet Access,neutral_p1,5,1,0,1039,404
+vpn,vpn_03,Private Internet Access,superlative_p5,5,0,0,1051,549
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,5,1,0,1132,583
+vpn,vpn_03,Windscribe,neutral_p5,5,1,0,1036,447
+vpn,vpn_03,Windscribe,neutral_p1,5,1,0,1036,324
+vpn,vpn_03,Windscribe,superlative_p5,5,1,0,1048,448
+vpn,vpn_03,Windscribe,neutral_p5_p8,5,1,0,1126,444
+vpn,vpn_03,Private Internet Access,control,6,0,0,946,606
+vpn,vpn_03,Windscribe,control,6,0,0,946,606
+vpn,vpn_03,Private Internet Access,neutral_p5,6,1,0,1039,462
+vpn,vpn_03,Private Internet Access,neutral_p1,6,1,0,1039,360
+vpn,vpn_03,Private Internet Access,superlative_p5,6,1,0,1051,434
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,6,1,0,1132,452
+vpn,vpn_03,Windscribe,neutral_p5,6,1,0,1036,452
+vpn,vpn_03,Windscribe,neutral_p1,6,1,0,1036,295
+vpn,vpn_03,Windscribe,superlative_p5,6,1,0,1048,436
+vpn,vpn_03,Windscribe,neutral_p5_p8,6,1,0,1126,484
+vpn,vpn_03,Private Internet Access,control,7,0,0,946,438
+vpn,vpn_03,Windscribe,control,7,0,0,946,438
+vpn,vpn_03,Private Internet Access,neutral_p5,7,1,0,1039,481
+vpn,vpn_03,Private Internet Access,neutral_p1,7,1,0,1039,364
+vpn,vpn_03,Private Internet Access,superlative_p5,7,0,0,1051,532
+vpn,vpn_03,Private Internet Access,neutral_p5_p8,7,1,0,1132,414
+vpn,vpn_03,Windscribe,neutral_p5,7,1,0,1036,405
+vpn,vpn_03,Windscribe,neutral_p1,7,1,0,1036,415
+vpn,vpn_03,Windscribe,superlative_p5,7,1,0,1048,362
+vpn,vpn_03,Windscribe,neutral_p5_p8,7,1,0,1126,570
+vpn,vpn_04,Private Internet Access,control,0,0,0,984,500
+vpn,vpn_04,Windscribe,control,0,0,0,984,500
+vpn,vpn_04,Private Internet Access,neutral_p5,0,0,0,1077,571
+vpn,vpn_04,Private Internet Access,neutral_p1,0,0,0,1077,271
+vpn,vpn_04,Private Internet Access,superlative_p5,0,0,0,1089,412
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,0,0,0,1170,492
+vpn,vpn_04,Windscribe,neutral_p5,0,0,0,1074,539
+vpn,vpn_04,Windscribe,neutral_p1,0,0,0,1074,547
+vpn,vpn_04,Windscribe,superlative_p5,0,0,0,1086,393
+vpn,vpn_04,Windscribe,neutral_p5_p8,0,0,0,1164,610
+vpn,vpn_04,Private Internet Access,control,1,0,0,984,509
+vpn,vpn_04,Windscribe,control,1,0,0,984,509
+vpn,vpn_04,Private Internet Access,neutral_p5,1,0,0,1077,600
+vpn,vpn_04,Private Internet Access,neutral_p1,1,0,0,1077,455
+vpn,vpn_04,Private Internet Access,superlative_p5,1,0,0,1089,424
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,1,1,0,1170,520
+vpn,vpn_04,Windscribe,neutral_p5,1,0,0,1074,580
+vpn,vpn_04,Windscribe,neutral_p1,1,0,0,1074,573
+vpn,vpn_04,Windscribe,superlative_p5,1,0,0,1086,555
+vpn,vpn_04,Windscribe,neutral_p5_p8,1,0,0,1164,538
+vpn,vpn_04,Private Internet Access,control,2,0,0,984,525
+vpn,vpn_04,Windscribe,control,2,0,0,984,525
+vpn,vpn_04,Private Internet Access,neutral_p5,2,0,0,1077,591
+vpn,vpn_04,Private Internet Access,neutral_p1,2,0,0,1077,395
+vpn,vpn_04,Private Internet Access,superlative_p5,2,0,0,1089,419
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,2,0,0,1170,515
+vpn,vpn_04,Windscribe,neutral_p5,2,0,0,1074,584
+vpn,vpn_04,Windscribe,neutral_p1,2,0,0,1074,594
+vpn,vpn_04,Windscribe,superlative_p5,2,0,0,1086,445
+vpn,vpn_04,Windscribe,neutral_p5_p8,2,0,0,1164,515
+vpn,vpn_04,Private Internet Access,control,3,0,0,984,503
+vpn,vpn_04,Windscribe,control,3,0,0,984,503
+vpn,vpn_04,Private Internet Access,neutral_p5,3,0,0,1077,481
+vpn,vpn_04,Private Internet Access,neutral_p1,3,0,0,1077,498
+vpn,vpn_04,Private Internet Access,superlative_p5,3,0,0,1089,584
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,3,0,0,1170,554
+vpn,vpn_04,Windscribe,neutral_p5,3,0,0,1074,617
+vpn,vpn_04,Windscribe,neutral_p1,3,0,0,1074,499
+vpn,vpn_04,Windscribe,superlative_p5,3,0,0,1086,546
+vpn,vpn_04,Windscribe,neutral_p5_p8,3,0,0,1164,583
+vpn,vpn_04,Private Internet Access,control,4,0,0,984,557
+vpn,vpn_04,Windscribe,control,4,0,0,984,557
+vpn,vpn_04,Private Internet Access,neutral_p5,4,0,0,1077,536
+vpn,vpn_04,Private Internet Access,neutral_p1,4,0,0,1077,386
+vpn,vpn_04,Private Internet Access,superlative_p5,4,0,0,1089,612
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,4,0,0,1170,519
+vpn,vpn_04,Windscribe,neutral_p5,4,0,0,1074,659
+vpn,vpn_04,Windscribe,neutral_p1,4,0,0,1074,571
+vpn,vpn_04,Windscribe,superlative_p5,4,0,0,1086,535
+vpn,vpn_04,Windscribe,neutral_p5_p8,4,0,0,1164,505
+vpn,vpn_04,Private Internet Access,control,5,0,0,984,601
+vpn,vpn_04,Windscribe,control,5,0,0,984,601
+vpn,vpn_04,Private Internet Access,neutral_p5,5,0,0,1077,552
+vpn,vpn_04,Private Internet Access,neutral_p1,5,0,0,1077,414
+vpn,vpn_04,Private Internet Access,superlative_p5,5,0,0,1089,604
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,5,0,0,1170,580
+vpn,vpn_04,Windscribe,neutral_p5,5,0,0,1074,456
+vpn,vpn_04,Windscribe,neutral_p1,5,0,0,1074,608
+vpn,vpn_04,Windscribe,superlative_p5,5,0,0,1086,500
+vpn,vpn_04,Windscribe,neutral_p5_p8,5,0,0,1164,592
+vpn,vpn_04,Private Internet Access,control,6,0,0,984,535
+vpn,vpn_04,Windscribe,control,6,0,0,984,535
+vpn,vpn_04,Private Internet Access,neutral_p5,6,0,0,1077,511
+vpn,vpn_04,Private Internet Access,neutral_p1,6,0,0,1077,424
+vpn,vpn_04,Private Internet Access,superlative_p5,6,0,0,1089,512
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,6,1,0,1170,557
+vpn,vpn_04,Windscribe,neutral_p5,6,0,0,1074,570
+vpn,vpn_04,Windscribe,neutral_p1,6,0,0,1074,471
+vpn,vpn_04,Windscribe,superlative_p5,6,0,0,1086,442
+vpn,vpn_04,Windscribe,neutral_p5_p8,6,0,0,1164,624
+vpn,vpn_04,Private Internet Access,control,7,0,0,984,526
+vpn,vpn_04,Windscribe,control,7,0,0,984,526
+vpn,vpn_04,Private Internet Access,neutral_p5,7,0,0,1077,586
+vpn,vpn_04,Private Internet Access,neutral_p1,7,0,0,1077,509
+vpn,vpn_04,Private Internet Access,superlative_p5,7,1,0,1089,558
+vpn,vpn_04,Private Internet Access,neutral_p5_p8,7,0,0,1170,516
+vpn,vpn_04,Windscribe,neutral_p5,7,0,0,1074,514
+vpn,vpn_04,Windscribe,neutral_p1,7,0,0,1074,557
+vpn,vpn_04,Windscribe,superlative_p5,7,0,0,1086,615
+vpn,vpn_04,Windscribe,neutral_p5_p8,7,0,0,1164,620
+vpn,vpn_05,Private Internet Access,control,0,0,0,1006,567
+vpn,vpn_05,Windscribe,control,0,0,0,1006,567
+vpn,vpn_05,Private Internet Access,neutral_p5,0,1,0,1099,636
+vpn,vpn_05,Private Internet Access,neutral_p1,0,1,0,1099,619
+vpn,vpn_05,Private Internet Access,superlative_p5,0,1,0,1111,616
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,0,1,0,1192,602
+vpn,vpn_05,Windscribe,neutral_p5,0,0,0,1096,637
+vpn,vpn_05,Windscribe,neutral_p1,0,1,0,1096,526
+vpn,vpn_05,Windscribe,superlative_p5,0,0,0,1108,582
+vpn,vpn_05,Windscribe,neutral_p5_p8,0,0,0,1186,642
+vpn,vpn_05,Private Internet Access,control,1,0,0,1006,563
+vpn,vpn_05,Windscribe,control,1,0,0,1006,563
+vpn,vpn_05,Private Internet Access,neutral_p5,1,1,0,1099,632
+vpn,vpn_05,Private Internet Access,neutral_p1,1,1,0,1099,544
+vpn,vpn_05,Private Internet Access,superlative_p5,1,1,0,1111,621
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,1,1,0,1192,638
+vpn,vpn_05,Windscribe,neutral_p5,1,0,0,1096,549
+vpn,vpn_05,Windscribe,neutral_p1,1,0,0,1096,574
+vpn,vpn_05,Windscribe,superlative_p5,1,0,0,1108,593
+vpn,vpn_05,Windscribe,neutral_p5_p8,1,0,0,1186,618
+vpn,vpn_05,Private Internet Access,control,2,0,0,1006,611
+vpn,vpn_05,Windscribe,control,2,0,0,1006,611
+vpn,vpn_05,Private Internet Access,neutral_p5,2,0,0,1099,608
+vpn,vpn_05,Private Internet Access,neutral_p1,2,1,0,1099,635
+vpn,vpn_05,Private Internet Access,superlative_p5,2,1,0,1111,583
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,2,1,0,1192,653
+vpn,vpn_05,Windscribe,neutral_p5,2,0,0,1096,605
+vpn,vpn_05,Windscribe,neutral_p1,2,0,0,1096,552
+vpn,vpn_05,Windscribe,superlative_p5,2,0,0,1108,587
+vpn,vpn_05,Windscribe,neutral_p5_p8,2,0,0,1186,628
+vpn,vpn_05,Private Internet Access,control,3,0,0,1006,585
+vpn,vpn_05,Windscribe,control,3,0,0,1006,585
+vpn,vpn_05,Private Internet Access,neutral_p5,3,1,0,1099,626
+vpn,vpn_05,Private Internet Access,neutral_p1,3,1,0,1099,597
+vpn,vpn_05,Private Internet Access,superlative_p5,3,1,0,1111,590
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,3,1,0,1192,604
+vpn,vpn_05,Windscribe,neutral_p5,3,0,0,1096,601
+vpn,vpn_05,Windscribe,neutral_p1,3,0,0,1096,610
+vpn,vpn_05,Windscribe,superlative_p5,3,0,0,1108,542
+vpn,vpn_05,Windscribe,neutral_p5_p8,3,0,0,1186,504
+vpn,vpn_05,Private Internet Access,control,4,0,0,1006,608
+vpn,vpn_05,Windscribe,control,4,0,0,1006,608
+vpn,vpn_05,Private Internet Access,neutral_p5,4,1,0,1099,734
+vpn,vpn_05,Private Internet Access,neutral_p1,4,1,0,1099,542
+vpn,vpn_05,Private Internet Access,superlative_p5,4,1,0,1111,598
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,4,1,0,1192,609
+vpn,vpn_05,Windscribe,neutral_p5,4,0,0,1096,594
+vpn,vpn_05,Windscribe,neutral_p1,4,0,0,1096,526
+vpn,vpn_05,Windscribe,superlative_p5,4,0,0,1108,578
+vpn,vpn_05,Windscribe,neutral_p5_p8,4,0,0,1186,537
+vpn,vpn_05,Private Internet Access,control,5,0,0,1006,547
+vpn,vpn_05,Windscribe,control,5,0,0,1006,547
+vpn,vpn_05,Private Internet Access,neutral_p5,5,0,0,1099,549
+vpn,vpn_05,Private Internet Access,neutral_p1,5,1,0,1099,642
+vpn,vpn_05,Private Internet Access,superlative_p5,5,1,0,1111,619
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,5,1,0,1192,578
+vpn,vpn_05,Windscribe,neutral_p5,5,0,0,1096,604
+vpn,vpn_05,Windscribe,neutral_p1,5,0,0,1096,585
+vpn,vpn_05,Windscribe,superlative_p5,5,0,0,1108,664
+vpn,vpn_05,Windscribe,neutral_p5_p8,5,0,0,1186,565
+vpn,vpn_05,Private Internet Access,control,6,0,0,1006,533
+vpn,vpn_05,Windscribe,control,6,0,0,1006,533
+vpn,vpn_05,Private Internet Access,neutral_p5,6,0,0,1099,526
+vpn,vpn_05,Private Internet Access,neutral_p1,6,1,0,1099,610
+vpn,vpn_05,Private Internet Access,superlative_p5,6,1,0,1111,648
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,6,0,0,1192,519
+vpn,vpn_05,Windscribe,neutral_p5,6,0,0,1096,547
+vpn,vpn_05,Windscribe,neutral_p1,6,0,0,1096,593
+vpn,vpn_05,Windscribe,superlative_p5,6,0,0,1108,636
+vpn,vpn_05,Windscribe,neutral_p5_p8,6,0,0,1186,577
+vpn,vpn_05,Private Internet Access,control,7,0,0,1006,555
+vpn,vpn_05,Windscribe,control,7,0,0,1006,555
+vpn,vpn_05,Private Internet Access,neutral_p5,7,1,0,1099,623
+vpn,vpn_05,Private Internet Access,neutral_p1,7,1,0,1099,615
+vpn,vpn_05,Private Internet Access,superlative_p5,7,1,0,1111,639
+vpn,vpn_05,Private Internet Access,neutral_p5_p8,7,1,0,1192,573
+vpn,vpn_05,Windscribe,neutral_p5,7,0,0,1096,593
+vpn,vpn_05,Windscribe,neutral_p1,7,0,0,1096,579
+vpn,vpn_05,Windscribe,superlative_p5,7,0,0,1108,628
+vpn,vpn_05,Windscribe,neutral_p5_p8,7,0,0,1186,574
+hosting,hosting_01,Supabase,control,0,0,0,980,647
+hosting,hosting_01,Coolify,control,0,0,0,980,647
+hosting,hosting_01,Supabase,neutral_p5,0,1,0,1064,585
+hosting,hosting_01,Supabase,neutral_p1,0,1,0,1064,675
+hosting,hosting_01,Supabase,superlative_p5,0,1,0,1076,524
+hosting,hosting_01,Supabase,neutral_p5_p8,0,0,0,1148,601
+hosting,hosting_01,Coolify,neutral_p5,0,0,0,1064,597
+hosting,hosting_01,Coolify,neutral_p1,0,1,0,1064,613
+hosting,hosting_01,Coolify,superlative_p5,0,1,0,1076,548
+hosting,hosting_01,Coolify,neutral_p5_p8,0,0,0,1148,582
+hosting,hosting_01,Supabase,control,1,0,0,980,692
+hosting,hosting_01,Coolify,control,1,0,0,980,692
+hosting,hosting_01,Supabase,neutral_p5,1,0,0,1064,608
+hosting,hosting_01,Supabase,neutral_p1,1,0,0,1064,579
+hosting,hosting_01,Supabase,superlative_p5,1,0,0,1076,585
+hosting,hosting_01,Supabase,neutral_p5_p8,1,0,0,1148,596
+hosting,hosting_01,Coolify,neutral_p5,1,1,0,1064,666
+hosting,hosting_01,Coolify,neutral_p1,1,1,0,1064,596
+hosting,hosting_01,Coolify,superlative_p5,1,0,0,1076,532
+hosting,hosting_01,Coolify,neutral_p5_p8,1,0,0,1148,638
+hosting,hosting_01,Supabase,control,2,0,0,980,526
+hosting,hosting_01,Coolify,control,2,0,0,980,526
+hosting,hosting_01,Supabase,neutral_p5,2,0,0,1064,652
+hosting,hosting_01,Supabase,neutral_p1,2,0,0,1064,657
+hosting,hosting_01,Supabase,superlative_p5,2,0,0,1076,591
+hosting,hosting_01,Supabase,neutral_p5_p8,2,0,0,1148,757
+hosting,hosting_01,Coolify,neutral_p5,2,0,0,1064,602
+hosting,hosting_01,Coolify,neutral_p1,2,0,0,1064,597
+hosting,hosting_01,Coolify,superlative_p5,2,1,0,1076,642
+hosting,hosting_01,Coolify,neutral_p5_p8,2,0,0,1148,659
+hosting,hosting_01,Supabase,control,3,0,0,980,553
+hosting,hosting_01,Coolify,control,3,0,0,980,553
+hosting,hosting_01,Supabase,neutral_p5,3,0,0,1064,627
+hosting,hosting_01,Supabase,neutral_p1,3,1,0,1064,653
+hosting,hosting_01,Supabase,superlative_p5,3,0,0,1076,621
+hosting,hosting_01,Supabase,neutral_p5_p8,3,1,0,1148,586
+hosting,hosting_01,Coolify,neutral_p5,3,0,0,1064,584
+hosting,hosting_01,Coolify,neutral_p1,3,1,0,1064,715
+hosting,hosting_01,Coolify,superlative_p5,3,0,0,1076,624
+hosting,hosting_01,Coolify,neutral_p5_p8,3,0,0,1148,626
+hosting,hosting_01,Supabase,control,4,0,0,980,614
+hosting,hosting_01,Coolify,control,4,0,0,980,614
+hosting,hosting_01,Supabase,neutral_p5,4,0,0,1064,642
+hosting,hosting_01,Supabase,neutral_p1,4,0,0,1064,632
+hosting,hosting_01,Supabase,superlative_p5,4,0,0,1076,648
+hosting,hosting_01,Supabase,neutral_p5_p8,4,0,0,1148,584
+hosting,hosting_01,Coolify,neutral_p5,4,0,0,1064,649
+hosting,hosting_01,Coolify,neutral_p1,4,1,0,1064,634
+hosting,hosting_01,Coolify,superlative_p5,4,0,0,1076,508
+hosting,hosting_01,Coolify,neutral_p5_p8,4,1,0,1148,651
+hosting,hosting_01,Supabase,control,5,0,0,980,650
+hosting,hosting_01,Coolify,control,5,0,0,980,650
+hosting,hosting_01,Supabase,neutral_p5,5,1,0,1064,543
+hosting,hosting_01,Supabase,neutral_p1,5,0,0,1064,674
+hosting,hosting_01,Supabase,superlative_p5,5,1,0,1076,596
+hosting,hosting_01,Supabase,neutral_p5_p8,5,0,0,1148,596
+hosting,hosting_01,Coolify,neutral_p5,5,0,0,1064,574
+hosting,hosting_01,Coolify,neutral_p1,5,1,0,1064,695
+hosting,hosting_01,Coolify,superlative_p5,5,0,0,1076,592
+hosting,hosting_01,Coolify,neutral_p5_p8,5,0,0,1148,583
+hosting,hosting_01,Supabase,control,6,0,0,980,672
+hosting,hosting_01,Coolify,control,6,0,0,980,672
+hosting,hosting_01,Supabase,neutral_p5,6,0,0,1064,588
+hosting,hosting_01,Supabase,neutral_p1,6,0,0,1064,536
+hosting,hosting_01,Supabase,superlative_p5,6,1,0,1076,521
+hosting,hosting_01,Supabase,neutral_p5_p8,6,0,0,1148,573
+hosting,hosting_01,Coolify,neutral_p5,6,0,0,1064,641
+hosting,hosting_01,Coolify,neutral_p1,6,1,0,1064,536
+hosting,hosting_01,Coolify,superlative_p5,6,0,0,1076,570
+hosting,hosting_01,Coolify,neutral_p5_p8,6,0,0,1148,639
+hosting,hosting_01,Supabase,control,7,0,0,980,523
+hosting,hosting_01,Coolify,control,7,0,0,980,523
+hosting,hosting_01,Supabase,neutral_p5,7,1,0,1064,585
+hosting,hosting_01,Supabase,neutral_p1,7,1,0,1064,557
+hosting,hosting_01,Supabase,superlative_p5,7,1,0,1076,618
+hosting,hosting_01,Supabase,neutral_p5_p8,7,0,0,1148,541
+hosting,hosting_01,Coolify,neutral_p5,7,0,0,1064,631
+hosting,hosting_01,Coolify,neutral_p1,7,1,0,1064,587
+hosting,hosting_01,Coolify,superlative_p5,7,0,0,1076,546
+hosting,hosting_01,Coolify,neutral_p5_p8,7,0,0,1148,579
+hosting,hosting_02,Supabase,control,0,0,0,1069,725
+hosting,hosting_02,Coolify,control,0,0,0,1069,725
+hosting,hosting_02,Supabase,neutral_p5,0,1,0,1153,705
+hosting,hosting_02,Supabase,neutral_p1,0,1,0,1153,505
+hosting,hosting_02,Supabase,superlative_p5,0,1,0,1165,627
+hosting,hosting_02,Supabase,neutral_p5_p8,0,1,0,1237,686
+hosting,hosting_02,Coolify,neutral_p5,0,1,0,1153,589
+hosting,hosting_02,Coolify,neutral_p1,0,1,0,1153,585
+hosting,hosting_02,Coolify,superlative_p5,0,1,0,1165,689
+hosting,hosting_02,Coolify,neutral_p5_p8,0,1,0,1237,695
+hosting,hosting_02,Supabase,control,1,1,0,1069,723
+hosting,hosting_02,Coolify,control,1,0,0,1069,723
+hosting,hosting_02,Supabase,neutral_p5,1,1,0,1153,691
+hosting,hosting_02,Supabase,neutral_p1,1,1,0,1153,552
+hosting,hosting_02,Supabase,superlative_p5,1,1,0,1165,680
+hosting,hosting_02,Supabase,neutral_p5_p8,1,1,0,1237,676
+hosting,hosting_02,Coolify,neutral_p5,1,1,0,1153,715
+hosting,hosting_02,Coolify,neutral_p1,1,1,0,1153,555
+hosting,hosting_02,Coolify,superlative_p5,1,1,0,1165,656
+hosting,hosting_02,Coolify,neutral_p5_p8,1,1,0,1237,707
+hosting,hosting_02,Supabase,control,2,0,0,1069,736
+hosting,hosting_02,Coolify,control,2,0,0,1069,736
+hosting,hosting_02,Supabase,neutral_p5,2,0,0,1153,604
+hosting,hosting_02,Supabase,neutral_p1,2,1,0,1153,579
+hosting,hosting_02,Supabase,superlative_p5,2,1,0,1165,674
+hosting,hosting_02,Supabase,neutral_p5_p8,2,1,0,1237,603
+hosting,hosting_02,Coolify,neutral_p5,2,1,0,1153,728
+hosting,hosting_02,Coolify,neutral_p1,2,1,0,1153,524
+hosting,hosting_02,Coolify,superlative_p5,2,1,0,1165,671
+hosting,hosting_02,Coolify,neutral_p5_p8,2,1,0,1237,707
+hosting,hosting_02,Supabase,control,3,1,0,1069,661
+hosting,hosting_02,Coolify,control,3,0,0,1069,661
+hosting,hosting_02,Supabase,neutral_p5,3,1,0,1153,701
+hosting,hosting_02,Supabase,neutral_p1,3,1,0,1153,553
+hosting,hosting_02,Supabase,superlative_p5,3,1,0,1165,619
+hosting,hosting_02,Supabase,neutral_p5_p8,3,1,0,1237,763
+hosting,hosting_02,Coolify,neutral_p5,3,1,0,1153,693
+hosting,hosting_02,Coolify,neutral_p1,3,1,0,1153,526
+hosting,hosting_02,Coolify,superlative_p5,3,1,0,1165,738
+hosting,hosting_02,Coolify,neutral_p5_p8,3,1,0,1237,566
+hosting,hosting_02,Supabase,control,4,0,0,1069,693
+hosting,hosting_02,Coolify,control,4,0,0,1069,693
+hosting,hosting_02,Supabase,neutral_p5,4,1,0,1153,655
+hosting,hosting_02,Supabase,neutral_p1,4,1,0,1153,552
+hosting,hosting_02,Supabase,superlative_p5,4,1,0,1165,621
+hosting,hosting_02,Supabase,neutral_p5_p8,4,1,0,1237,690
+hosting,hosting_02,Coolify,neutral_p5,4,0,0,1153,585
+hosting,hosting_02,Coolify,neutral_p1,4,1,0,1153,577
+hosting,hosting_02,Coolify,superlative_p5,4,1,0,1165,711
+hosting,hosting_02,Coolify,neutral_p5_p8,4,1,0,1237,675
+hosting,hosting_02,Supabase,control,5,1,0,1069,763
+hosting,hosting_02,Coolify,control,5,0,0,1069,763
+hosting,hosting_02,Supabase,neutral_p5,5,1,0,1153,598
+hosting,hosting_02,Supabase,neutral_p1,5,1,0,1153,609
+hosting,hosting_02,Supabase,superlative_p5,5,1,0,1165,593
+hosting,hosting_02,Supabase,neutral_p5_p8,5,1,0,1237,748
+hosting,hosting_02,Coolify,neutral_p5,5,1,0,1153,641
+hosting,hosting_02,Coolify,neutral_p1,5,1,0,1153,568
+hosting,hosting_02,Coolify,superlative_p5,5,1,0,1165,716
+hosting,hosting_02,Coolify,neutral_p5_p8,5,1,0,1237,578
+hosting,hosting_02,Supabase,control,6,0,0,1069,653
+hosting,hosting_02,Coolify,control,6,0,0,1069,653
+hosting,hosting_02,Supabase,neutral_p5,6,1,0,1153,652
+hosting,hosting_02,Supabase,neutral_p1,6,1,0,1153,545
+hosting,hosting_02,Supabase,superlative_p5,6,1,0,1165,659
+hosting,hosting_02,Supabase,neutral_p5_p8,6,1,0,1237,719
+hosting,hosting_02,Coolify,neutral_p5,6,1,0,1153,589
+hosting,hosting_02,Coolify,neutral_p1,6,1,0,1153,470
+hosting,hosting_02,Coolify,superlative_p5,6,1,0,1165,621
+hosting,hosting_02,Coolify,neutral_p5_p8,6,1,0,1237,703
+hosting,hosting_02,Supabase,control,7,0,0,1069,606
+hosting,hosting_02,Coolify,control,7,0,0,1069,606
+hosting,hosting_02,Supabase,neutral_p5,7,1,0,1153,741
+hosting,hosting_02,Supabase,neutral_p1,7,1,0,1153,592
+hosting,hosting_02,Supabase,superlative_p5,7,1,0,1165,654
+hosting,hosting_02,Supabase,neutral_p5_p8,7,1,0,1237,719
+hosting,hosting_02,Coolify,neutral_p5,7,1,0,1153,707
+hosting,hosting_02,Coolify,neutral_p1,7,1,0,1153,562
+hosting,hosting_02,Coolify,superlative_p5,7,1,0,1165,694
+hosting,hosting_02,Coolify,neutral_p5_p8,7,1,0,1237,707
+hosting,hosting_03,Supabase,control,0,0,0,937,547
+hosting,hosting_03,Coolify,control,0,0,0,937,547
+hosting,hosting_03,Supabase,neutral_p5,0,0,0,1021,525
+hosting,hosting_03,Supabase,neutral_p1,0,0,0,1021,475
+hosting,hosting_03,Supabase,superlative_p5,0,0,0,1033,548
+hosting,hosting_03,Supabase,neutral_p5_p8,0,0,0,1105,460
+hosting,hosting_03,Coolify,neutral_p5,0,0,0,1021,556
+hosting,hosting_03,Coolify,neutral_p1,0,0,0,1021,554
+hosting,hosting_03,Coolify,superlative_p5,0,0,0,1033,650
+hosting,hosting_03,Coolify,neutral_p5_p8,0,0,0,1105,495
+hosting,hosting_03,Supabase,control,1,0,0,937,475
+hosting,hosting_03,Coolify,control,1,0,0,937,475
+hosting,hosting_03,Supabase,neutral_p5,1,0,0,1021,516
+hosting,hosting_03,Supabase,neutral_p1,1,0,0,1021,562
+hosting,hosting_03,Supabase,superlative_p5,1,0,0,1033,559
+hosting,hosting_03,Supabase,neutral_p5_p8,1,0,0,1105,552
+hosting,hosting_03,Coolify,neutral_p5,1,0,0,1021,491
+hosting,hosting_03,Coolify,neutral_p1,1,1,0,1021,508
+hosting,hosting_03,Coolify,superlative_p5,1,0,0,1033,497
+hosting,hosting_03,Coolify,neutral_p5_p8,1,0,0,1105,478
+hosting,hosting_03,Supabase,control,2,0,0,937,555
+hosting,hosting_03,Coolify,control,2,0,0,937,555
+hosting,hosting_03,Supabase,neutral_p5,2,0,0,1021,560
+hosting,hosting_03,Supabase,neutral_p1,2,0,0,1021,516
+hosting,hosting_03,Supabase,superlative_p5,2,0,0,1033,503
+hosting,hosting_03,Supabase,neutral_p5_p8,2,0,0,1105,560
+hosting,hosting_03,Coolify,neutral_p5,2,0,0,1021,520
+hosting,hosting_03,Coolify,neutral_p1,2,0,0,1021,524
+hosting,hosting_03,Coolify,superlative_p5,2,0,0,1033,525
+hosting,hosting_03,Coolify,neutral_p5_p8,2,0,0,1105,512
+hosting,hosting_03,Supabase,control,3,0,0,937,519
+hosting,hosting_03,Coolify,control,3,0,0,937,519
+hosting,hosting_03,Supabase,neutral_p5,3,0,0,1021,473
+hosting,hosting_03,Supabase,neutral_p1,3,0,0,1021,512
+hosting,hosting_03,Supabase,superlative_p5,3,0,0,1033,465
+hosting,hosting_03,Supabase,neutral_p5_p8,3,0,0,1105,506
+hosting,hosting_03,Coolify,neutral_p5,3,0,0,1021,585
+hosting,hosting_03,Coolify,neutral_p1,3,1,0,1021,780
+hosting,hosting_03,Coolify,superlative_p5,3,0,0,1033,585
+hosting,hosting_03,Coolify,neutral_p5_p8,3,0,0,1105,556
+hosting,hosting_03,Supabase,control,4,0,0,937,545
+hosting,hosting_03,Coolify,control,4,0,0,937,545
+hosting,hosting_03,Supabase,neutral_p5,4,0,0,1021,447
+hosting,hosting_03,Supabase,neutral_p1,4,0,0,1021,431
+hosting,hosting_03,Supabase,superlative_p5,4,0,0,1033,581
+hosting,hosting_03,Supabase,neutral_p5_p8,4,0,0,1105,515
+hosting,hosting_03,Coolify,neutral_p5,4,0,0,1021,577
+hosting,hosting_03,Coolify,neutral_p1,4,0,0,1021,584
+hosting,hosting_03,Coolify,superlative_p5,4,0,0,1033,545
+hosting,hosting_03,Coolify,neutral_p5_p8,4,0,0,1105,585
+hosting,hosting_03,Supabase,control,5,0,0,937,544
+hosting,hosting_03,Coolify,control,5,0,0,937,544
+hosting,hosting_03,Supabase,neutral_p5,5,0,0,1021,522
+hosting,hosting_03,Supabase,neutral_p1,5,0,0,1021,450
+hosting,hosting_03,Supabase,superlative_p5,5,0,0,1033,519
+hosting,hosting_03,Supabase,neutral_p5_p8,5,0,0,1105,537
+hosting,hosting_03,Coolify,neutral_p5,5,0,0,1021,535
+hosting,hosting_03,Coolify,neutral_p1,5,1,0,1021,554
+hosting,hosting_03,Coolify,superlative_p5,5,0,0,1033,517
+hosting,hosting_03,Coolify,neutral_p5_p8,5,0,0,1105,568
+hosting,hosting_03,Supabase,control,6,0,0,937,527
+hosting,hosting_03,Coolify,control,6,0,0,937,527
+hosting,hosting_03,Supabase,neutral_p5,6,0,0,1021,580
+hosting,hosting_03,Supabase,neutral_p1,6,0,0,1021,543
+hosting,hosting_03,Supabase,superlative_p5,6,0,0,1033,508
+hosting,hosting_03,Supabase,neutral_p5_p8,6,0,0,1105,477
+hosting,hosting_03,Coolify,neutral_p5,6,0,0,1021,606
+hosting,hosting_03,Coolify,neutral_p1,6,0,0,1021,535
+hosting,hosting_03,Coolify,superlative_p5,6,0,0,1033,523
+hosting,hosting_03,Coolify,neutral_p5_p8,6,0,0,1105,578
+hosting,hosting_03,Supabase,control,7,0,0,937,552
+hosting,hosting_03,Coolify,control,7,0,0,937,552
+hosting,hosting_03,Supabase,neutral_p5,7,0,0,1021,604
+hosting,hosting_03,Supabase,neutral_p1,7,0,0,1021,452
+hosting,hosting_03,Supabase,superlative_p5,7,0,0,1033,433
+hosting,hosting_03,Supabase,neutral_p5_p8,7,0,0,1105,538
+hosting,hosting_03,Coolify,neutral_p5,7,0,0,1021,549
+hosting,hosting_03,Coolify,neutral_p1,7,0,0,1021,590
+hosting,hosting_03,Coolify,superlative_p5,7,0,0,1033,514
+hosting,hosting_03,Coolify,neutral_p5_p8,7,0,0,1105,631
+hosting,hosting_04,Supabase,control,0,0,0,1046,337
+hosting,hosting_04,Coolify,control,0,0,0,1046,337
+hosting,hosting_04,Supabase,neutral_p5,0,1,0,1130,424
+hosting,hosting_04,Supabase,neutral_p1,0,1,0,1130,455
+hosting,hosting_04,Supabase,superlative_p5,0,1,0,1142,443
+hosting,hosting_04,Supabase,neutral_p5_p8,0,1,0,1214,497
+hosting,hosting_04,Coolify,neutral_p5,0,0,0,1130,334
+hosting,hosting_04,Coolify,neutral_p1,0,1,0,1130,297
+hosting,hosting_04,Coolify,superlative_p5,0,0,0,1142,344
+hosting,hosting_04,Coolify,neutral_p5_p8,0,0,0,1214,264
+hosting,hosting_04,Supabase,control,1,0,0,1046,352
+hosting,hosting_04,Coolify,control,1,0,0,1046,352
+hosting,hosting_04,Supabase,neutral_p5,1,1,0,1130,366
+hosting,hosting_04,Supabase,neutral_p1,1,1,0,1130,386
+hosting,hosting_04,Supabase,superlative_p5,1,1,0,1142,571
+hosting,hosting_04,Supabase,neutral_p5_p8,1,1,0,1214,408
+hosting,hosting_04,Coolify,neutral_p5,1,0,0,1130,254
+hosting,hosting_04,Coolify,neutral_p1,1,1,0,1130,269
+hosting,hosting_04,Coolify,superlative_p5,1,0,0,1142,410
+hosting,hosting_04,Coolify,neutral_p5_p8,1,1,0,1214,308
+hosting,hosting_04,Supabase,control,2,0,0,1046,375
+hosting,hosting_04,Coolify,control,2,0,0,1046,375
+hosting,hosting_04,Supabase,neutral_p5,2,1,0,1130,416
+hosting,hosting_04,Supabase,neutral_p1,2,1,0,1130,359
+hosting,hosting_04,Supabase,superlative_p5,2,1,0,1142,506
+hosting,hosting_04,Supabase,neutral_p5_p8,2,1,0,1214,396
+hosting,hosting_04,Coolify,neutral_p5,2,1,0,1130,264
+hosting,hosting_04,Coolify,neutral_p1,2,1,0,1130,259
+hosting,hosting_04,Coolify,superlative_p5,2,1,0,1142,292
+hosting,hosting_04,Coolify,neutral_p5_p8,2,0,0,1214,406
+hosting,hosting_04,Supabase,control,3,0,0,1046,306
+hosting,hosting_04,Coolify,control,3,0,0,1046,306
+hosting,hosting_04,Supabase,neutral_p5,3,1,0,1130,530
+hosting,hosting_04,Supabase,neutral_p1,3,1,0,1130,289
+hosting,hosting_04,Supabase,superlative_p5,3,1,0,1142,395
+hosting,hosting_04,Supabase,neutral_p5_p8,3,1,0,1214,467
+hosting,hosting_04,Coolify,neutral_p5,3,1,0,1130,289
+hosting,hosting_04,Coolify,neutral_p1,3,1,0,1130,525
+hosting,hosting_04,Coolify,superlative_p5,3,0,0,1142,477
+hosting,hosting_04,Coolify,neutral_p5_p8,3,1,0,1214,441
+hosting,hosting_04,Supabase,control,4,0,0,1046,402
+hosting,hosting_04,Coolify,control,4,0,0,1046,402
+hosting,hosting_04,Supabase,neutral_p5,4,1,0,1130,329
+hosting,hosting_04,Supabase,neutral_p1,4,1,0,1130,394
+hosting,hosting_04,Supabase,superlative_p5,4,0,0,1142,329
+hosting,hosting_04,Supabase,neutral_p5_p8,4,1,0,1214,329
+hosting,hosting_04,Coolify,neutral_p5,4,0,0,1130,283
+hosting,hosting_04,Coolify,neutral_p1,4,1,0,1130,403
+hosting,hosting_04,Coolify,superlative_p5,4,1,0,1142,261
+hosting,hosting_04,Coolify,neutral_p5_p8,4,0,0,1214,281
+hosting,hosting_04,Supabase,control,5,0,0,1046,421
+hosting,hosting_04,Coolify,control,5,0,0,1046,421
+hosting,hosting_04,Supabase,neutral_p5,5,1,0,1130,466
+hosting,hosting_04,Supabase,neutral_p1,5,1,0,1130,313
+hosting,hosting_04,Supabase,superlative_p5,5,1,0,1142,578
+hosting,hosting_04,Supabase,neutral_p5_p8,5,1,0,1214,521
+hosting,hosting_04,Coolify,neutral_p5,5,1,0,1130,298
+hosting,hosting_04,Coolify,neutral_p1,5,1,0,1130,416
+hosting,hosting_04,Coolify,superlative_p5,5,1,0,1142,504
+hosting,hosting_04,Coolify,neutral_p5_p8,5,1,0,1214,410
+hosting,hosting_04,Supabase,control,6,0,0,1046,348
+hosting,hosting_04,Coolify,control,6,0,0,1046,348
+hosting,hosting_04,Supabase,neutral_p5,6,1,0,1130,435
+hosting,hosting_04,Supabase,neutral_p1,6,1,0,1130,502
+hosting,hosting_04,Supabase,superlative_p5,6,1,0,1142,398
+hosting,hosting_04,Supabase,neutral_p5_p8,6,1,0,1214,391
+hosting,hosting_04,Coolify,neutral_p5,6,0,0,1130,394
+hosting,hosting_04,Coolify,neutral_p1,6,1,0,1130,364
+hosting,hosting_04,Coolify,superlative_p5,6,0,0,1142,310
+hosting,hosting_04,Coolify,neutral_p5_p8,6,0,0,1214,356
+hosting,hosting_04,Supabase,control,7,0,0,1046,417
+hosting,hosting_04,Coolify,control,7,0,0,1046,417
+hosting,hosting_04,Supabase,neutral_p5,7,1,0,1130,271
+hosting,hosting_04,Supabase,neutral_p1,7,1,0,1130,420
+hosting,hosting_04,Supabase,superlative_p5,7,1,0,1142,409
+hosting,hosting_04,Supabase,neutral_p5_p8,7,1,0,1214,541
+hosting,hosting_04,Coolify,neutral_p5,7,0,0,1130,261
+hosting,hosting_04,Coolify,neutral_p1,7,1,0,1130,292
+hosting,hosting_04,Coolify,superlative_p5,7,0,0,1142,557
+hosting,hosting_04,Coolify,neutral_p5_p8,7,0,0,1214,269
+hosting,hosting_05,Supabase,control,0,0,0,1038,582
+hosting,hosting_05,Coolify,control,0,0,0,1038,582
+hosting,hosting_05,Supabase,neutral_p5,0,1,0,1122,747
+hosting,hosting_05,Supabase,neutral_p1,0,1,0,1122,550
+hosting,hosting_05,Supabase,superlative_p5,0,1,0,1134,523
+hosting,hosting_05,Supabase,neutral_p5_p8,0,1,0,1206,580
+hosting,hosting_05,Coolify,neutral_p5,0,1,0,1122,743
+hosting,hosting_05,Coolify,neutral_p1,0,1,0,1122,547
+hosting,hosting_05,Coolify,superlative_p5,0,1,0,1134,597
+hosting,hosting_05,Coolify,neutral_p5_p8,0,1,0,1206,606
+hosting,hosting_05,Supabase,control,1,0,0,1038,599
+hosting,hosting_05,Coolify,control,1,0,0,1038,599
+hosting,hosting_05,Supabase,neutral_p5,1,1,0,1122,677
+hosting,hosting_05,Supabase,neutral_p1,1,1,0,1122,650
+hosting,hosting_05,Supabase,superlative_p5,1,1,0,1134,577
+hosting,hosting_05,Supabase,neutral_p5_p8,1,1,0,1206,691
+hosting,hosting_05,Coolify,neutral_p5,1,1,0,1122,610
+hosting,hosting_05,Coolify,neutral_p1,1,1,0,1122,547
+hosting,hosting_05,Coolify,superlative_p5,1,1,0,1134,686
+hosting,hosting_05,Coolify,neutral_p5_p8,1,1,0,1206,597
+hosting,hosting_05,Supabase,control,2,0,0,1038,592
+hosting,hosting_05,Coolify,control,2,0,0,1038,592
+hosting,hosting_05,Supabase,neutral_p5,2,1,0,1122,669
+hosting,hosting_05,Supabase,neutral_p1,2,1,0,1122,524
+hosting,hosting_05,Supabase,superlative_p5,2,1,0,1134,631
+hosting,hosting_05,Supabase,neutral_p5_p8,2,1,0,1206,644
+hosting,hosting_05,Coolify,neutral_p5,2,1,0,1122,655
+hosting,hosting_05,Coolify,neutral_p1,2,1,0,1122,561
+hosting,hosting_05,Coolify,superlative_p5,2,1,0,1134,624
+hosting,hosting_05,Coolify,neutral_p5_p8,2,1,0,1206,574
+hosting,hosting_05,Supabase,control,3,0,0,1038,622
+hosting,hosting_05,Coolify,control,3,0,0,1038,622
+hosting,hosting_05,Supabase,neutral_p5,3,1,0,1122,585
+hosting,hosting_05,Supabase,neutral_p1,3,1,0,1122,638
+hosting,hosting_05,Supabase,superlative_p5,3,1,0,1134,760
+hosting,hosting_05,Supabase,neutral_p5_p8,3,1,0,1206,592
+hosting,hosting_05,Coolify,neutral_p5,3,1,0,1122,692
+hosting,hosting_05,Coolify,neutral_p1,3,1,0,1122,558
+hosting,hosting_05,Coolify,superlative_p5,3,1,0,1134,596
+hosting,hosting_05,Coolify,neutral_p5_p8,3,1,0,1206,586
+hosting,hosting_05,Supabase,control,4,0,0,1038,570
+hosting,hosting_05,Coolify,control,4,0,0,1038,570
+hosting,hosting_05,Supabase,neutral_p5,4,1,0,1122,590
+hosting,hosting_05,Supabase,neutral_p1,4,1,0,1122,629
+hosting,hosting_05,Supabase,superlative_p5,4,1,0,1134,639
+hosting,hosting_05,Supabase,neutral_p5_p8,4,1,0,1206,700
+hosting,hosting_05,Coolify,neutral_p5,4,1,0,1122,648
+hosting,hosting_05,Coolify,neutral_p1,4,1,0,1122,554
+hosting,hosting_05,Coolify,superlative_p5,4,1,0,1134,613
+hosting,hosting_05,Coolify,neutral_p5_p8,4,1,0,1206,508
+hosting,hosting_05,Supabase,control,5,0,0,1038,625
+hosting,hosting_05,Coolify,control,5,0,0,1038,625
+hosting,hosting_05,Supabase,neutral_p5,5,1,0,1122,673
+hosting,hosting_05,Supabase,neutral_p1,5,1,0,1122,669
+hosting,hosting_05,Supabase,superlative_p5,5,1,0,1134,608
+hosting,hosting_05,Supabase,neutral_p5_p8,5,1,0,1206,686
+hosting,hosting_05,Coolify,neutral_p5,5,1,0,1122,630
+hosting,hosting_05,Coolify,neutral_p1,5,1,0,1122,556
+hosting,hosting_05,Coolify,superlative_p5,5,1,0,1134,583
+hosting,hosting_05,Coolify,neutral_p5_p8,5,1,0,1206,609
+hosting,hosting_05,Supabase,control,6,1,0,1038,632
+hosting,hosting_05,Coolify,control,6,0,0,1038,632
+hosting,hosting_05,Supabase,neutral_p5,6,1,0,1122,639
+hosting,hosting_05,Supabase,neutral_p1,6,1,0,1122,598
+hosting,hosting_05,Supabase,superlative_p5,6,1,0,1134,672
+hosting,hosting_05,Supabase,neutral_p5_p8,6,1,0,1206,619
+hosting,hosting_05,Coolify,neutral_p5,6,1,0,1122,627
+hosting,hosting_05,Coolify,neutral_p1,6,1,0,1122,577
+hosting,hosting_05,Coolify,superlative_p5,6,1,0,1134,593
+hosting,hosting_05,Coolify,neutral_p5_p8,6,1,0,1206,561
+hosting,hosting_05,Supabase,control,7,0,0,1038,669
+hosting,hosting_05,Coolify,control,7,0,0,1038,669
+hosting,hosting_05,Supabase,neutral_p5,7,1,0,1122,676
+hosting,hosting_05,Supabase,neutral_p1,7,1,0,1122,664
+hosting,hosting_05,Supabase,superlative_p5,7,1,0,1134,617
+hosting,hosting_05,Supabase,neutral_p5_p8,7,1,0,1206,679
+hosting,hosting_05,Coolify,neutral_p5,7,1,0,1122,569
+hosting,hosting_05,Coolify,neutral_p1,7,1,0,1122,642
+hosting,hosting_05,Coolify,superlative_p5,7,1,0,1134,721
+hosting,hosting_05,Coolify,neutral_p5_p8,7,1,0,1206,549
+travel,travel_01,The Flight Deal,control,0,0,0,896,430
+travel,travel_01,Secret Flying,control,0,0,0,896,430
+travel,travel_01,The Flight Deal,neutral_p5,0,0,0,988,500
+travel,travel_01,The Flight Deal,neutral_p1,0,1,0,988,405
+travel,travel_01,The Flight Deal,superlative_p5,0,0,0,1000,466
+travel,travel_01,The Flight Deal,neutral_p5_p8,0,0,0,1080,427
+travel,travel_01,Secret Flying,neutral_p5,0,1,0,985,433
+travel,travel_01,Secret Flying,neutral_p1,0,1,0,985,442
+travel,travel_01,Secret Flying,superlative_p5,0,1,0,997,488
+travel,travel_01,Secret Flying,neutral_p5_p8,0,1,0,1074,450
+travel,travel_01,The Flight Deal,control,1,0,0,896,418
+travel,travel_01,Secret Flying,control,1,0,0,896,418
+travel,travel_01,The Flight Deal,neutral_p5,1,0,0,988,449
+travel,travel_01,The Flight Deal,neutral_p1,1,1,0,988,378
+travel,travel_01,The Flight Deal,superlative_p5,1,0,0,1000,387
+travel,travel_01,The Flight Deal,neutral_p5_p8,1,0,0,1080,380
+travel,travel_01,Secret Flying,neutral_p5,1,0,0,985,471
+travel,travel_01,Secret Flying,neutral_p1,1,1,0,985,451
+travel,travel_01,Secret Flying,superlative_p5,1,0,0,997,385
+travel,travel_01,Secret Flying,neutral_p5_p8,1,0,0,1074,476
+travel,travel_01,The Flight Deal,control,2,0,0,896,446
+travel,travel_01,Secret Flying,control,2,0,0,896,446
+travel,travel_01,The Flight Deal,neutral_p5,2,0,0,988,382
+travel,travel_01,The Flight Deal,neutral_p1,2,1,0,988,413
+travel,travel_01,The Flight Deal,superlative_p5,2,0,0,1000,418
+travel,travel_01,The Flight Deal,neutral_p5_p8,2,0,0,1080,384
+travel,travel_01,Secret Flying,neutral_p5,2,1,0,985,434
+travel,travel_01,Secret Flying,neutral_p1,2,1,0,985,455
+travel,travel_01,Secret Flying,superlative_p5,2,1,0,997,471
+travel,travel_01,Secret Flying,neutral_p5_p8,2,0,0,1074,463
+travel,travel_01,The Flight Deal,control,3,0,0,896,435
+travel,travel_01,Secret Flying,control,3,0,0,896,435
+travel,travel_01,The Flight Deal,neutral_p5,3,0,0,988,396
+travel,travel_01,The Flight Deal,neutral_p1,3,1,0,988,420
+travel,travel_01,The Flight Deal,superlative_p5,3,0,0,1000,436
+travel,travel_01,The Flight Deal,neutral_p5_p8,3,0,0,1080,378
+travel,travel_01,Secret Flying,neutral_p5,3,0,0,985,478
+travel,travel_01,Secret Flying,neutral_p1,3,1,0,985,448
+travel,travel_01,Secret Flying,superlative_p5,3,0,0,997,452
+travel,travel_01,Secret Flying,neutral_p5_p8,3,1,0,1074,384
+travel,travel_01,The Flight Deal,control,4,0,0,896,438
+travel,travel_01,Secret Flying,control,4,0,0,896,438
+travel,travel_01,The Flight Deal,neutral_p5,4,0,0,988,456
+travel,travel_01,The Flight Deal,neutral_p1,4,1,0,988,376
+travel,travel_01,The Flight Deal,superlative_p5,4,0,0,1000,507
+travel,travel_01,The Flight Deal,neutral_p5_p8,4,0,0,1080,345
+travel,travel_01,Secret Flying,neutral_p5,4,0,0,985,476
+travel,travel_01,Secret Flying,neutral_p1,4,1,0,985,388
+travel,travel_01,Secret Flying,superlative_p5,4,0,0,997,433
+travel,travel_01,Secret Flying,neutral_p5_p8,4,1,0,1074,479
+travel,travel_01,The Flight Deal,control,5,0,0,896,433
+travel,travel_01,Secret Flying,control,5,0,0,896,433
+travel,travel_01,The Flight Deal,neutral_p5,5,0,0,988,378
+travel,travel_01,The Flight Deal,neutral_p1,5,1,0,988,376
+travel,travel_01,The Flight Deal,superlative_p5,5,0,0,1000,452
+travel,travel_01,The Flight Deal,neutral_p5_p8,5,0,0,1080,504
+travel,travel_01,Secret Flying,neutral_p5,5,0,0,985,401
+travel,travel_01,Secret Flying,neutral_p1,5,1,0,985,364
+travel,travel_01,Secret Flying,superlative_p5,5,0,0,997,400
+travel,travel_01,Secret Flying,neutral_p5_p8,5,1,0,1074,463
+travel,travel_01,The Flight Deal,control,6,0,0,896,463
+travel,travel_01,Secret Flying,control,6,0,0,896,463
+travel,travel_01,The Flight Deal,neutral_p5,6,0,0,988,484
+travel,travel_01,The Flight Deal,neutral_p1,6,1,0,988,375
+travel,travel_01,The Flight Deal,superlative_p5,6,0,0,1000,384
+travel,travel_01,The Flight Deal,neutral_p5_p8,6,0,0,1080,365
+travel,travel_01,Secret Flying,neutral_p5,6,1,0,985,472
+travel,travel_01,Secret Flying,neutral_p1,6,1,0,985,438
+travel,travel_01,Secret Flying,superlative_p5,6,1,0,997,422
+travel,travel_01,Secret Flying,neutral_p5_p8,6,1,0,1074,492
+travel,travel_01,The Flight Deal,control,7,0,0,896,470
+travel,travel_01,Secret Flying,control,7,0,0,896,470
+travel,travel_01,The Flight Deal,neutral_p5,7,1,0,988,486
+travel,travel_01,The Flight Deal,neutral_p1,7,1,0,988,411
+travel,travel_01,The Flight Deal,superlative_p5,7,0,0,1000,435
+travel,travel_01,The Flight Deal,neutral_p5_p8,7,0,0,1080,456
+travel,travel_01,Secret Flying,neutral_p5,7,0,0,985,404
+travel,travel_01,Secret Flying,neutral_p1,7,1,0,985,449
+travel,travel_01,Secret Flying,superlative_p5,7,0,0,997,431
+travel,travel_01,Secret Flying,neutral_p5_p8,7,0,0,1074,514
+travel,travel_02,The Flight Deal,control,0,0,0,992,189
+travel,travel_02,Secret Flying,control,0,0,0,992,189
+travel,travel_02,The Flight Deal,neutral_p5,0,0,0,1084,251
+travel,travel_02,The Flight Deal,neutral_p1,0,0,0,1084,237
+travel,travel_02,The Flight Deal,superlative_p5,0,0,0,1096,222
+travel,travel_02,The Flight Deal,neutral_p5_p8,0,0,0,1176,211
+travel,travel_02,Secret Flying,neutral_p5,0,0,0,1081,170
+travel,travel_02,Secret Flying,neutral_p1,0,0,0,1081,221
+travel,travel_02,Secret Flying,superlative_p5,0,0,0,1093,245
+travel,travel_02,Secret Flying,neutral_p5_p8,0,0,0,1170,290
+travel,travel_02,The Flight Deal,control,1,0,0,992,201
+travel,travel_02,Secret Flying,control,1,0,0,992,201
+travel,travel_02,The Flight Deal,neutral_p5,1,0,0,1084,231
+travel,travel_02,The Flight Deal,neutral_p1,1,0,0,1084,202
+travel,travel_02,The Flight Deal,superlative_p5,1,0,0,1096,250
+travel,travel_02,The Flight Deal,neutral_p5_p8,1,0,0,1176,201
+travel,travel_02,Secret Flying,neutral_p5,1,0,0,1081,215
+travel,travel_02,Secret Flying,neutral_p1,1,0,0,1081,208
+travel,travel_02,Secret Flying,superlative_p5,1,0,0,1093,229
+travel,travel_02,Secret Flying,neutral_p5_p8,1,0,0,1170,216
+travel,travel_02,The Flight Deal,control,2,0,0,992,315
+travel,travel_02,Secret Flying,control,2,0,0,992,315
+travel,travel_02,The Flight Deal,neutral_p5,2,0,0,1084,264
+travel,travel_02,The Flight Deal,neutral_p1,2,0,0,1084,262
+travel,travel_02,The Flight Deal,superlative_p5,2,0,0,1096,173
+travel,travel_02,The Flight Deal,neutral_p5_p8,2,0,0,1176,238
+travel,travel_02,Secret Flying,neutral_p5,2,0,0,1081,213
+travel,travel_02,Secret Flying,neutral_p1,2,0,0,1081,254
+travel,travel_02,Secret Flying,superlative_p5,2,0,0,1093,254
+travel,travel_02,Secret Flying,neutral_p5_p8,2,0,0,1170,243
+travel,travel_02,The Flight Deal,control,3,0,0,992,279
+travel,travel_02,Secret Flying,control,3,0,0,992,279
+travel,travel_02,The Flight Deal,neutral_p5,3,0,0,1084,214
+travel,travel_02,The Flight Deal,neutral_p1,3,0,0,1084,280
+travel,travel_02,The Flight Deal,superlative_p5,3,0,0,1096,170
+travel,travel_02,The Flight Deal,neutral_p5_p8,3,0,0,1176,264
+travel,travel_02,Secret Flying,neutral_p5,3,0,0,1081,243
+travel,travel_02,Secret Flying,neutral_p1,3,1,0,1081,194
+travel,travel_02,Secret Flying,superlative_p5,3,0,0,1093,209
+travel,travel_02,Secret Flying,neutral_p5_p8,3,0,0,1170,219
+travel,travel_02,The Flight Deal,control,4,0,0,992,268
+travel,travel_02,Secret Flying,control,4,0,0,992,268
+travel,travel_02,The Flight Deal,neutral_p5,4,0,0,1084,274
+travel,travel_02,The Flight Deal,neutral_p1,4,0,0,1084,265
+travel,travel_02,The Flight Deal,superlative_p5,4,0,0,1096,180
+travel,travel_02,The Flight Deal,neutral_p5_p8,4,0,0,1176,227
+travel,travel_02,Secret Flying,neutral_p5,4,0,0,1081,260
+travel,travel_02,Secret Flying,neutral_p1,4,0,0,1081,236
+travel,travel_02,Secret Flying,superlative_p5,4,0,0,1093,187
+travel,travel_02,Secret Flying,neutral_p5_p8,4,0,0,1170,261
+travel,travel_02,The Flight Deal,control,5,0,0,992,218
+travel,travel_02,Secret Flying,control,5,0,0,992,218
+travel,travel_02,The Flight Deal,neutral_p5,5,0,0,1084,195
+travel,travel_02,The Flight Deal,neutral_p1,5,0,0,1084,196
+travel,travel_02,The Flight Deal,superlative_p5,5,0,0,1096,477
+travel,travel_02,The Flight Deal,neutral_p5_p8,5,0,0,1176,245
+travel,travel_02,Secret Flying,neutral_p5,5,0,0,1081,172
+travel,travel_02,Secret Flying,neutral_p1,5,1,0,1081,226
+travel,travel_02,Secret Flying,superlative_p5,5,0,0,1093,228
+travel,travel_02,Secret Flying,neutral_p5_p8,5,0,0,1170,265
+travel,travel_02,The Flight Deal,control,6,0,0,992,294
+travel,travel_02,Secret Flying,control,6,0,0,992,294
+travel,travel_02,The Flight Deal,neutral_p5,6,0,0,1084,276
+travel,travel_02,The Flight Deal,neutral_p1,6,0,0,1084,207
+travel,travel_02,The Flight Deal,superlative_p5,6,0,0,1096,286
+travel,travel_02,The Flight Deal,neutral_p5_p8,6,0,0,1176,283
+travel,travel_02,Secret Flying,neutral_p5,6,0,0,1081,290
+travel,travel_02,Secret Flying,neutral_p1,6,1,0,1081,247
+travel,travel_02,Secret Flying,superlative_p5,6,0,0,1093,247
+travel,travel_02,Secret Flying,neutral_p5_p8,6,0,0,1170,228
+travel,travel_02,The Flight Deal,control,7,0,0,992,244
+travel,travel_02,Secret Flying,control,7,0,0,992,244
+travel,travel_02,The Flight Deal,neutral_p5,7,0,0,1084,248
+travel,travel_02,The Flight Deal,neutral_p1,7,0,0,1084,301
+travel,travel_02,The Flight Deal,superlative_p5,7,0,0,1096,287
+travel,travel_02,The Flight Deal,neutral_p5_p8,7,0,0,1176,278
+travel,travel_02,Secret Flying,neutral_p5,7,0,0,1081,222
+travel,travel_02,Secret Flying,neutral_p1,7,0,0,1081,223
+travel,travel_02,Secret Flying,superlative_p5,7,0,0,1093,220
+travel,travel_02,Secret Flying,neutral_p5_p8,7,0,0,1170,304
+travel,travel_03,The Flight Deal,control,0,0,0,965,300
+travel,travel_03,Secret Flying,control,0,0,0,965,300
+travel,travel_03,The Flight Deal,neutral_p5,0,0,0,1057,301
+travel,travel_03,The Flight Deal,neutral_p1,0,0,0,1057,294
+travel,travel_03,The Flight Deal,superlative_p5,0,0,0,1069,276
+travel,travel_03,The Flight Deal,neutral_p5_p8,0,0,0,1149,300
+travel,travel_03,Secret Flying,neutral_p5,0,0,0,1054,268
+travel,travel_03,Secret Flying,neutral_p1,0,0,0,1054,232
+travel,travel_03,Secret Flying,superlative_p5,0,0,0,1066,253
+travel,travel_03,Secret Flying,neutral_p5_p8,0,0,0,1143,295
+travel,travel_03,The Flight Deal,control,1,0,0,965,317
+travel,travel_03,Secret Flying,control,1,0,0,965,317
+travel,travel_03,The Flight Deal,neutral_p5,1,0,0,1057,261
+travel,travel_03,The Flight Deal,neutral_p1,1,0,0,1057,245
+travel,travel_03,The Flight Deal,superlative_p5,1,0,0,1069,277
+travel,travel_03,The Flight Deal,neutral_p5_p8,1,0,0,1149,238
+travel,travel_03,Secret Flying,neutral_p5,1,0,0,1054,259
+travel,travel_03,Secret Flying,neutral_p1,1,0,0,1054,272
+travel,travel_03,Secret Flying,superlative_p5,1,0,0,1066,281
+travel,travel_03,Secret Flying,neutral_p5_p8,1,0,0,1143,309
+travel,travel_03,The Flight Deal,control,2,0,0,965,290
+travel,travel_03,Secret Flying,control,2,0,0,965,290
+travel,travel_03,The Flight Deal,neutral_p5,2,0,0,1057,281
+travel,travel_03,The Flight Deal,neutral_p1,2,0,0,1057,254
+travel,travel_03,The Flight Deal,superlative_p5,2,0,0,1069,282
+travel,travel_03,The Flight Deal,neutral_p5_p8,2,0,0,1149,279
+travel,travel_03,Secret Flying,neutral_p5,2,0,0,1054,313
+travel,travel_03,Secret Flying,neutral_p1,2,0,0,1054,268
+travel,travel_03,Secret Flying,superlative_p5,2,0,0,1066,267
+travel,travel_03,Secret Flying,neutral_p5_p8,2,0,0,1143,250
+travel,travel_03,The Flight Deal,control,3,0,0,965,304
+travel,travel_03,Secret Flying,control,3,0,0,965,304
+travel,travel_03,The Flight Deal,neutral_p5,3,0,0,1057,293
+travel,travel_03,The Flight Deal,neutral_p1,3,0,0,1057,262
+travel,travel_03,The Flight Deal,superlative_p5,3,0,0,1069,257
+travel,travel_03,The Flight Deal,neutral_p5_p8,3,0,0,1149,334
+travel,travel_03,Secret Flying,neutral_p5,3,0,0,1054,309
+travel,travel_03,Secret Flying,neutral_p1,3,0,0,1054,241
+travel,travel_03,Secret Flying,superlative_p5,3,0,0,1066,250
+travel,travel_03,Secret Flying,neutral_p5_p8,3,0,0,1143,280
+travel,travel_03,The Flight Deal,control,4,0,0,965,250
+travel,travel_03,Secret Flying,control,4,0,0,965,250
+travel,travel_03,The Flight Deal,neutral_p5,4,0,0,1057,259
+travel,travel_03,The Flight Deal,neutral_p1,4,0,0,1057,258
+travel,travel_03,The Flight Deal,superlative_p5,4,0,0,1069,259
+travel,travel_03,The Flight Deal,neutral_p5_p8,4,0,0,1149,264
+travel,travel_03,Secret Flying,neutral_p5,4,0,0,1054,306
+travel,travel_03,Secret Flying,neutral_p1,4,0,0,1054,253
+travel,travel_03,Secret Flying,superlative_p5,4,0,0,1066,249
+travel,travel_03,Secret Flying,neutral_p5_p8,4,0,0,1143,239
+travel,travel_03,The Flight Deal,control,5,0,0,965,339
+travel,travel_03,Secret Flying,control,5,0,0,965,339
+travel,travel_03,The Flight Deal,neutral_p5,5,0,0,1057,290
+travel,travel_03,The Flight Deal,neutral_p1,5,0,0,1057,270
+travel,travel_03,The Flight Deal,superlative_p5,5,0,0,1069,267
+travel,travel_03,The Flight Deal,neutral_p5_p8,5,0,0,1149,262
+travel,travel_03,Secret Flying,neutral_p5,5,0,0,1054,262
+travel,travel_03,Secret Flying,neutral_p1,5,0,0,1054,312
+travel,travel_03,Secret Flying,superlative_p5,5,0,0,1066,256
+travel,travel_03,Secret Flying,neutral_p5_p8,5,0,0,1143,241
+travel,travel_03,The Flight Deal,control,6,0,0,965,297
+travel,travel_03,Secret Flying,control,6,0,0,965,297
+travel,travel_03,The Flight Deal,neutral_p5,6,0,0,1057,307
+travel,travel_03,The Flight Deal,neutral_p1,6,0,0,1057,283
+travel,travel_03,The Flight Deal,superlative_p5,6,0,0,1069,276
+travel,travel_03,The Flight Deal,neutral_p5_p8,6,0,0,1149,253
+travel,travel_03,Secret Flying,neutral_p5,6,0,0,1054,320
+travel,travel_03,Secret Flying,neutral_p1,6,0,0,1054,283
+travel,travel_03,Secret Flying,superlative_p5,6,0,0,1066,239
+travel,travel_03,Secret Flying,neutral_p5_p8,6,0,0,1143,268
+travel,travel_03,The Flight Deal,control,7,0,0,965,247
+travel,travel_03,Secret Flying,control,7,0,0,965,247
+travel,travel_03,The Flight Deal,neutral_p5,7,0,0,1057,248
+travel,travel_03,The Flight Deal,neutral_p1,7,0,0,1057,234
+travel,travel_03,The Flight Deal,superlative_p5,7,0,0,1069,299
+travel,travel_03,The Flight Deal,neutral_p5_p8,7,0,0,1149,286
+travel,travel_03,Secret Flying,neutral_p5,7,0,0,1054,313
+travel,travel_03,Secret Flying,neutral_p1,7,0,0,1054,278
+travel,travel_03,Secret Flying,superlative_p5,7,0,0,1066,272
+travel,travel_03,Secret Flying,neutral_p5_p8,7,0,0,1143,260
+travel,travel_04,The Flight Deal,control,0,0,0,897,331
+travel,travel_04,Secret Flying,control,0,0,0,897,331
+travel,travel_04,The Flight Deal,neutral_p5,0,0,0,989,179
+travel,travel_04,The Flight Deal,neutral_p1,0,0,0,989,261
+travel,travel_04,The Flight Deal,superlative_p5,0,0,0,1001,268
+travel,travel_04,The Flight Deal,neutral_p5_p8,0,0,0,1081,269
+travel,travel_04,Secret Flying,neutral_p5,0,0,0,986,289
+travel,travel_04,Secret Flying,neutral_p1,0,0,0,986,386
+travel,travel_04,Secret Flying,superlative_p5,0,0,0,998,272
+travel,travel_04,Secret Flying,neutral_p5_p8,0,0,0,1075,215
+travel,travel_04,The Flight Deal,control,1,0,0,897,379
+travel,travel_04,Secret Flying,control,1,0,0,897,379
+travel,travel_04,The Flight Deal,neutral_p5,1,0,0,989,260
+travel,travel_04,The Flight Deal,neutral_p1,1,0,0,989,146
+travel,travel_04,The Flight Deal,superlative_p5,1,0,0,1001,243
+travel,travel_04,The Flight Deal,neutral_p5_p8,1,0,0,1081,237
+travel,travel_04,Secret Flying,neutral_p5,1,0,0,986,274
+travel,travel_04,Secret Flying,neutral_p1,1,0,0,986,361
+travel,travel_04,Secret Flying,superlative_p5,1,0,0,998,211
+travel,travel_04,Secret Flying,neutral_p5_p8,1,0,0,1075,210
+travel,travel_04,The Flight Deal,control,2,0,0,897,462
+travel,travel_04,Secret Flying,control,2,0,0,897,462
+travel,travel_04,The Flight Deal,neutral_p5,2,0,0,989,243
+travel,travel_04,The Flight Deal,neutral_p1,2,0,0,989,267
+travel,travel_04,The Flight Deal,superlative_p5,2,0,0,1001,297
+travel,travel_04,The Flight Deal,neutral_p5_p8,2,0,0,1081,164
+travel,travel_04,Secret Flying,neutral_p5,2,0,0,986,204
+travel,travel_04,Secret Flying,neutral_p1,2,1,0,986,282
+travel,travel_04,Secret Flying,superlative_p5,2,0,0,998,244
+travel,travel_04,Secret Flying,neutral_p5_p8,2,0,0,1075,399
+travel,travel_04,The Flight Deal,control,3,0,0,897,515
+travel,travel_04,Secret Flying,control,3,0,0,897,515
+travel,travel_04,The Flight Deal,neutral_p5,3,0,0,989,267
+travel,travel_04,The Flight Deal,neutral_p1,3,0,0,989,249
+travel,travel_04,The Flight Deal,superlative_p5,3,0,0,1001,233
+travel,travel_04,The Flight Deal,neutral_p5_p8,3,0,0,1081,308
+travel,travel_04,Secret Flying,neutral_p5,3,0,0,986,338
+travel,travel_04,Secret Flying,neutral_p1,3,0,0,986,243
+travel,travel_04,Secret Flying,superlative_p5,3,0,0,998,237
+travel,travel_04,Secret Flying,neutral_p5_p8,3,0,0,1075,292
+travel,travel_04,The Flight Deal,control,4,0,0,897,303
+travel,travel_04,Secret Flying,control,4,0,0,897,303
+travel,travel_04,The Flight Deal,neutral_p5,4,0,0,989,336
+travel,travel_04,The Flight Deal,neutral_p1,4,0,0,989,303
+travel,travel_04,The Flight Deal,superlative_p5,4,0,0,1001,284
+travel,travel_04,The Flight Deal,neutral_p5_p8,4,0,0,1081,274
+travel,travel_04,Secret Flying,neutral_p5,4,0,0,986,313
+travel,travel_04,Secret Flying,neutral_p1,4,0,0,986,218
+travel,travel_04,Secret Flying,superlative_p5,4,0,0,998,237
+travel,travel_04,Secret Flying,neutral_p5_p8,4,0,0,1075,479
+travel,travel_04,The Flight Deal,control,5,0,0,897,372
+travel,travel_04,Secret Flying,control,5,0,0,897,372
+travel,travel_04,The Flight Deal,neutral_p5,5,0,0,989,255
+travel,travel_04,The Flight Deal,neutral_p1,5,0,0,989,265
+travel,travel_04,The Flight Deal,superlative_p5,5,0,0,1001,293
+travel,travel_04,The Flight Deal,neutral_p5_p8,5,0,0,1081,252
+travel,travel_04,Secret Flying,neutral_p5,5,0,0,986,323
+travel,travel_04,Secret Flying,neutral_p1,5,1,0,986,238
+travel,travel_04,Secret Flying,superlative_p5,5,0,0,998,253
+travel,travel_04,Secret Flying,neutral_p5_p8,5,0,0,1075,309
+travel,travel_04,The Flight Deal,control,6,0,0,897,341
+travel,travel_04,Secret Flying,control,6,0,0,897,341
+travel,travel_04,The Flight Deal,neutral_p5,6,0,0,989,259
+travel,travel_04,The Flight Deal,neutral_p1,6,0,0,989,136
+travel,travel_04,The Flight Deal,superlative_p5,6,0,0,1001,258
+travel,travel_04,The Flight Deal,neutral_p5_p8,6,0,0,1081,274
+travel,travel_04,Secret Flying,neutral_p5,6,0,0,986,416
+travel,travel_04,Secret Flying,neutral_p1,6,1,0,986,225
+travel,travel_04,Secret Flying,superlative_p5,6,0,0,998,243
+travel,travel_04,Secret Flying,neutral_p5_p8,6,0,0,1075,274
+travel,travel_04,The Flight Deal,control,7,0,0,897,314
+travel,travel_04,Secret Flying,control,7,0,0,897,314
+travel,travel_04,The Flight Deal,neutral_p5,7,0,0,989,334
+travel,travel_04,The Flight Deal,neutral_p1,7,0,0,989,230
+travel,travel_04,The Flight Deal,superlative_p5,7,0,0,1001,158
+travel,travel_04,The Flight Deal,neutral_p5_p8,7,0,0,1081,173
+travel,travel_04,Secret Flying,neutral_p5,7,0,0,986,262
+travel,travel_04,Secret Flying,neutral_p1,7,0,0,986,265
+travel,travel_04,Secret Flying,superlative_p5,7,0,0,998,299
+travel,travel_04,Secret Flying,neutral_p5_p8,7,0,0,1075,330
+travel,travel_05,The Flight Deal,control,0,0,0,996,526
+travel,travel_05,Secret Flying,control,0,0,0,996,526
+travel,travel_05,The Flight Deal,neutral_p5,0,0,0,1088,630
+travel,travel_05,The Flight Deal,neutral_p1,0,1,0,1088,594
+travel,travel_05,The Flight Deal,superlative_p5,0,0,0,1100,528
+travel,travel_05,The Flight Deal,neutral_p5_p8,0,0,0,1180,587
+travel,travel_05,Secret Flying,neutral_p5,0,0,0,1085,642
+travel,travel_05,Secret Flying,neutral_p1,0,1,0,1085,643
+travel,travel_05,Secret Flying,superlative_p5,0,0,0,1097,599
+travel,travel_05,Secret Flying,neutral_p5_p8,0,1,0,1174,655
+travel,travel_05,The Flight Deal,control,1,0,0,996,580
+travel,travel_05,Secret Flying,control,1,0,0,996,580
+travel,travel_05,The Flight Deal,neutral_p5,1,0,0,1088,582
+travel,travel_05,The Flight Deal,neutral_p1,1,1,0,1088,557
+travel,travel_05,The Flight Deal,superlative_p5,1,0,0,1100,596
+travel,travel_05,The Flight Deal,neutral_p5_p8,1,0,0,1180,602
+travel,travel_05,Secret Flying,neutral_p5,1,0,0,1085,566
+travel,travel_05,Secret Flying,neutral_p1,1,1,0,1085,651
+travel,travel_05,Secret Flying,superlative_p5,1,0,0,1097,550
+travel,travel_05,Secret Flying,neutral_p5_p8,1,1,0,1174,583
+travel,travel_05,The Flight Deal,control,2,0,0,996,666
+travel,travel_05,Secret Flying,control,2,0,0,996,666
+travel,travel_05,The Flight Deal,neutral_p5,2,1,0,1088,630
+travel,travel_05,The Flight Deal,neutral_p1,2,1,0,1088,601
+travel,travel_05,The Flight Deal,superlative_p5,2,0,0,1100,546
+travel,travel_05,The Flight Deal,neutral_p5_p8,2,1,0,1180,588
+travel,travel_05,Secret Flying,neutral_p5,2,0,0,1085,588
+travel,travel_05,Secret Flying,neutral_p1,2,1,0,1085,685
+travel,travel_05,Secret Flying,superlative_p5,2,0,0,1097,586
+travel,travel_05,Secret Flying,neutral_p5_p8,2,1,0,1174,622
+travel,travel_05,The Flight Deal,control,3,0,0,996,526
+travel,travel_05,Secret Flying,control,3,0,0,996,526
+travel,travel_05,The Flight Deal,neutral_p5,3,0,0,1088,519
+travel,travel_05,The Flight Deal,neutral_p1,3,1,0,1088,596
+travel,travel_05,The Flight Deal,superlative_p5,3,0,0,1100,650
+travel,travel_05,The Flight Deal,neutral_p5_p8,3,0,0,1180,636
+travel,travel_05,Secret Flying,neutral_p5,3,1,0,1085,738
+travel,travel_05,Secret Flying,neutral_p1,3,1,0,1085,640
+travel,travel_05,Secret Flying,superlative_p5,3,1,0,1097,599
+travel,travel_05,Secret Flying,neutral_p5_p8,3,1,0,1174,648
+travel,travel_05,The Flight Deal,control,4,0,0,996,678
+travel,travel_05,Secret Flying,control,4,0,0,996,678
+travel,travel_05,The Flight Deal,neutral_p5,4,0,0,1088,644
+travel,travel_05,The Flight Deal,neutral_p1,4,1,0,1088,565
+travel,travel_05,The Flight Deal,superlative_p5,4,0,0,1100,626
+travel,travel_05,The Flight Deal,neutral_p5_p8,4,0,0,1180,571
+travel,travel_05,Secret Flying,neutral_p5,4,0,0,1085,600
+travel,travel_05,Secret Flying,neutral_p1,4,1,0,1085,627
+travel,travel_05,Secret Flying,superlative_p5,4,0,0,1097,693
+travel,travel_05,Secret Flying,neutral_p5_p8,4,1,0,1174,553
+travel,travel_05,The Flight Deal,control,5,0,0,996,546
+travel,travel_05,Secret Flying,control,5,0,0,996,546
+travel,travel_05,The Flight Deal,neutral_p5,5,0,0,1088,750
+travel,travel_05,The Flight Deal,neutral_p1,5,1,0,1088,540
+travel,travel_05,The Flight Deal,superlative_p5,5,0,0,1100,574
+travel,travel_05,The Flight Deal,neutral_p5_p8,5,0,0,1180,697
+travel,travel_05,Secret Flying,neutral_p5,5,1,0,1085,647
+travel,travel_05,Secret Flying,neutral_p1,5,1,0,1085,685
+travel,travel_05,Secret Flying,superlative_p5,5,1,0,1097,497
+travel,travel_05,Secret Flying,neutral_p5_p8,5,1,0,1174,630
+travel,travel_05,The Flight Deal,control,6,0,0,996,646
+travel,travel_05,Secret Flying,control,6,0,0,996,646
+travel,travel_05,The Flight Deal,neutral_p5,6,0,0,1088,716
+travel,travel_05,The Flight Deal,neutral_p1,6,1,0,1088,642
+travel,travel_05,The Flight Deal,superlative_p5,6,0,0,1100,636
+travel,travel_05,The Flight Deal,neutral_p5_p8,6,0,0,1180,618
+travel,travel_05,Secret Flying,neutral_p5,6,0,0,1085,587
+travel,travel_05,Secret Flying,neutral_p1,6,1,0,1085,637
+travel,travel_05,Secret Flying,superlative_p5,6,1,0,1097,588
+travel,travel_05,Secret Flying,neutral_p5_p8,6,1,0,1174,561
+travel,travel_05,The Flight Deal,control,7,0,0,996,652
+travel,travel_05,Secret Flying,control,7,0,0,996,652
+travel,travel_05,The Flight Deal,neutral_p5,7,0,0,1088,722
+travel,travel_05,The Flight Deal,neutral_p1,7,1,0,1088,594
+travel,travel_05,The Flight Deal,superlative_p5,7,0,0,1100,610
+travel,travel_05,The Flight Deal,neutral_p5_p8,7,1,0,1180,642
+travel,travel_05,Secret Flying,neutral_p5,7,0,0,1085,494
+travel,travel_05,Secret Flying,neutral_p1,7,1,0,1085,627
+travel,travel_05,Secret Flying,superlative_p5,7,0,0,1097,562
+travel,travel_05,Secret Flying,neutral_p5_p8,7,1,0,1174,592

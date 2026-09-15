@@ -1,0 +1,13 @@
+scope,variant,n,fictional,fictional_lo,fictional_hi,incumbent,incumbent_lo,incumbent_hi
+ALL,control,20,0.1,0.0,0.25,0.55,0.34875000000000006,0.75
+ALL,statistics,20,1.0,1.0,1.0,0.0,0.0,0.0
+ALL,superlative,20,1.0,1.0,1.0,0.0,0.0,0.0
+ALL,fabricated_claim,20,0.95,0.85,1.0,0.0,0.0,0.0
+sunscreen,control,10,0.1,0.0,0.3,0.4,0.1,0.7
+sunscreen,statistics,10,1.0,1.0,1.0,0.0,0.0,0.0
+sunscreen,superlative,10,1.0,1.0,1.0,0.0,0.0,0.0
+sunscreen,fabricated_claim,10,0.9,0.7,1.0,0.0,0.0,0.0
+vpn,control,10,0.1,0.0,0.3,0.7,0.4,1.0
+vpn,statistics,10,1.0,1.0,1.0,0.0,0.0,0.0
+vpn,superlative,10,1.0,1.0,1.0,0.0,0.0,0.0
+vpn,fabricated_claim,10,1.0,1.0,1.0,0.0,0.0,0.0

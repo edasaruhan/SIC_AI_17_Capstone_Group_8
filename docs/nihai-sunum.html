@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kısa Listeye Girmek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  :root {
+    /* Fikir önerisinin iskeleti */
+    --navy: #1e2761;
+    --navy-2: #2b3570;
+    --pale: #cadcfc;
+    --red: #e0553f;
+    --green: #1f7a5a;
+    --card: #f2f3f7;
+    /* kısaliste'nin kimliği */
+    --ink: #101b3b;
+    --ink-2: #414b63;
+    --muted: #5d6270;
+    --rule: #dce0e8;
+    --mark: #ffe45c;
+    --mark-rival: #e3e6ee;
+    --s1: #2a78d6;
+    --s2: #eb6834;
+    --s1-light: #9cc2f2;
+    --desk: #d9dce5;
+    --serif: "Newsreader", "Noto Serif", "Liberation Serif", Georgia, serif;
+    --sans: "Schibsted Grotesk", "Carlito", "Liberation Sans", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--sans); color: var(--ink); background: #fff; }
+  p { margin: 0; }
+  b, strong { font-weight: 700; }
+
+  @media screen {
+    body { background: var(--desk); }
+    .deck { display: flex; flex-direction: column; align-items: center; gap: 28px; padding-block: 28px; padding-inline: 16px; }
+    .frame { flex: none; width: calc(1280px * var(--k, 1)); height: calc(720px * var(--k, 1)); overflow: hidden; border-radius: 10px; box-shadow: 0 22px 50px -32px rgba(16, 27, 59, 0.55); }
+    .frame > .slide { transform: scale(var(--k, 1)); transform-origin: 0 0; }
+  }
+  @media print {
+    .frame { break-after: page; }
+    .frame:last-child { break-after: auto; }
+  }
+
+  .slide { width: 1280px; height: 720px; position: relative; overflow: hidden; padding: 54px 72px 50px; background: #fff; }
+  .slide.navy { background: var(--navy); color: #fff; }
+  .foot { position: absolute; left: 72px; right: 72px; bottom: 20px; display: flex; justify-content: space-between; gap: 24px; font-size: 13px; color: #8a8fa0; }
+  .navy .foot { color: #9aa2d4; }
+
+  h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+  h1 { font-size: 66px; line-height: 1.04; }
+  h2 { font-size: 42px; line-height: 1.12; }
+  h3 { font-size: 26px; line-height: 1.2; }
+  .marker { font-size: 16px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+  .navy .marker { color: var(--pale); }
+  .marker.risk { color: var(--red); }
+  .lead { font-size: 21px; line-height: 1.42; color: var(--ink-2); margin-top: 10px; max-width: 1040px; }
+  .navy .lead { color: #dfe3f7; }
+  .note { font-size: 14.5px; line-height: 1.4; color: var(--muted); }
+  .navy .note { color: #aab1dc; }
+
+  .wordmark { font-family: var(--sans); font-weight: 800; letter-spacing: -0.03em; line-height: 1; white-space: nowrap; }
+  .wordmark .k { background: var(--mark); color: var(--ink); padding: 0 0.12em; border-radius: 0.08em; }
+  .hl { background: linear-gradient(transparent 10%, var(--mark) 10%, var(--mark) 90%, transparent 90%); color: var(--ink); font-weight: 600; padding: 0 2px; }
+  .hl-rival { background: linear-gradient(transparent 10%, var(--mark-rival) 10%, var(--mark-rival) 90%, transparent 90%); padding: 0 2px; }
+
+  .row { display: flex; gap: 22px; }
+  .card { flex: 1; background: var(--card); border-radius: 12px; padding: 22px 24px; }
+  .navy .card { background: var(--navy-2); }
+  .card .label { font-size: 14.5px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+  .navy .card .label { color: var(--pale); }
+  .card .big { font-family: var(--serif); font-size: 46px; font-weight: 600; line-height: 1.02; }
+  .card .txt { font-size: 17px; line-height: 1.42; color: var(--ink-2); margin-top: 8px; }
+  .navy .card .txt { color: #dfe3f7; }
+
+  ul.dots { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  ul.dots li { position: relative; padding-left: 22px; font-size: 19px; line-height: 1.38; }
+  ul.dots li::before { content: ""; position: absolute; left: 0; top: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--navy); }
+  .navy ul.dots li::before, .on-navy ul.dots li::before { background: var(--mark); }
+  ul.dots.small li { font-size: 16.5px; }
+  ul.dots.small li::before { top: 8px; }
+
+  /* charts: one pixel scale per chart, value beside the bar, text in ink */
+  .legend { display: flex; flex-wrap: wrap; gap: 20px; font-size: 15.5px; color: var(--ink-2); margin: 8px 0 6px; }
+  .legend i { display: inline-block; width: 13px; height: 13px; border-radius: 3px; margin-right: 7px; vertical-align: -1px; }
+  .hchart { position: relative; }
+  .hrow { display: flex; align-items: center; min-height: 38px; }
+  .hlabel { width: 290px; flex: none; font-size: 17px; line-height: 1.18; padding-right: 14px; }
+  .hlabel small { display: block; font-size: 13px; color: var(--muted); }
+  .bars { display: flex; flex-direction: column; gap: 2px; }
+  .bl { display: flex; align-items: center; height: 15px; }
+  .bl .f { height: 15px; border-radius: 0 4px 4px 0; background: var(--s1); min-width: 2px; }
+  .bl.s2 .f { background: var(--s2); }
+  .bl.thick, .bl.thick .f { height: 26px; }
+  .bl .v { margin-left: 8px; font-size: 14px; color: var(--ink-2); white-space: nowrap; }
+  .bl.thick .v { font-size: 18px; font-weight: 700; color: var(--ink); }
+  .chance { position: absolute; top: 0; bottom: 0; border-left: 1.5px dashed #8b92a3; }
+  .chance span { position: absolute; bottom: -22px; left: -34px; width: 68px; text-align: center; font-size: 13px; color: var(--muted); }
+  .tag { display: inline-block; font-family: var(--sans); font-size: 12.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: 1px; }
+  .tag.good { color: var(--green); background: #e1f1ea; }
+  .tag.flat { color: var(--muted); background: #eceef3; }
+  .tag.bad { color: #a8321f; background: #fbe6e2; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 17px; }
+  th { text-align: left; font-size: 14px; font-weight: 700; color: var(--muted); padding: 8px 10px; border-bottom: 1.5px solid var(--ink); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.3; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .good { color: var(--green); font-weight: 700; }
+  .flat { color: var(--muted); font-weight: 700; }
+  .bad { color: var(--red); font-weight: 700; }
+
+  /* screenshots */
+  .shot { border-radius: 12px; overflow: hidden; border: 1px solid var(--rule); background: #f6f7f9; box-shadow: 0 24px 48px -30px rgba(16, 27, 59, 0.5); }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .cap { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+  .prod { display: grid; grid-template-columns: 340px 1fr; gap: 40px; margin-top: 22px; height: 548px; }
+  .prod .text { display: flex; flex-direction: column; gap: 16px; }
+  .prod .text p { font-size: 18px; line-height: 1.45; color: var(--ink-2); }
+  .prod .stage { position: relative; }
+  .fact { background: var(--card); border-radius: 12px; padding: 14px 18px; font-size: 15.5px; line-height: 1.45; color: var(--ink-2); }
+  .fact b { color: var(--ink); }
+
+  /* the app's own stepper */
+  .steps { display: flex; align-items: flex-start; gap: 0; }
+  .steps .st { flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 24px; position: relative; }
+  .steps .st + .st::before { content: ""; position: absolute; left: -12px; top: 21px; width: 0; }
+  .steps .num { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; border: 2px solid var(--pale); color: #fff; }
+  .steps .num.now { background: var(--mark); border-color: var(--mark); color: var(--ink); }
+  .steps .t { font-size: 22px; font-weight: 700; }
+  .steps .d { font-size: 16.5px; line-height: 1.4; color: #dfe3f7; }
+  .steps .line { height: 2px; background: #4a5494; margin: 21px 12px 0 -12px; flex: 0 0 36px; }
+
+  .pcard { flex: 1; border: 1.5px solid var(--rule); border-radius: 10px; padding: 12px 13px; font-size: 13.5px; line-height: 1.35; background: #fff; }
+  .pcard .b { font-weight: 700; font-size: 15.5px; }
+  .pcard .p { color: var(--muted); margin: 2px 0 5px; }
+  .pcard.target { border: 2.5px solid var(--navy); }
+  .pcard .extra { background: #fff5bf; border-radius: 6px; padding: 5px 7px; margin-top: 7px; color: var(--ink); }
+  .bubble { display: inline-block; background: var(--card); border-radius: 16px; padding: 10px 18px; font-size: 18px; color: var(--ink-2); }
+
+  .gate { flex: 1; border-radius: 12px; padding: 24px 26px; background: var(--navy-2); border-top: 6px solid var(--pale); }
+  .gate.warn { border-top-color: var(--red); }
+  .gate .num { font-size: 15px; font-weight: 600; color: var(--pale); }
+  .gate h3 { font-size: 30px; margin: 6px 0 10px; color: #fff; }
+  .gate p { font-size: 18px; line-height: 1.42; color: #e3e6f6; }
+
+  .tl { display: grid; grid-template-columns: 1fr 1fr; column-gap: 56px; row-gap: 0; margin-top: 26px; }
+  .tl .col { position: relative; padding-left: 26px; border-left: 2px solid var(--rule); display: flex; flex-direction: column; gap: 20px; }
+  .tl .ev { position: relative; }
+  .tl .ev::before { content: ""; position: absolute; left: -34px; top: 5px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--navy); }
+  .tl .ev.product::before { background: var(--mark); border-color: var(--ink); }
+  .tl .date { font-family: var(--serif); font-size: 19px; font-weight: 600; color: var(--navy); }
+  .tl .what { font-size: 18px; font-weight: 700; margin-top: 1px; }
+  .tl .how { font-size: 15.5px; line-height: 1.38; color: var(--ink-2); margin-top: 3px; }
+
+  .flow { font-family: "Liberation Mono", "DejaVu Sans Mono", monospace; font-size: 16px; line-height: 1.5; white-space: pre; background: var(--card); border-radius: 12px; padding: 16px 20px; color: var(--ink); }
+  .quote { font-family: var(--serif); font-size: 24px; line-height: 1.42; border-left: 5px solid var(--red); padding: 4px 0 4px 22px; }
+  .hero-n { font-family: var(--serif); font-size: 92px; font-weight: 600; line-height: 1; }
+  .red { color: var(--red); }
+  .verdicts { display: flex; flex-direction: column; gap: 14px; }
+  .verdicts div { font-size: 16.5px; line-height: 1.38; color: var(--ink-2); padding: 10px 14px; border-radius: 8px; }
+  .verdicts .ok { background: #dcefe1; border-bottom: 2px solid #1e6b3a; }
+  .verdicts .meh { background: #eceef2; border-bottom: 2px solid #9aa1b1; }
+  .verdicts .no { background: #f8dcda; border-bottom: 2px solid #b8322f; }
+  .verdicts b { display: block; color: var(--ink); font-family: var(--serif); font-size: 18px; font-weight: 500; }
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 1 · Kapak -->
+<div class="frame"><section class="slide navy">
+  <div class="wordmark" style="font-size:30px; margin-top:4px"><span class="k">kısa</span>liste</div>
+  <h1 style="margin-top:118px; max-width:700px">Yapay zekâ asistanları markanı öneriyor mu?</h1>
+  <p class="lead" style="font-size:24px; margin-top:22px; max-width:640px">Bir fikir önerisinden, bir markanın kendi üzerinde kullanabileceği bir araca.</p>
+  <div style="position:absolute; right:72px; top:150px; width:380px; background:var(--navy-2); border-radius:16px; padding:26px 28px">
+    <div class="bubble" style="background:#39448a; color:#e3e6f6; font-size:17px">İyi bir VPN önerir misin?</div>
+    <p style="font-family:var(--serif); font-size:23px; line-height:1.55; margin-top:18px; color:#fff">Gizlilik için <span class="hl">Proton VPN</span> öne çıkıyor; hız istiyorsan <span class="hl">NordVPN</span> ya da <span class="hl">ExpressVPN</span>.</p>
+    <div style="margin-top:18px; border:1.5px dashed #6b76b8; border-radius:10px; padding:10px 14px; font-size:15.5px; color:#dfe3f7">Senin markan bu üç isimde yoksa, kullanıcı için yoksun.</div>
+    <p class="note" style="margin-top:12px">Türkçe yanıtlarda en çok anılan üç VPN: %91, %87, %73 (arama açık)</p>
+  </div>
+  <p style="position:absolute; left:72px; bottom:54px; font-size:17px; color:#aab1dc">Kübra Gezici, Furkan Karlı, Murat Mert Küçük, Zeynep Sude İnal</p>
+  <div class="foot"><span>Samsung Innovation Campus Capstone | Grup 8</span><span>Eylül 2026</span></div>
+</section></div>
+
+<!-- 2 · Nereden başladık -->
+<div class="frame"><section class="slide">
+  <div class="marker">Başlangıç, Ağustos 2026</div>
+  <h2>Bir soru ve bir sözle başladık</h2>
+  <p class="lead">Fikir önerimiz asistanların markaları nasıl seçtiğini soruyordu ve markaya "neden görünmediğini" söyleyen bir araç vaat ediyordu. Bu sunum ikisine ne olduğunu anlatıyor.</p>
+  <div class="row" style="margin-top:34px; gap:28px">
+    <div style="width:360px">
+      <div class="shot" style="height:203px"><img src="sunum-gorselleri/oneri-kapak-01.jpg" alt="Fikir önerisi sunumunun kapağı: SEO bitti, GEO başladı"></div>
+      <p class="cap"><b style="color:var(--ink)">Soru.</b> Yapay zekâ asistanları markaları nasıl seçiyor?</p>
+    </div>
+    <div style="width:360px">
+      <div class="shot" style="height:203px"><img src="sunum-gorselleri/oneri-bekci-03.jpg" alt="Öneri slaytı: bu bekçi tarafsız değil, yüzde 100 ve artı yüzde 40"></div>
+      <p class="cap"><b style="color:var(--ink)">Varsayım.</b> Ürünler aynıyken öneri tanınmış markaya gider; içeriği yeniden yazmak +%40 getirir.</p>
+    </div>
+    <div style="width:360px">
+      <div class="shot" style="height:203px"><img src="sunum-gorselleri/oneri-marka-07.jpg" alt="Öneri slaytı: markanın eline ne geçiyor"></div>
+      <p class="cap"><b style="color:var(--ink)">Söz.</b> "Şu sebepten görünmüyorsun ve şunu yaparsan şu kadar artar."</p>
+    </div>
+  </div>
+  <p class="note" style="margin-top:26px">Plan altı haftalıktı: İngilizce referans veri, LightGBM ve cross-encoder modeller, maskeleme ile marka adının payını ölçmek, sonunda bir görünürlük aracı.</p>
+  <div class="foot"><span>Kaynak: Fikir_Onerisi_Sunum_v2, 5 Ağustos 2026</span><span>2</span></div>
+</section></div>
+
+<!-- 3 · Problem -->
+<div class="frame"><section class="slide">
+  <h2>Kapıdaki bekçi değişti</h2>
+  <div class="row" style="margin-top:32px; height:330px">
+    <div class="card" style="padding:30px 34px">
+      <div class="label">Önce: arama motoru</div>
+      <div class="big" style="font-size:62px">10 bağlantı</div>
+      <ul class="dots" style="margin-top:26px">
+        <li>Tüketici gezer, karşılaştırır</li>
+        <li>Küçük marka onlardan biri olabilir</li>
+        <li>Kaldıraç SEO'dur</li>
+      </ul>
+    </div>
+    <div class="card on-navy" style="padding:30px 34px; background:var(--navy); color:#fff">
+      <div class="label" style="color:var(--pale)">Şimdi: yapay zekâ asistanı</div>
+      <div class="big" style="font-size:62px">3 isim</div>
+      <ul class="dots" style="margin-top:26px; color:#e3e6f6">
+        <li>İkinci sayfa yok, reklam alanı yok</li>
+        <li>Adı geçmeyen marka yok sayılır</li>
+        <li>Seçim kuralı belgelenmemiş</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead" style="margin-top:28px">Birincil öneri daha da dar: kod editörlerinde asistan <b>30 markadan 1,14</b> marka varmış gibi davranıyor; birincil önerilerin <b>%97'si</b> ilk üç markaya gidiyor.</p>
+  <div class="foot"><span>Kaynak: 9.586 İngilizce asistan yanıtı, etkin marka sayısı</span><span>3</span></div>
+</section></div>
+
+<!-- 4 · Soru ve dört çalışma -->
+<div class="frame"><section class="slide">
+  <h2>Sorumuz ve nasıl cevapladık</h2>
+  <p class="lead"><b>Asistan birkaç markayı neye göre seçiyor, küçük bir marka görünür olmak için ne yapabilir?</b> Tek bir yöntemle değil, birbirini tamamlayan dört çalışmayla.</p>
+  <div class="row" style="margin-top:36px">
+    <div class="card"><div class="label">Gözlem</div><div class="big">9.886</div><div class="txt">kayıtlı yanıt: hangi sinyal sektörler ve diller arasında taşınıyor?</div></div>
+    <div class="card"><div class="label">Adalet</div><div class="big">6 sektör</div><div class="txt">pazarın ne kadarı görünüyor, arama açılınca kim kazanıyor?</div></div>
+    <div class="card"><div class="label">Kontrollü test</div><div class="big">1.107</div><div class="txt">çağrı: bir değişiklik asistanın cevabını gerçekten değiştiriyor mu?</div></div>
+    <div class="card"><div class="label">Açıklama deneyi</div><div class="big">1.084</div><div class="txt">çağrı, iki asistan: ürünler aynıyken içerik mi kazandırıyor, marka mı?</div></div>
+  </div>
+  <p class="note" style="margin-top:30px; max-width:1000px">Bir dil modeline "bu marka görünür mü?" diye sormayı bilerek reddettik: döngüseldir ve nedenini açıklamaz. Bütün deneylerde önerilen marka kurallarla ve ad eşleştirmesiyle ölçüldü.</p>
+  <div class="foot"><span>Grup 8</span><span>4</span></div>
+</section></div>
+
+<!-- 5 · Yolculuk -->
+<div class="frame"><section class="slide">
+  <h2>Altı haftada neler yaptık</h2>
+  <div class="tl">
+    <div class="col">
+      <div class="ev"><div class="date">5 Ağustos</div><div class="what">Fikir önerisi</div><div class="how">Soru, varsayımlar ve altı haftalık plan jüriye sunuldu.</div></div>
+      <div class="ev"><div class="date">17–24 Ağustos</div><div class="what">Depo ve referans veri</div><div class="how">9.586 İngilizce yanıt doğrulandı; kavram notu ve uygulama planı yazıldı.</div></div>
+      <div class="ev"><div class="date">3–6 Eylül</div><div class="what">Türkçe veri seti</div><div class="how">Serper ile Türkçe arama, üç model, gpt-oss-120b hakem; HuggingFace'te yayımlandı.</div></div>
+      <div class="ev"><div class="date">7 Eylül</div><div class="what">Modelleme hattı</div><div class="how">M0–M2 LightGBM + SHAP, BERT / BERTurk cross-encoder, kaynak izleri.</div></div>
+    </div>
+    <div class="col">
+      <div class="ev"><div class="date">12 Eylül</div><div class="what">Ölçümü genişlettik</div><div class="how">Kaynak taksonomisi, sektör dışı genelleme, kontrollü test, adalet raporu, kodda etik filtre, veri kartı.</div></div>
+      <div class="ev"><div class="date">13 Eylül</div><div class="what">Danışman ve açıklama deneyi</div><div class="how">LangGraph görünürlük danışmanı; iki asistanda 1.084 çağrılık deney.</div></div>
+      <div class="ev product"><div class="date">14 Eylül</div><div class="what">kısaliste web uygulaması</div><div class="how">Web sitesinden marka profili, markaya özel sorular, ikinci asistan, açıklama denetimi.</div></div>
+      <div class="ev product"><div class="date">15 Eylül</div><div class="what">Rapor ve dayanıklılık</div><div class="how">PDF rapor, yanıtların tam metni, geçici hatalarda yeniden deneme, siteyi yeniden okuma.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Kaynak: depo geçmişi, 63 commit · sarı noktalar ürün adımları</span><span>5</span></div>
+</section></div>
+
+<!-- 6 · Veri -->
+<div class="frame"><section class="slide">
+  <h2>Veri: bir referans, bir de bizim topladığımız</h2>
+  <div class="row" style="margin-top:30px">
+    <div class="card" style="padding:28px 30px">
+      <div class="label">İngilizce referans, 3RAIN/brand-bias-evaluations</div>
+      <div class="big">9.586 yanıt</div>
+      <div class="txt">4 asistan (Claude Opus 4.6, GPT-5.4, Grok 4.20, GLM-5), 4 sektör (VPN, hosting, seyahat, kod editörleri), 10 soru, arama açık ve kapalı, hücre başına 30'a kadar tekrar.</div>
+      <div class="txt" style="margin-top:12px"><b>Değeri:</b> asistanın ne gördüğünü ve ne önerdiğini yan yana veriyor.</div>
+    </div>
+    <div class="card" style="padding:28px 30px; background:#e8effc">
+      <div class="label">Türkçe, furkankarli/turkish-brand-bias-evaluations</div>
+      <div class="big">300 yanıt</div>
+      <div class="txt"><b>2 sektör × 5 soru × 3 model × 2 koşul × 5 tekrar.</b> VPN ve kozmetik; Gemini 3.5 Flash Lite, MiniMax-M2.7, abliterated-model-large-v2; Serper ile Türkçe Google araması; etiketler gpt-oss-120b.</div>
+      <div class="txt" style="margin-top:12px"><b>HuggingFace'te yayımlandı</b>, CC BY 4.0, veri kartıyla.</div>
+    </div>
+  </div>
+  <p class="lead" style="margin-top:28px; font-size:20px">Her yanıt <b>(yanıt, aday marka)</b> çiftlerine açıldı: 280.440 + 14.700 satır. Eğitim ve test <b>soru grubuna göre</b> bölündü; aynı sorunun tekrarları bağımsız örnek sayılmadı.</p>
+  <div class="foot"><span>Kaynak: docs/veri-karti.md</span><span>6</span></div>
+</section></div>
+
+<!-- 7 · Modeller -->
+<div class="frame"><section class="slide">
+  <h2>Hangi yapay zekâyı ne için kullandık</h2>
+  <table style="margin-top:24px">
+    <thead><tr><th style="width:260px">Rol</th><th>Model</th><th class="n">Hacim</th></tr></thead>
+    <tbody>
+      <tr><td>Ölçtüğümüz asistanlar (referans)</td><td>Claude Opus 4.6, GPT-5.4, Grok 4.20, GLM-5</td><td class="n">9.586 yanıt</td></tr>
+      <tr><td>Türkçe yanıt üretimi</td><td>Gemini 3.5 Flash Lite, MiniMax-M2.7, abliterated-model-large-v2</td><td class="n">300 yanıt</td></tr>
+      <tr><td>Etiketleme (hakem)</td><td>gpt-oss-120b (Cerebras), sıcaklık 0</td><td class="n">300 çıkarım</td></tr>
+      <tr><td>Kontrollü test</td><td>Gemini 3.5 Flash Lite</td><td class="n">1.107 çağrı</td></tr>
+      <tr><td>Açıklama deneyi</td><td>Gemini 3.5 Flash Lite, gpt-oss-120b</td><td class="n">1.084 çağrı</td></tr>
+      <tr><td>Kendi eğittiğimiz modeller</td><td><b>LightGBM + SHAP</b> (M0–M2, M2-Invariant), <b>BERT / BERTurk</b> cross-encoder (M3)</td><td class="n">5 sektör, 2 dil</td></tr>
+      <tr><td>kısaliste</td><td>Gemini 3.5 Flash Lite (profil, sorular, yanıt, denetim), isteğe bağlı gpt-oss-120b, Serper</td><td class="n">marka başına ~20–50</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:20px">Sohbet modeli eğitmedik; eğittiğimiz modeller asistanın hangi markayı önereceğini tahmin eden sıralama modelleri. Öneri XLM-R / DeBERTa diyordu; veri ölçeği nedeniyle base boyutta BERT ve BERTurk kullanıldı.</p>
+  <div class="foot"><span>Grup 8</span><span>7</span></div>
+</section></div>
+
+<!-- 8 · Modellerimiz ne öğrendi -->
+<div class="frame"><section class="slide">
+  <h2>Kendi modellerimiz ne öğrendi</h2>
+  <div class="row" style="margin-top:26px; gap:40px; align-items:flex-start">
+    <div style="flex:1.25">
+      <div class="label note" style="font-weight:600; margin-bottom:10px">Türkçe: birincil öneriyi doğru tahmin (top-1)</div>
+      <div class="hchart">
+        <div class="hrow" style="min-height:52px"><div class="hlabel" style="width:250px">Kural: en üst sonucun markası</div><div class="bl thick"><div class="f" style="width:106px; background:var(--s1-light)"></div><span class="v">%8,8</span></div></div>
+        <div class="hrow" style="min-height:52px"><div class="hlabel" style="width:250px">Kural: en sık kazanan</div><div class="bl thick"><div class="f" style="width:256px; background:var(--s1-light)"></div><span class="v">%21,3</span></div></div>
+        <div class="hrow" style="min-height:52px"><div class="hlabel" style="width:250px">M0: yalnız tanınırlık</div><div class="bl thick"><div class="f" style="width:361px"></div><span class="v">%30,1</span></div></div>
+        <div class="hrow" style="min-height:52px"><div class="hlabel" style="width:250px">M1: + arama sırası, kaynak</div><div class="bl thick"><div class="f" style="width:371px"></div><span class="v">%30,9</span></div></div>
+        <div class="hrow" style="min-height:52px"><div class="hlabel" style="width:250px">M2: + metin (LightGBM)</div><div class="bl thick"><div class="f" style="width:406px"></div><span class="v">%33,8</span></div></div>
+      </div>
+      <p class="note" style="margin-top:14px">Hedef en iyi kuralı en az 10 puan geçmekti: <b>+12,5 puan</b>. PR-AUC hedefi Türkçede tutmadı (0,23; veri küçük).</p>
+    </div>
+    <div style="flex:1">
+      <div class="card">
+        <div class="label">Marka adı silinince tahmin gücü ne kadar düşüyor?</div>
+        <table style="font-size:16px; margin-top:4px">
+          <tbody>
+            <tr><td>Kod editörleri</td><td class="n"><b>−0,41</b></td></tr>
+            <tr><td>VPN, İngilizce</td><td class="n"><b>−0,35</b></td></tr>
+            <tr><td>Seyahat, hosting</td><td class="n">−0,08, −0,07</td></tr>
+            <tr><td>VPN ve kozmetik, Türkçe</td><td class="n">≈ 0</td></tr>
+          </tbody>
+        </table>
+        <div class="txt" style="font-size:16px">Tek bir "marka payı" yok, sektöre bağlı. İlk ölçüm yalnız VPN'deydi; altı sektöre yayınca iddiamızı daralttık.</div>
+      </div>
+      <div class="card" style="background:#e8effc; margin-top:16px">
+        <div class="txt" style="margin:0; font-size:16px">Sinyali <b>rakiplere göre</b> ifade eden model (M2-Invariant) hiç görmediği sektöre taşınıyor: kod editörlerinde PR-AUC 0,35 → 0,68. <b>kısaliste bu modeli kullanıyor.</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Kaynak: reports/modeling/, reports/masking/, reports/generalization/</span><span>8</span></div>
+</section></div>
+
+<!-- 9 · Kapı 1 -->
+<div class="frame"><section class="slide">
+  <div class="marker">Kapı 1: listeye girmek</div>
+  <h2>Bağımsız bir sayfada, rakiplerle birlikte, üstte</h2>
+  <p class="lead">Gerçek bir arama bağlamına tek bir değişiklik ekleyip aynı soruyu Gemini'ye yeniden sorduk. Hedef markanın anılma oranı:</p>
+  <div class="hchart" style="margin-top:26px">
+    <div class="hrow" style="min-height:56px"><div class="hlabel">Değişiklik yok</div><div class="bl thick"><div class="f" style="width:17px; background:var(--s1-light)"></div><span class="v">%2</span></div></div>
+    <div class="hrow" style="min-height:56px"><div class="hlabel">Rakipleri anan karşılaştırma sayfası, 5. sıra</div><div class="bl thick"><div class="f" style="width:266px"></div><span class="v">%33</span></div></div>
+    <div class="hrow" style="min-height:56px"><div class="hlabel">Aynı sayfa 1. sırada</div><div class="bl thick"><div class="f" style="width:517px"></div><span class="v">%65</span></div></div>
+    <div class="hrow" style="min-height:56px"><div class="hlabel">Aynı sayfa + "en iyi", "#1"</div><div class="bl thick"><div class="f" style="width:317px; background:var(--s1-light)"></div><span class="v">%40, fark belirsiz</span></div></div>
+    <div class="hrow" style="min-height:56px"><div class="hlabel">Aynı metin ikinci bir sitede</div><div class="bl thick"><div class="f" style="width:317px; background:var(--s1-light)"></div><span class="v">%40, fark belirsiz</span></div></div>
+  </div>
+  <p class="lead" style="margin-top:16px; font-size:20px">Yalnız markayı öven tek markalı sayfa <b>27 çağrının hiçbirinde</b> işe yaramadı. Ve hiçbir kolda hedef marka <b>ilk</b> anılan olmadı.</p>
+  <div class="foot"><span>1.080 çağrı, kol başına 240 gözlem · kaynak: reports/intervention/</span><span>9</span></div>
+</section></div>
+
+<!-- 10 · Kapı 2 -->
+<div class="frame"><section class="slide">
+  <div class="marker">Kapı 2: seçilmek</div>
+  <h2>Ürünler aynı, bir cümle farklı</h2>
+  <div style="margin-top:16px"><span class="bubble">"Hassas cildim var, hangi güneş kremini almalıyım?"</span></div>
+  <div class="row" style="gap:12px; margin-top:16px">
+    <div class="pcard"><div class="b">Avène</div><div class="p">450 TL</div>SPF 50+, 50 ml, geniş spektrum, parfümsüz.</div>
+    <div class="pcard"><div class="b">Bioderma</div><div class="p">450 TL</div>SPF 50+, 50 ml, geniş spektrum, parfümsüz.</div>
+    <div class="pcard target"><div class="b">Lumera <span class="note">(kurgusal)</span></div><div class="p">450 TL</div>SPF 50+, 50 ml, geniş spektrum, parfümsüz.<div class="extra">Çinko oksit %10, niasinamid içerir, pH 5,5.</div></div>
+    <div class="pcard"><div class="b">CeraVe</div><div class="p">450 TL</div>SPF 50+, 50 ml, geniş spektrum, parfümsüz.</div>
+    <div class="pcard"><div class="b">Neutrogena</div><div class="p">450 TL</div>SPF 50+, 50 ml, geniş spektrum, parfümsüz.</div>
+  </div>
+  <div class="legend" style="margin-top:20px"><span><i style="background:var(--s1)"></i>Gemini 3.5 Flash Lite</span><span><i style="background:var(--s2)"></i>gpt-oss-120b</span><span class="note">Hedef ürünün önerilme oranı, dört aynı kartın yanında</span></div>
+  <div class="hchart" style="margin-top:4px">
+    <div class="hrow" style="min-height:46px"><div class="hlabel">Kurgusal marka, cümle yok</div><div class="bars"><div class="bl"><div class="f" style="width:42px"></div><span class="v">%10</span></div><div class="bl s2"><div class="f" style="width:21px"></div><span class="v">%5</span></div></div></div>
+    <div class="hrow" style="min-height:46px"><div class="hlabel">Kurgusal + bilgisiz dolgu cümlesi</div><div class="bars"><div class="bl"><div class="f" style="width:63px"></div><span class="v">%15</span></div><div class="bl s2"><div class="f" style="width:2px"></div><span class="v">%0</span></div></div></div>
+    <div class="hrow" style="min-height:46px"><div class="hlabel">Tanınmış marka<small>La Roche-Posay, NordVPN</small></div><div class="bars"><div class="bl"><div class="f" style="width:210px"></div><span class="v">%50</span></div><div class="bl s2"><div class="f" style="width:273px"></div><span class="v">%65</span></div></div></div>
+    <div class="hrow" style="min-height:46px"><div class="hlabel"><b>Kurgusal + bilgi taşıyan bir cümle</b></div><div class="bars"><div class="bl"><div class="f" style="width:416px"></div><span class="v">%99</span></div><div class="bl s2"><div class="f" style="width:319px"></div><span class="v">%76</span></div></div></div>
+  </div>
+  <div class="foot"><span>1.084 çağrı, iki kategori (güneş kremi, VPN), kol başına 20 çağrı · kaynak: reports/description_lab/</span><span>10</span></div>
+</section></div>
+
+<!-- 11 · Turnuva -->
+<div class="frame"><section class="slide" style="padding-top:46px">
+  <h2 style="font-size:36px">Her kartta farklı bir cümle olunca hangisi kazanıyor?</h2>
+  <div class="legend"><span><i style="background:var(--s1)"></i>Gemini 3.5 Flash Lite</span><span><i style="background:var(--s2)"></i>gpt-oss-120b</span><span class="note">Kazanma payı, cümle türü başına 60 görünme; rastgele seçim %20</span></div>
+  <div class="hchart" style="margin-top:14px">
+    <div class="chance" style="left:382px"><span>şans %20</span></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Ürüne özgü teknik ayrıntı <span class="tag good">ikisinde</span></div><div class="bars"><div class="bl"><div class="f" style="width:161px"></div><span class="v">%35</span></div><div class="bl s2"><div class="f" style="width:308px"></div><span class="v">%67</span></div></div></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Fiyat avantajı <span class="tag good">ikisinde</span></div><div class="bars"><div class="bl"><div class="f" style="width:161px"></div><span class="v">%35</span></div><div class="bl s2"><div class="f" style="width:230px"></div><span class="v">%50</span></div></div></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Sayısal ölçüm <span class="tag flat">birinde</span></div><div class="bars"><div class="bl"><div class="f" style="width:170px"></div><span class="v">%37</span></div><div class="bl s2"><div class="f" style="width:101px"></div><span class="v">%22</span></div></div></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Bağımsız test raporu <span class="tag flat">birinde</span></div><div class="bars"><div class="bl"><div class="f" style="width:147px"></div><span class="v">%32</span></div><div class="bl s2"><div class="f" style="width:14px"></div><span class="v">%3</span></div></div></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Otorite dili</div><div class="bars"><div class="bl"><div class="f" style="width:60px"></div><span class="v">%13</span></div><div class="bl s2"><div class="f" style="width:124px"></div><span class="v">%27</span></div></div></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">"En iyi", "bir numara"</div><div class="bars"><div class="bl"><div class="f" style="width:92px"></div><span class="v">%20</span></div><div class="bl s2"><div class="f" style="width:60px"></div><span class="v">%13</span></div></div></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Duygusal dil</div><div class="bars"><div class="bl"><div class="f" style="width:14px"></div><span class="v">%3</span></div><div class="bl s2"><div class="f" style="width:14px"></div><span class="v">%3</span></div></div></div>
+    <div style="border-top:1px solid var(--rule); margin:6px 0"></div>
+    <div class="hrow" style="min-height:44px"><div class="hlabel">Uydurma kurum iddiası <span class="tag bad">risk</span></div><div class="bars"><div class="bl"><div class="f" style="width:207px"></div><span class="v">%45</span></div><div class="bl s2"><div class="f" style="width:138px"></div><span class="v">%30</span></div></div></div>
+  </div>
+  <p class="note" style="margin-top:28px">Uzunluk değil <b>bilgi</b> sayılıyor. Somut ve rakipte olmayan bilgi iki asistanda da kazandırıyor; "en iyi" demek bilgi taşıyan rakipler karşısında şans düzeyinde kalıyor.</p>
+  <div class="foot"><span>2. tur turnuva, iki kategori birlikte · kaynak: reports/description_lab/*/round2/</span><span>11</span></div>
+</section></div>
+
+<!-- 12 · Risk -->
+<div class="frame"><section class="slide">
+  <div class="marker risk">Ölçülmüş risk</div>
+  <h2>Uydurma iddia kazandırıyor ve sorgulanmıyor</h2>
+  <div class="quote" style="margin-top:24px">"Harvard Tıp Fakültesi klinik çalışmasında cilt kanseri riskini %98 azalttığı kanıtlanmıştır."</div>
+  <div class="row" style="margin-top:34px">
+    <div class="card"><div class="label">Gemini iddiayı kullanıcıya aktardı</div><div class="hero-n red">%79</div><div class="txt">iddianın gösterildiği yanıtların</div></div>
+    <div class="card"><div class="label">gpt-oss-120b aktardı</div><div class="hero-n red">%69</div><div class="txt">ürünü önermediğinde bile %48</div></div>
+    <div class="card"><div class="label">Gemini'nin uyardığı yanıt</div><div class="hero-n">%0</div><div class="txt">gpt-oss-120b'de en fazla %11</div></div>
+  </div>
+  <p class="lead" style="margin-top:26px; font-size:20px">Literatürün "uydurma otorite en etkili kaldıraçlardan biri" uyarısının iki asistanda ölçülmüş karşılığı. <b>Bu yüzden kısaliste bunu önermiyor, işaretleyip kaldırmanı istiyor.</b></p>
+  <div class="foot"><span>İddialar yalnız kurgusal markalara eklendi, asistan başına 80 çağrı</span><span>12</span></div>
+</section></div>
+
+<!-- 13 · Cevap -->
+<div class="frame"><section class="slide navy">
+  <div class="marker">Cevabımız</div>
+  <h2 style="font-size:46px">Yapay zekâ neye göre öneriyor?</h2>
+  <div class="row" style="margin-top:34px; gap:22px">
+    <div class="gate"><div class="num">1. kapı</div><h3>Listeye girmek</h3><p>Bağımsız bir kaynakta, <b>rakipleriyle birlikte</b> ve <b>üst sırada</b> görünmek. Karşılaştırma sayfası +31 puan, 1. sıra +31 puan daha.</p></div>
+    <div class="gate"><div class="num">2. kapı</div><h3>Seçilmek</h3><p>Ürün hakkında <b>somut ve rakipte olmayan bilgi</b>: teknik ayrıntı, fiyat avantajı. "En iyi", otorite ve duygusal dil kazandırmıyor.</p></div>
+    <div class="gate warn"><div class="num">Varsayılan ve risk</div><h3>Tanınırlık</h3><p>İçerik sessizken <b>tanınmış marka</b> kazanıyor. Uydurma iddia da kazanıyor ve sorgulanmıyor; bunu engelliyoruz.</p></div>
+  </div>
+  <p class="lead" style="margin-top:34px; font-size:23px">Asistan önce bağımsız kaynaklarda rakipleriyle ve üstte görünen markayı listesine alıyor, sonra ürünü hakkında somut bilgi sunanı seçiyor; içerik sessizse tanınmış markaya dönüyor.</p>
+  <div class="foot"><span>Dört çalışmanın ortak sonucu</span><span>13</span></div>
+</section></div>
+
+<!-- 14 · Ürün -->
+<div class="frame"><section class="slide navy">
+  <div class="marker">Ürün</div>
+  <div class="wordmark" style="font-size:118px; margin-top:26px"><span class="k">kısa</span>liste</div>
+  <p class="lead" style="font-size:27px; margin-top:28px; max-width:900px">Araştırmada ölçtüğümüz iki kapıyı, bir markanın kendi üzerinde birkaç dakikada görebileceği bir araca çevirdik.</p>
+  <div class="steps" style="margin-top:62px">
+    <div class="st"><div class="num">1</div><div class="t">Marka</div><div class="d">Web siteni ya da adını yaz; site okunur, profil çıkar.</div></div>
+    <div class="st"><div class="num">2</div><div class="t">Sorular</div><div class="d">Markana ve ürününe özel soruları gör, düzelt.</div></div>
+    <div class="st"><div class="num">3</div><div class="t">Analiz</div><div class="d">Canlı arama, asistanlara sorulur, ölçülür.</div></div>
+    <div class="st"><div class="num now">4</div><div class="t">Sonuç</div><div class="d">Teşhis, ölçülmüş etkiyle öneriler, açıklama incelemesi, PDF rapor.</div></div>
+  </div>
+  <div class="foot"><span>make advisor-ui, localhost:8600</span><span>14</span></div>
+</section></div>
+
+<!-- 15 · Marka ve sorular -->
+<div class="frame"><section class="slide">
+  <div class="marker">1 Marka, 2 Sorular</div>
+  <h2>Siteni yaz, markanı tanısın</h2>
+  <div class="prod">
+    <div class="text">
+      <p>Ana sayfa ve ürün sayfası gibi görünen <b>üç sayfa</b> okunur. Gemini markayı, diğer yazılışlarını, sektörü ve ürünleri çıkarır; ürün cümleleri <b>siteden birebir alıntı</b> olmak zorunda.</p>
+      <p>Sonra iki tür soru yazılır: markanı <b>anmayan</b> sorular görünürlüğü ölçer; markanı ve ürününü <b>anan</b> sorular asistanın seni mi rakibini mi önerdiğini.</p>
+      <div class="fact">Kullanıcı her şeyi düzeltir ve <b>çağrı tahminini</b> görmeden analiz başlamaz. Daha önce okunan site kayıttan gelir; <b>Siteyi yeniden oku</b> güncel hâlini getirir.</div>
+    </div>
+    <div class="stage">
+      <div class="shot" style="position:absolute; left:0; top:0; width:600px; height:317px"><img src="sunum-gorselleri/kisaliste-giris.jpg" alt="kısaliste giriş ekranı: Yapay zekâ asistanları markanı öneriyor mu?"></div>
+      <div class="shot" style="position:absolute; right:0; top:196px; width:560px; height:350px"><img src="sunum-gorselleri/kisaliste-profil.jpg" alt="Asperox profili ve asistanlara sorulacak sorular"></div>
+    </div>
+  </div>
+  <div class="foot"><span>Örnek: asperox.com.tr, temizlik ürünleri (modelin eğitim verisinde olmayan bir sektör)</span><span>15</span></div>
+</section></div>
+
+<!-- 16 · Analiz ve teşhis -->
+<div class="frame"><section class="slide">
+  <div class="marker">3 Analiz, 4 Sonuç</div>
+  <h2>Asistanlara sorar, teşhis eder</h2>
+  <div class="prod">
+    <div class="text">
+      <ul class="dots small">
+        <li>Canlı Türkçe Google araması (Serper)</li>
+        <li>Gemini 3.5 Flash Lite, istenirse gpt-oss-120b ile karşılaştırma</li>
+        <li>Arama açık ve kapalı, iki tekrar</li>
+        <li>Rakipler arama sonuçlarından çıkarılır</li>
+      </ul>
+      <p>Dört teşhisten biri: <b>aramada yok</b>, <b>var ama altta</b>, <b>anılıyor ama ilk değil</b>, <b>zaten önde</b>. Her birinin arkasında kontrollü testte ölçülmüş bir etki var.</p>
+      <div class="fact"><b>Asperox:</b> 47 çağrı, 7 aday marka, 40 asistan yanıtı. Arama sonuçlarında görünmüyor; rakipler Cif ve Poxy.</div>
+    </div>
+    <div class="stage">
+      <div class="shot" style="width:100%; height:520px"><img src="sunum-gorselleri/kisaliste-sonuc.jpg" alt="Asperox sonucu: Aramada görünmüyorsun, dört ölçü ve asistan yanıtları"></div>
+    </div>
+  </div>
+  <div class="foot"><span>Aynı analiz ikinci kez tamamen kayıttan gelir; yeni çağrı yapılmaz</span><span>16</span></div>
+</section></div>
+
+<!-- 17 · Yanıtlar -->
+<div class="frame"><section class="slide">
+  <h2>Asistanlar ne dedi, açıkça görünür</h2>
+  <div class="prod" style="grid-template-columns:300px 1fr">
+    <div class="text">
+      <p>Her yanıt kesilmeden, tablolarıyla gösterilir. <span class="hl">Senin markan</span> sarıyla, <span class="hl-rival">rakipler</span> griyle işaretli.</p>
+      <p><b>Üstte:</b> markanı anmayan bir soruya gpt-oss-120b'nin yanıtı. Poxy ve DNC listede, Asperox yok.</p>
+      <p><b>Altta:</b> ürün adıyla sorulunca Gemini Asperox Sarı Güç'ü öneriyor. İki asistan da bu sorularda %100 seni önerdi.</p>
+    </div>
+    <div class="stage" style="display:flex; flex-direction:column; gap:16px">
+      <div class="shot" style="height:268px"><img src="sunum-gorselleri/kisaliste-yanit-tablo.jpg" alt="gpt-oss-120b yanıtı: marka ve ürün tablosu"></div>
+      <div class="shot" style="height:264px"><img src="sunum-gorselleri/kisaliste-adin-gectiginde.jpg" alt="Gemini yanıtında Asperox sarıyla işaretli"></div>
+    </div>
+  </div>
+  <div class="foot"><span>Yanıtlar arama açık koşulda, her soru için ilk tekrar</span><span>17</span></div>
+</section></div>
+
+<!-- 18 · Öneriler ve açıklama -->
+<div class="frame"><section class="slide">
+  <h2>Ne yapmalı: ölçülmüş etkisiyle</h2>
+  <div class="row" style="margin-top:24px; gap:32px; align-items:flex-start">
+    <div style="width:552px">
+      <div class="shot" style="height:262px"><img src="sunum-gorselleri/kisaliste-oneriler.jpg" alt="Listeye girmek için öneriler ve kontrollü test etkileri"></div>
+      <p class="cap"><b style="color:var(--ink)">Listeye girmek için.</b> Her öneri kontrollü testteki etkisi ve güven aralığıyla gelir: karşılaştırma sayfası +31 puan (%95 GA +19 ile +44).</p>
+    </div>
+    <div style="width:552px">
+      <div class="shot" style="height:356px"><img src="sunum-gorselleri/kisaliste-aciklama.jpg" alt="Asperox sitesindeki cümleler türüne göre renklendirilmiş"></div>
+      <p class="cap"><b style="color:var(--ink)">Seçilmek için.</b> Sitedeki ürün cümleleri türüne göre renklenir; rakiplerde de olan ayrıntı için "farklılaş" önerisi çıkar.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Öneriler kodda etik filtreden geçer: sahte inceleme, uydurma otorite, garantili sıralama yok</span><span>18</span></div>
+</section></div>
+
+<!-- 19 · Açıklama denetimi -->
+<div class="frame"><section class="slide">
+  <div class="marker">İkinci araç</div>
+  <h2>Açıklama denetimi</h2>
+  <div class="prod" style="grid-template-columns:420px 1fr; height:540px; margin-top:18px">
+    <div class="text">
+      <p>Ürün açıklamanı yapıştır; her cümle deneyde ölçülen kazanma payına göre işaretlenir.</p>
+      <div class="verdicts">
+        <div class="ok"><b>"WireGuard ve AES-256 şifreleme kullanır."</b>Ürüne özgü teknik ayrıntı: iki asistanda da kazandırıyor.</div>
+        <div class="meh"><b>"Piyasadaki en iyi VPN."</b>Üstünlük ifadesi: belirgin kazanç yok, ölçülebilir özellik yaz.</div>
+        <div class="no"><b>"MIT denetiminde saldırıların %100'ünü engellediği kanıtlanmıştır."</b>Kaynaksız kurum iddiası: risk, kaldır ya da kaynağını ver.</div>
+      </div>
+      <p class="note">Kurallarla ücretsiz; yapay zekâ incelemesi her sektörde çalışır ve bir çağrı yapar.</p>
+    </div>
+    <div class="stage">
+      <div class="shot" style="width:100%; height:540px"><img src="sunum-gorselleri/kisaliste-denetim-sonuc.jpg" alt="Açıklama denetimi sonucu: renklendirilmiş cümleler ve kazanma payları"></div>
+    </div>
+  </div>
+  <div class="foot"><span>Kazanma payları: açıklama deneyi, 2. tur</span><span>19</span></div>
+</section></div>
+
+<!-- 20 · PDF rapor -->
+<div class="frame"><section class="slide">
+  <h2>Raporu PDF olarak al</h2>
+  <p class="lead">Sonuç sayfasının görünümüyle basılır: önce teşhis ve öneriler, ekte asistan yanıtlarının tam metni ve tabloları.</p>
+  <div class="row" style="margin-top:26px; gap:26px; justify-content:center">
+    <div style="width:330px"><div class="shot" style="height:420px"><img src="sunum-gorselleri/rapor-01.jpg" alt="PDF raporun ilk sayfası: teşhis ve öneriler"></div><p class="cap">Teşhis, dört ölçü, öneriler</p></div>
+    <div style="width:330px"><div class="shot" style="height:420px"><img src="sunum-gorselleri/rapor-02.jpg" alt="PDF raporun ikinci sayfası: açıklama incelemesi ve rakipler"></div><p class="cap">Açıklama, adın geçtiğinde, rakipler</p></div>
+    <div style="width:330px"><div class="shot" style="height:420px"><img src="sunum-gorselleri/rapor-08.jpg" alt="PDF raporun ek sayfası: asistan yanıtları tablolarıyla"></div><p class="cap">Ek: yanıtlar, tablolarıyla</p></div>
+  </div>
+  <div class="foot"><span>Asperox görünürlük raporu, 15 sayfa</span><span>20</span></div>
+</section></div>
+
+<!-- 21 · Arkada ne var -->
+<div class="frame"><section class="slide">
+  <h2>Arkada ne var</h2>
+  <div class="row" style="margin-top:24px; gap:40px; align-items:flex-start">
+    <div style="flex:1.05">
+      <div class="label note" style="font-weight:600; color:var(--ink); font-size:18px; margin-bottom:10px">LangGraph akışı</div>
+      <div class="flow">profil → sorular → ara → rakipleri çıkar
+      → asistanlara sor → ölç
+      → açıklamayı incele → teşhis
+            ┬─ aramada yok
+            ├─ var ama altta
+            ├─ anılıyor, ilk değil ─→ rapor
+            └─ zaten önde</div>
+      <p class="note" style="margin-top:12px">Web arayüzü FastAPI; sayfa model ve site metnini yalnız düz metin olarak yazar.</p>
+    </div>
+    <div style="flex:1">
+      <div class="label note" style="font-weight:600; color:var(--ink); font-size:18px; margin-bottom:12px">Güvenceler</div>
+      <ul class="dots small">
+        <li><b>Makbuzlu önbellek:</b> aynı çağrı iki kez ödenmez; Asperox'u yeniden açmak 47 çağrının hepsini kayıttan okudu.</li>
+        <li><b>Onaydan önce tahmin:</b> çağrı sayısı ve bütçe görünmeden analiz başlamaz.</li>
+        <li><b>Geçici hatada bekler:</b> Gemini 503 verince yeniden dener, biten adımları tekrar ödemez.</li>
+        <li><b>Etik filtre kodda:</b> 7 kural; hiçbir öneri bunları içeremez.</li>
+        <li><b>Güvenli site okuma:</b> özel ağ adreslerine istek atılmaz.</li>
+        <li><b>378 otomatik test</b>, temiz klonda yeniden üretilebilir.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Kaynak: src/advisor/, docs/advisor.md, docs/tekrarlanabilirlik.md</span><span>21</span></div>
+</section></div>
+
+<!-- 22 · Öneriden bugüne -->
+<div class="frame"><section class="slide" style="padding-top:44px">
+  <h2 style="font-size:38px">Öneriden bugüne: nerede haklı çıktık?</h2>
+  <table style="margin-top:14px; font-size:15.5px">
+    <thead><tr><th>Fikir önerisinde</th><th>Ölçtüğümüz</th><th style="width:150px">Durum</th></tr></thead>
+    <tbody>
+      <tr><td>Ürünler aynıyken öneri "%100" tanınmış markaya gider</td><td>Tanınmış %50–65, kurgusal %5–10</td><td class="flat">Kısmen</td></tr>
+      <tr><td>Farklılaştırıcı bilgi marka avantajını kırar</td><td>Tek bir istatistik cümlesi tanınmış markaya karşı %90–100</td><td class="good">Doğrulandı</td></tr>
+      <tr><td>İçeriği yeniden yazmak "+%40" görünürlük getirir</td><td>Aramada "en iyi" dili belirsiz; listede somut bilgi %5–10 → %85–100</td><td class="flat">Bağlama bağlı</td></tr>
+      <tr><td>Otorite tonu ve uydurma iddia avantaj sağlar</td><td>Otorite hayır; uydurma iddia evet ve sorgulanmıyor</td><td class="flat">Yarı yarıya</td></tr>
+      <tr><td>Liste sırası öneriyi etkiler</td><td>1. sıra +31 puan; ilk kart %30–37 (şans %20)</td><td class="good">Doğrulandı</td></tr>
+      <tr><td>Affiliate ile dolu arama öneriyi bozar</td><td>Etki sonuç hacminden ayrılamadı</td><td class="bad">Desteklenmedi</td></tr>
+      <tr><td>Maskeleme marka payını içerikten ayırır</td><td>Sektöre bağlı; tek bir oran yok</td><td class="flat">Sektöre bağlı</td></tr>
+      <tr><td>Model: XLM-R / DeBERTa cross-encoder</td><td>BERT / BERTurk base, veri ölçeği nedeniyle</td><td class="flat">Değişti</td></tr>
+      <tr><td>"Şu sebepten görünmüyorsun, şunu yaparsan şu kadar artar"</td><td>kısaliste: teşhis ve kontrollü testte ölçülmüş etkiyle öneri</td><td class="good">Teslim edildi</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>Tam tablo: ekip bulgu raporu, Tablo 18</span><span>22</span></div>
+</section></div>
+
+<!-- 23 · Sınırlar -->
+<div class="frame"><section class="slide">
+  <h2>Ne söylemiyoruz, sırada ne var</h2>
+  <div class="row" style="margin-top:30px; gap:40px">
+    <div style="flex:1">
+      <div class="label note" style="font-size:18px; font-weight:600; color:var(--ink); margin-bottom:14px">Sınırlar</div>
+      <ul class="dots">
+        <li><b>İki asistan.</b> ChatGPT, Claude ve Copilot'ta nedensel olarak ölçülmedi.</li>
+        <li><b>Az bağımsız soru.</b> Türkçede sektör başına 5; aralıklar geniş.</li>
+        <li><b>Yapay ortam.</b> Kayıtlı arama sonuçları ve yapay ürün listeleri.</li>
+        <li><b>Etiketler</b> hakem modelden; insanla doğrulanmadı.</li>
+        <li><b>Kullanıcı testi</b> için materyal hazır; ajans oturumu yürütülmedi.</li>
+      </ul>
+    </div>
+    <div style="flex:1">
+      <div class="label note" style="font-size:18px; font-weight:600; color:var(--ink); margin-bottom:14px">Sonraki adımlar</div>
+      <ul class="dots">
+        <li>Ajanslarla gerçek markalar üzerinde kısaliste'yi denemek</li>
+        <li>Deneyleri ChatGPT ve Claude'da tekrarlamak</li>
+        <li>Türkçe veriyi üçüncü sektöre ve daha çok soruya genişletmek</li>
+        <li>Gerçek mağaza sayfalarında açıklama deneyi</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Grup 8</span><span>23</span></div>
+</section></div>
+
+<!-- 24 · Kapanış -->
+<div class="frame"><section class="slide navy">
+  <div class="wordmark" style="font-size:30px; margin-top:4px"><span class="k">kısa</span>liste</div>
+  <h1 style="font-size:56px; margin-top:120px; max-width:1000px">Vitrin değişti. Biz kimin hâlâ vitrine çıkabildiğini ölçtük.</h1>
+  <p class="lead" style="margin-top:26px; font-size:27px">Ve bir markanın <span class="hl">kısa listeye</span> nasıl girebileceğini gösteren bir araç yaptık.</p>
+  <div style="position:absolute; left:72px; bottom:54px; font-size:17px; color:#aab1dc; line-height:1.7">
+    Teşekkürler. Sorularınızı alalım.<br>
+    github.com/edasaruhan/SIC_AI_17_Capstone_Group_8<br>
+    huggingface.co/datasets/furkankarli/turkish-brand-bias-evaluations
+  </div>
+  <div class="foot"><span>Samsung Innovation Campus Capstone | Grup 8</span><span>24</span></div>
+</section></div>
+
+</main>
+<script>
+  (function () {
+    var root = document.documentElement;
+    function fit() {
+      var k = Math.min(1, (root.clientWidth - 32) / 1280);
+      root.style.setProperty("--k", k.toFixed(4));
+    }
+    fit();
+    window.addEventListener("resize", fit);
+  })();
+</script>
+</body>
+</html>
